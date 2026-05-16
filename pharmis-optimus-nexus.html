@@ -1,0 +1,2270 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Pharmis Optimus Nexus – Advancing Pharmaceutical Knowledge, Research, and Innovation" />
+  <title>Pharmis Optimus Nexus</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/docx/8.5.0/docx.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+
+  <style>
+    /* ============================================================
+       CSS CUSTOM PROPERTIES
+    ============================================================ */
+    :root {
+      --dark:       #17222B;
+      --crimson:    #86373E;
+      --brown:      #443320;
+      --blush:      #F16D78;
+      --cream:      #EFD9C7;
+      --off-white:  #FBFBF0;
+
+      --bg:         var(--dark);
+      --bg2:        #1f2f3a;
+      --bg3:        #243545;
+      --surface:    rgba(255,255,255,0.04);
+      --border:     rgba(239,217,199,0.12);
+      --text:       var(--off-white);
+      --muted:      rgba(251,251,240,0.5);
+      --accent:     var(--blush);
+      --accent2:    var(--cream);
+
+      --font-display: 'Cormorant Garamond', Georgia, serif;
+      --font-body:    'DM Sans', sans-serif;
+      --font-mono:    'DM Mono', monospace;
+
+      --radius:  12px;
+      --radius-lg: 20px;
+      --shadow: 0 8px 40px rgba(0,0,0,0.4);
+      --shadow-sm: 0 4px 16px rgba(0,0,0,0.25);
+      --transition: 0.35s cubic-bezier(0.4,0,0.2,1);
+    }
+
+    [data-theme="light"] {
+      --bg:      var(--off-white);
+      --bg2:     #f0ece0;
+      --bg3:     #e6e0d0;
+      --surface: rgba(0,0,0,0.04);
+      --border:  rgba(68,51,32,0.14);
+      --text:    var(--dark);
+      --muted:   rgba(23,34,43,0.5);
+    }
+
+    /* ============================================================
+       RESET & BASE
+    ============================================================ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; font-size: 16px; }
+    body {
+      font-family: var(--font-body);
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.65;
+      overflow-x: hidden;
+      transition: background var(--transition), color var(--transition);
+    }
+    img { max-width: 100%; display: block; }
+    a { color: inherit; text-decoration: none; }
+    button { cursor: pointer; border: none; background: none; font-family: inherit; }
+    ul { list-style: none; }
+
+    /* ============================================================
+       LOADER
+    ============================================================ */
+    #loader {
+      position: fixed; inset: 0; z-index: 9999;
+      background: var(--dark);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 24px;
+      transition: opacity 0.6s ease, visibility 0.6s ease;
+    }
+    #loader.hide { opacity: 0; visibility: hidden; }
+    .loader-logo {
+      font-family: var(--font-display);
+      font-size: 2rem;
+      font-weight: 600;
+      color: var(--off-white);
+      letter-spacing: 0.04em;
+    }
+    .loader-logo span { color: var(--blush); }
+    .loader-bar {
+      width: 200px; height: 2px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 99px;
+      overflow: hidden;
+    }
+    .loader-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--blush), var(--cream));
+      border-radius: 99px;
+      animation: loaderFill 1.6s ease forwards;
+    }
+    @keyframes loaderFill { from { width: 0 } to { width: 100% } }
+
+    /* ============================================================
+       PAGE SYSTEM
+    ============================================================ */
+    .page { display: none; }
+    .page.active { display: block; animation: fadeUp 0.5s ease both; }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ============================================================
+       NAVBAR
+    ============================================================ */
+    .navbar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 40px;
+      height: 70px;
+      background: rgba(23,34,43,0.85);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      transition: background var(--transition), border-color var(--transition);
+    }
+    [data-theme="light"] .navbar {
+      background: rgba(251,251,240,0.88);
+    }
+    .nav-brand {
+      display: flex; align-items: center; gap: 10px;
+    }
+    .nav-brand-icon {
+      width: 38px; height: 38px;
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .nav-brand-name {
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      font-weight: 600;
+      line-height: 1.15;
+    }
+    .nav-brand-name small {
+      display: block;
+      font-size: 0.65rem;
+      font-family: var(--font-body);
+      font-weight: 400;
+      color: var(--muted);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    .nav-links {
+      display: flex; align-items: center; gap: 8px;
+    }
+    .nav-links a, .nav-links button.nav-link {
+      font-size: 0.875rem;
+      font-weight: 500;
+      letter-spacing: 0.03em;
+      color: var(--muted);
+      padding: 6px 14px;
+      border-radius: 8px;
+      transition: color var(--transition), background var(--transition);
+      background: none;
+    }
+    .nav-links a:hover, .nav-links button.nav-link:hover,
+    .nav-links a.active, .nav-links button.nav-link.active {
+      color: var(--text);
+      background: var(--surface);
+    }
+    .nav-actions {
+      display: flex; align-items: center; gap: 12px;
+    }
+    .theme-toggle {
+      width: 44px; height: 24px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 99px;
+      position: relative;
+      transition: background var(--transition);
+    }
+    .theme-toggle::after {
+      content: '';
+      position: absolute;
+      left: 3px; top: 3px;
+      width: 18px; height: 18px;
+      background: var(--cream);
+      border-radius: 50%;
+      transition: transform var(--transition);
+    }
+    [data-theme="light"] .theme-toggle::after { transform: translateX(20px); }
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      padding: 4px;
+    }
+    .hamburger span {
+      display: block; width: 22px; height: 2px;
+      background: var(--text);
+      border-radius: 99px;
+      transition: var(--transition);
+    }
+
+    /* ============================================================
+       MOBILE NAV DRAWER
+    ============================================================ */
+    .mobile-nav {
+      display: none;
+      position: fixed; inset: 0; z-index: 999;
+      background: rgba(0,0,0,0.7);
+      backdrop-filter: blur(4px);
+    }
+    .mobile-nav.open { display: flex; }
+    .mobile-nav-panel {
+      width: 280px; height: 100%;
+      background: var(--bg2);
+      border-right: 1px solid var(--border);
+      padding: 90px 24px 40px;
+      display: flex; flex-direction: column; gap: 8px;
+      animation: slideIn 0.3s ease;
+    }
+    @keyframes slideIn {
+      from { transform: translateX(-100%); }
+      to   { transform: translateX(0); }
+    }
+    .mobile-nav-panel a, .mobile-nav-panel button.nav-link {
+      display: block; padding: 12px 16px;
+      border-radius: 10px; font-size: 1rem;
+      font-weight: 500; color: var(--text);
+      transition: background var(--transition);
+      background: none; text-align: left; width: 100%;
+    }
+    .mobile-nav-panel a:hover, .mobile-nav-panel button.nav-link:hover {
+      background: var(--surface);
+    }
+
+    /* ============================================================
+       HERO SECTION
+    ============================================================ */
+    .hero {
+      min-height: 100vh;
+      position: relative;
+      display: flex; align-items: center;
+      overflow: hidden;
+    }
+    .hero-slides {
+      position: absolute; inset: 0;
+    }
+    .hero-slide {
+      position: absolute; inset: 0;
+      opacity: 0;
+      transition: opacity 1.2s ease;
+    }
+    .hero-slide.active { opacity: 1; }
+    .hero-slide-bg {
+      position: absolute; inset: 0;
+      background-size: cover;
+      background-position: center;
+      transform: scale(1.05);
+      transition: transform 8s ease;
+    }
+    .hero-slide.active .hero-slide-bg { transform: scale(1); }
+    .hero-slide-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(
+        120deg,
+        rgba(23,34,43,0.92) 0%,
+        rgba(23,34,43,0.6) 60%,
+        rgba(134,55,62,0.25) 100%
+      );
+    }
+    /* SVG-based hero backgrounds */
+    .slide-1 .hero-slide-bg { background-color: #0d1f2d; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='600'%3E%3Cdefs%3E%3CradialGradient id='g1' cx='70%25' cy='40%25' r='60%25'%3E%3Cstop offset='0%25' stop-color='%2386373E' stop-opacity='0.6'/%3E%3Cstop offset='100%25' stop-color='%2317222B' stop-opacity='0'/%3E%3C/radialGradient%3E%3C/defs%3E%3Crect width='800' height='600' fill='%2317222B'/%3E%3Crect width='800' height='600' fill='url(%23g1)'/%3E%3Ccircle cx='600' cy='180' r='120' fill='%23F16D78' opacity='0.08'/%3E%3Ccircle cx='650' cy='400' r='80' fill='%23EFD9C7' opacity='0.05'/%3E%3C/svg%3E"); }
+    .slide-2 .hero-slide-bg { background-color: #1a1020; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='600'%3E%3Cdefs%3E%3CradialGradient id='g2' cx='30%25' cy='60%25' r='60%25'%3E%3Cstop offset='0%25' stop-color='%23443320' stop-opacity='0.8'/%3E%3Cstop offset='100%25' stop-color='%2317222B' stop-opacity='0'/%3E%3C/radialGradient%3E%3C/defs%3E%3Crect width='800' height='600' fill='%2317222B'/%3E%3Crect width='800' height='600' fill='url(%23g2)'/%3E%3C/svg%3E" ); }
+    .slide-3 .hero-slide-bg { background-color: #0f1e2a; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='600'%3E%3Cdefs%3E%3CradialGradient id='g3' cx='80%25' cy='20%25' r='70%25'%3E%3Cstop offset='0%25' stop-color='%23F16D78' stop-opacity='0.15'/%3E%3Cstop offset='100%25' stop-color='%2317222B' stop-opacity='0'/%3E%3C/radialGradient%3E%3C/defs%3E%3Crect width='800' height='600' fill='%2317222B'/%3E%3Crect width='800' height='600' fill='url(%23g3)'/%3E%3C/svg%3E"); }
+
+    /* Molecule decoration */
+    .hero-deco {
+      position: absolute; right: 5%; top: 50%;
+      transform: translateY(-50%);
+      opacity: 0.07;
+      pointer-events: none;
+    }
+    .hero-content {
+      position: relative; z-index: 10;
+      padding: 0 40px;
+      max-width: 680px;
+      margin-top: 70px;
+    }
+    .hero-tag {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 0.75rem;
+      font-family: var(--font-mono);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--blush);
+      padding: 6px 14px;
+      border: 1px solid rgba(241,109,120,0.3);
+      border-radius: 99px;
+      margin-bottom: 24px;
+    }
+    .hero-title {
+      font-family: var(--font-display);
+      font-size: clamp(3rem, 7vw, 5.5rem);
+      font-weight: 700;
+      line-height: 1.05;
+      color: var(--off-white);
+      margin-bottom: 20px;
+    }
+    .hero-title em {
+      font-style: italic;
+      color: var(--blush);
+    }
+    .hero-subtitle {
+      font-size: 1.1rem;
+      color: rgba(251,251,240,0.7);
+      max-width: 480px;
+      margin-bottom: 40px;
+      font-weight: 300;
+    }
+    .hero-cta {
+      display: flex; gap: 14px; flex-wrap: wrap;
+    }
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      padding: 13px 28px;
+      border-radius: 10px;
+      transition: var(--transition);
+      letter-spacing: 0.02em;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--crimson), var(--blush));
+      color: white;
+      box-shadow: 0 4px 20px rgba(241,109,120,0.35);
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 28px rgba(241,109,120,0.5);
+    }
+    .btn-outline {
+      border: 1.5px solid rgba(239,217,199,0.35);
+      color: var(--cream);
+      background: rgba(239,217,199,0.06);
+    }
+    .btn-outline:hover {
+      background: rgba(239,217,199,0.12);
+      border-color: rgba(239,217,199,0.6);
+    }
+    /* Slide dots */
+    .hero-dots {
+      position: absolute; bottom: 40px; left: 50%;
+      transform: translateX(-50%);
+      display: flex; gap: 10px; z-index: 10;
+    }
+    .hero-dot {
+      width: 8px; height: 8px;
+      border-radius: 99px;
+      background: rgba(255,255,255,0.3);
+      transition: var(--transition);
+    }
+    .hero-dot.active {
+      width: 28px;
+      background: var(--blush);
+    }
+    /* Prev / Next arrows */
+    .hero-arrow {
+      position: absolute; top: 50%; z-index: 10;
+      transform: translateY(-50%);
+      width: 44px; height: 44px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.15);
+      color: white;
+      display: flex; align-items: center; justify-content: center;
+      transition: var(--transition);
+    }
+    .hero-arrow:hover { background: rgba(255,255,255,0.18); }
+    .hero-arrow.prev { left: 20px; }
+    .hero-arrow.next { right: 20px; }
+
+    /* ============================================================
+       STATS BAR
+    ============================================================ */
+    .stats-bar {
+      background: var(--bg2);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 28px 40px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+    }
+    .stat-item {
+      text-align: center;
+    }
+    .stat-num {
+      font-family: var(--font-display);
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: var(--blush);
+      line-height: 1;
+    }
+    .stat-label {
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-top: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    /* ============================================================
+       SECTION COMMON
+    ============================================================ */
+    section { padding: 100px 40px; }
+    .section-label {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--blush);
+      margin-bottom: 14px;
+    }
+    .section-title {
+      font-family: var(--font-display);
+      font-size: clamp(2.2rem, 4vw, 3.4rem);
+      font-weight: 600;
+      line-height: 1.12;
+      margin-bottom: 16px;
+    }
+    .section-desc {
+      max-width: 540px;
+      color: var(--muted);
+      font-size: 1rem;
+      font-weight: 300;
+    }
+    .section-header {
+      margin-bottom: 60px;
+    }
+    .divider {
+      width: 60px; height: 3px;
+      background: linear-gradient(90deg, var(--crimson), var(--blush));
+      border-radius: 99px;
+      margin: 16px 0 20px;
+    }
+
+    /* ============================================================
+       ABOUT SECTION
+    ============================================================ */
+    #about { background: var(--bg); }
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: center;
+    }
+    .about-text p {
+      color: var(--muted);
+      margin-bottom: 20px;
+      font-size: 1rem;
+      font-weight: 300;
+      line-height: 1.8;
+    }
+    .about-cards {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .about-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 28px 24px;
+      transition: var(--transition);
+    }
+    .about-card:hover {
+      border-color: rgba(241,109,120,0.3);
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-sm);
+    }
+    .about-card-icon {
+      width: 44px; height: 44px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--crimson), var(--blush));
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 16px;
+      color: white;
+    }
+    .about-card h3 {
+      font-family: var(--font-display);
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+    .about-card p {
+      font-size: 0.875rem;
+      color: var(--muted);
+      line-height: 1.65;
+    }
+
+    /* ============================================================
+       CONTACT SECTION
+    ============================================================ */
+    #contact { background: var(--bg2); }
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+    }
+    .contact-form-group { margin-bottom: 20px; }
+    .contact-form-group label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 500;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+    .contact-form-group input,
+    .contact-form-group textarea {
+      width: 100%;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 13px 16px;
+      font-family: var(--font-body);
+      font-size: 0.95rem;
+      color: var(--text);
+      transition: border-color var(--transition), box-shadow var(--transition);
+      outline: none;
+      resize: vertical;
+    }
+    .contact-form-group input:focus,
+    .contact-form-group textarea:focus {
+      border-color: var(--blush);
+      box-shadow: 0 0 0 3px rgba(241,109,120,0.12);
+    }
+    .contact-form-group textarea { min-height: 140px; }
+    .contact-info-item {
+      display: flex; align-items: flex-start; gap: 16px;
+      margin-bottom: 28px;
+    }
+    .contact-info-icon {
+      width: 42px; height: 42px;
+      flex-shrink: 0;
+      border-radius: 10px;
+      background: linear-gradient(135deg, rgba(134,55,62,0.5), rgba(241,109,120,0.3));
+      display: flex; align-items: center; justify-content: center;
+      color: var(--blush);
+    }
+    .contact-info-item h4 {
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+    .contact-info-item p { font-size: 0.95rem; }
+    .social-links {
+      display: flex; gap: 12px; margin-top: 32px;
+    }
+    .social-link {
+      width: 40px; height: 40px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--muted);
+      transition: var(--transition);
+    }
+    .social-link:hover {
+      color: var(--blush);
+      border-color: rgba(241,109,120,0.4);
+      background: rgba(241,109,120,0.08);
+    }
+    .map-placeholder {
+      margin-top: 32px;
+      height: 200px;
+      background: var(--bg3);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 10px;
+      color: var(--muted);
+    }
+    .map-placeholder svg { opacity: 0.4; }
+
+    /* ============================================================
+       FOOTER
+    ============================================================ */
+    footer {
+      background: var(--dark);
+      border-top: 1px solid var(--border);
+      padding: 60px 40px 30px;
+    }
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 40px;
+      margin-bottom: 50px;
+    }
+    .footer-brand p {
+      font-size: 0.875rem;
+      color: var(--muted);
+      margin-top: 14px;
+      max-width: 280px;
+      line-height: 1.7;
+    }
+	
+    }
+    .footer-col h4 {
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--cream);
+      margin-bottom: 16px;
+    }
+    .footer-col ul li {
+      margin-bottom: 10px;
+    }
+    .footer-col ul li a, .footer-col ul li button {
+      font-size: 0.875rem;
+      color: var(--muted);
+      transition: color var(--transition);
+      background: none;
+      padding: 0;
+      text-align: left;
+    }
+    .footer-col ul li a:hover, .footer-col ul li button:hover { color: var(--blush); }
+    .newsletter-input {
+      display: flex; gap: 8px; margin-top: 8px;
+    }
+    .newsletter-input input {
+      flex: 1;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 14px;
+      color: var(--text);
+      font-family: var(--font-body);
+      font-size: 0.875rem;
+      outline: none;
+    }
+    .newsletter-input button {
+      background: var(--crimson);
+      color: white;
+      padding: 10px 16px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      transition: var(--transition);
+    }
+    .newsletter-input button:hover { background: var(--blush); }
+    .footer-bottom {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    /* ============================================================
+       PUBLICATIONS PAGE
+    ============================================================ */
+    .page-hero {
+      padding: 160px 40px 80px;
+      background: var(--bg);
+      position: relative;
+      overflow: hidden;
+    }
+    .page-hero::before {
+      content: '';
+      position: absolute;
+      top: 0; right: 0;
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(134,55,62,0.15) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .page-hero-eyebrow {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+    .page-hero-eyebrow span { color: var(--blush); }
+    .page-hero h1 {
+      font-family: var(--font-display);
+      font-size: clamp(3rem, 5vw, 4.5rem);
+      font-weight: 700;
+      line-height: 1.05;
+    }
+
+    /* Filters */
+    .filters-bar {
+      padding: 28px 40px;
+      background: var(--bg2);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+    .search-input-wrap {
+      position: relative; flex: 1; min-width: 220px;
+    }
+    .search-input-wrap input {
+      width: 100%;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 14px 10px 40px;
+      color: var(--text);
+      font-family: var(--font-body);
+      font-size: 0.9rem;
+      outline: none;
+      transition: border-color var(--transition);
+    }
+    .search-input-wrap input:focus { border-color: var(--blush); }
+    .search-input-wrap svg {
+      position: absolute; left: 12px; top: 50%;
+      transform: translateY(-50%);
+      color: var(--muted); pointer-events: none;
+    }
+    .filter-select {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 14px;
+      color: var(--text);
+      font-family: var(--font-body);
+      font-size: 0.875rem;
+      outline: none;
+      cursor: pointer;
+    }
+
+    /* Publications grid */
+    .publications-section {
+      padding: 60px 40px;
+    }
+    .pubs-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 24px;
+      margin-bottom: 50px;
+    }
+    .pub-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      transition: var(--transition);
+    }
+    .pub-card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow);
+      border-color: rgba(241,109,120,0.25);
+    }
+    .pub-card-img {
+      height: 140px;
+      position: relative;
+      overflow: hidden;
+    }
+    .pub-card-img-inner {
+      position: absolute; inset: 0;
+      background-size: cover;
+      background-position: center;
+      transition: transform 0.6s ease;
+    }
+    .pub-card:hover .pub-card-img-inner { transform: scale(1.05); }
+    .pub-card-img-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(23,34,43,0.7), transparent);
+    }
+    .pub-card-body { padding: 22px; }
+    .pub-tag {
+      display: inline-block;
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 3px 10px;
+      border-radius: 99px;
+      margin-bottom: 12px;
+    }
+    .tag-pharmacology { background: rgba(241,109,120,0.18); color: var(--blush); }
+    .tag-pharmsci     { background: rgba(68,51,32,0.5); color: var(--cream); }
+    .tag-biotech      { background: rgba(134,55,62,0.3); color: #f09; }
+    .tag-medchem      { background: rgba(70,100,150,0.3); color: #7af; }
+
+    .pub-card h3 {
+      font-family: var(--font-display);
+      font-size: 1.12rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+      line-height: 1.3;
+    }
+    .pub-meta {
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-bottom: 12px;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .pub-abstract {
+      font-size: 0.875rem;
+      color: var(--muted);
+      line-height: 1.7;
+      margin-bottom: 18px;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .pub-card-footer {
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .pub-date {
+      font-size: 0.78rem;
+      font-family: var(--font-mono);
+      color: var(--muted);
+    }
+    .btn-sm {
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding: 7px 16px;
+      border-radius: 8px;
+      background: rgba(241,109,120,0.12);
+      color: var(--blush);
+      border: 1px solid rgba(241,109,120,0.25);
+      transition: var(--transition);
+    }
+    .btn-sm:hover {
+      background: var(--blush);
+      color: white;
+    }
+
+    /* Pagination */
+    .pagination {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+    }
+    .page-btn {
+      width: 36px; height: 36px;
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.875rem;
+      font-weight: 500;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      background: var(--surface);
+      transition: var(--transition);
+    }
+    .page-btn:hover, .page-btn.active {
+      background: var(--crimson);
+      color: white;
+      border-color: var(--crimson);
+    }
+
+    /* ============================================================
+       BLOG PAGE
+    ============================================================ */
+    .blog-layout {
+      padding: 60px 40px;
+      display: grid;
+      grid-template-columns: 1fr 320px;
+      gap: 50px;
+      align-items: start;
+    }
+
+    /* Featured */
+    .featured-post {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      margin-bottom: 50px;
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+    }
+    .featured-img {
+      position: relative;
+      min-height: 320px;
+      overflow: hidden;
+    }
+    .featured-img-inner {
+      position: absolute; inset: 0;
+      background: linear-gradient(135deg, var(--dark) 0%, var(--crimson) 100%);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .featured-badge {
+      position: absolute; top: 20px; left: 20px;
+      background: var(--blush);
+      color: white;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 4px 12px;
+      border-radius: 99px;
+    }
+    .featured-body { padding: 36px 32px; display: flex; flex-direction: column; justify-content: center; }
+    .featured-cat {
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--blush);
+      margin-bottom: 12px;
+    }
+    .featured-body h2 {
+      font-family: var(--font-display);
+      font-size: 1.7rem;
+      font-weight: 600;
+      line-height: 1.2;
+      margin-bottom: 14px;
+    }
+    .featured-body p {
+      font-size: 0.9rem;
+      color: var(--muted);
+      line-height: 1.7;
+      margin-bottom: 24px;
+    }
+    .post-meta {
+      font-size: 0.78rem;
+      color: var(--muted);
+      display: flex; align-items: center; gap: 10px;
+      margin-bottom: 18px;
+    }
+    .post-meta-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--muted); }
+
+    /* Blog grid */
+    .blog-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    .blog-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      transition: var(--transition);
+    }
+    .blog-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-sm);
+      border-color: rgba(241,109,120,0.25);
+    }
+    .blog-card-img {
+      height: 160px;
+      position: relative;
+      overflow: hidden;
+    }
+    .blog-card-img-inner {
+      position: absolute; inset: 0;
+      background-size: cover;
+      background-position: center;
+      transition: transform 0.6s ease;
+    }
+    .blog-card:hover .blog-card-img-inner { transform: scale(1.05); }
+    .blog-card-body { padding: 18px; }
+    .blog-card-cat {
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--blush);
+      margin-bottom: 8px;
+    }
+    .blog-card h3 {
+      font-family: var(--font-display);
+      font-size: 1.05rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+      line-height: 1.3;
+    }
+    .blog-card p {
+      font-size: 0.82rem;
+      color: var(--muted);
+      line-height: 1.65;
+      margin-bottom: 14px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .blog-card-footer {
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .blog-read-time {
+      font-size: 0.75rem;
+      font-family: var(--font-mono);
+      color: var(--muted);
+    }
+
+    /* Sidebar */
+    .sidebar { position: sticky; top: 90px; }
+    .sidebar-widget {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      margin-bottom: 24px;
+    }
+    .sidebar-widget h3 {
+      font-family: var(--font-display);
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+    .category-list li {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.875rem;
+      color: var(--muted);
+      cursor: pointer;
+      transition: color var(--transition);
+    }
+    .category-list li:last-child { border-bottom: none; }
+    .category-list li:hover { color: var(--blush); }
+    .cat-count {
+      font-size: 0.75rem;
+      background: var(--bg);
+      padding: 2px 8px;
+      border-radius: 99px;
+      font-family: var(--font-mono);
+    }
+    .tags-cloud { display: flex; flex-wrap: wrap; gap: 8px; }
+    .tag-chip {
+      font-size: 0.75rem;
+      padding: 4px 12px;
+      border-radius: 99px;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .tag-chip:hover {
+      border-color: var(--blush);
+      color: var(--blush);
+      background: rgba(241,109,120,0.08);
+    }
+	
+    /* ============================================================
+       SCROLL REVEAL
+    ============================================================ */
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: none;
+    }
+    .reveal-delay-1 { transition-delay: 0.1s; }
+    .reveal-delay-2 { transition-delay: 0.2s; }
+    .reveal-delay-3 { transition-delay: 0.3s; }
+    .reveal-delay-4 { transition-delay: 0.4s; }
+
+    /* ============================================================
+       SVG MOLECULE DECORATION
+    ============================================================ */
+    .molecule-deco {
+      position: absolute;
+      pointer-events: none;
+      opacity: 0.06;
+      animation: rotate 40s linear infinite;
+    }
+    @keyframes rotate { to { transform: rotate(360deg); } }
+
+    /* ============================================================
+       RESPONSIVE
+    ============================================================ */
+    @media (max-width: 1024px) {
+      .footer-grid { grid-template-columns: 1fr 1fr; }
+      .blog-layout { grid-template-columns: 1fr; }
+      .sidebar { position: static; }
+      .featured-post { grid-template-columns: 1fr; }
+      .featured-img { min-height: 220px; }
+    }
+    @media (max-width: 768px) {
+      .navbar { padding: 0 20px; }
+      .nav-links { display: none; }
+      .hamburger { display: flex; }
+      section { padding: 70px 20px; }
+      .hero-content { padding: 0 24px; }
+      .about-grid { grid-template-columns: 1fr; }
+      .contact-grid { grid-template-columns: 1fr; }
+      .stats-bar { grid-template-columns: 2fr 2fr; }
+      .pubs-grid { grid-template-columns: 1fr; }
+      .blog-grid { grid-template-columns: 1fr; }
+      .filters-bar { padding: 16px 20px; }
+      .publications-section, .blog-layout { padding: 40px 20px; }
+      .page-hero { padding: 130px 20px 60px; }
+      .footer-grid { grid-template-columns: 1fr; }
+      .footer-bottom { flex-direction: column; gap: 10px; text-align: center; }
+      .about-cards { grid-template-columns: 1fr; }
+    }
+	
+	/* ============================================================
+       page layout for full publication page
+    ============================================================ */
+
+/* HEADER */
+
+.journal-header {
+  margin-bottom: 40px;
+}
+
+.journal-category {
+  display: inline-block;
+  
+  color: var(--muted);
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  margin-bottom: 20px;
+}
+
+.journal-title {
+  font-size: 2.4rem;
+  line-height: 1.3;
+  margin-bottom: 20px;
+  color: var(--muted);
+}
+
+.journal-meta {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+/* CONTENT */
+
+.journal-section {
+  margin-bottom: 50px;
+}
+
+.journal-section h2 {
+  font-size: 1.5rem;
+  margin-bottom: 18px;
+  color: var(--muted);
+}
+
+.journal-section p {
+  color: var(--muted);
+  line-height: 1.9;
+  font-size: 1rem;
+}
+
+/* IMAGES */
+
+.journal-image {
+  width: 100%;
+  border-radius: 16px;
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+
+.image-caption {
+  text-align: center;
+  font-size: 0.9rem;
+  color: #8b949e;
+}
+
+/* TABLES */
+
+.table-wrapper {
+  overflow-x: auto;
+  margin-top: 20px;
+}
+
+.journal-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #0d1117;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.journal-table th,
+.journal-table td {
+  padding: 16px;
+  border: 1px solid #30363d;
+  text-align: left;
+}
+
+.journal-table th {
+  background: #21262d;
+  color: white;
+}
+
+.journal-table td {
+  color: #c9d1d9;
+}
+
+/* REFERENCES */
+
+.journal-references {
+  color: var(--muted);
+  padding-left: 20px;
+}
+
+.journal-references li {
+  margin-bottom: 10px;
+  line-height: 1.7;
+}
+
+/* MOBILE */
+
+@media (max-width: 768px) {
+
+  .journal-full {
+    padding: 25px;
+  }
+
+  .journal-title {
+    font-size: 1.8rem;
+  }
+
+}
+  </style>
+</head>
+<body>
+
+  <!-- ============================================================
+       LOADER
+  ============================================================ -->
+  <div id="loader">
+	 <div class="loader-logo"><img src="class logo.png" width="120" height="120"></div>
+    <div class="loader-bar"><div class="loader-fill"></div></div>
+  </div>
+
+  <!-- ============================================================
+       NAVBAR
+  ============================================================ -->
+  <nav class="navbar" role="navigation" aria-label="Main navigation">
+    <div class="nav-brand">
+      <div class="nav-brand-icon">
+	  <img src="class logo.png">
+      </div>
+      <div class="nav-brand-name">
+        Pharmis Optimus Nexus
+        <small>Research & Innovation</small>
+      </div>
+    </div>
+
+    <div class="nav-links">
+      <a href="#" onclick="showPage('home'); scrollToSection('hero')" class="active" data-page="home">Home</a>
+      <a href="#" onclick="showPage('publications')" data-page="publications">Publications</a>
+      <a href="#" onclick="showPage('blog')" data-page="blog">Blog</a>
+      <a href="#" onclick="showPage('home'); setTimeout(()=>scrollToSection('about'),100)">About Us</a>
+      <a href="#" onclick="showPage('home'); setTimeout(()=>scrollToSection('contact'),100)">Contact Us</a>
+    </div>
+
+    <div class="nav-actions">
+      <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark/light mode"></button>
+      <button class="hamburger" onclick="toggleMobileNav()" aria-label="Open menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Mobile nav -->
+  <div class="mobile-nav" id="mobileNav" onclick="toggleMobileNav()">
+    <div class="mobile-nav-panel" onclick="event.stopPropagation()">
+      <a href="#" onclick="showPage('home');toggleMobileNav()">Home</a>
+      <a href="#" onclick="showPage('publications');toggleMobileNav()">Publications</a>
+      <a href="#" onclick="showPage('blog');toggleMobileNav()">Blog</a>
+      <a href="#" onclick="showPage('home');setTimeout(()=>scrollToSection('about'),100);toggleMobileNav()">About Us</a>
+      <a href="#" onclick="showPage('home');setTimeout(()=>scrollToSection('contact'),100);toggleMobileNav()">Contact Us</a>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       HOME PAGE
+  ============================================================ -->
+  <div id="page-home" class="page active">
+
+    <!-- HERO -->
+    <section class="hero" id="hero" aria-label="Hero section">
+      <div class="hero-slides" id="heroSlides">
+        <div class="hero-slide slide-1 active">
+          <div class="hero-slide-bg"><img src="class logo.png"></div>
+          <div class="hero-slide-overlay"></div>
+        </div>
+        <div class="hero-slide slide-2">
+          <div class="hero-slide-bg"> <img src="aa.jpg"></div>
+          <div class="hero-slide-overlay"></div>
+        </div>
+        <div class="hero-slide slide-3">
+          <div class="hero-slide-bg"> <img src="bb.jpg" ></div>
+          <div class="hero-slide-overlay"></div>
+        </div>
+      </div>
+
+      <!-- Molecule SVG deco -->
+      <div class="hero-deco">
+        <svg width="460" height="460" viewBox="0 0 460 460" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="230" cy="230" r="60" stroke="#EFD9C7" stroke-width="2"/>
+          <circle cx="230" cy="230" r="8" fill="#EFD9C7"/>
+          <circle cx="130" cy="130" r="8" fill="#F16D78"/>
+          <circle cx="330" cy="130" r="8" fill="#F16D78"/>
+          <circle cx="130" cy="330" r="8" fill="#86373E"/>
+          <circle cx="330" cy="330" r="8" fill="#86373E"/>
+          <circle cx="80" cy="230" r="6" fill="#EFD9C7"/>
+          <circle cx="380" cy="230" r="6" fill="#EFD9C7"/>
+          <circle cx="230" cy="80" r="6" fill="#EFD9C7"/>
+          <circle cx="230" cy="380" r="6" fill="#EFD9C7"/>
+          <line x1="230" y1="230" x2="130" y2="130" stroke="#EFD9C7" stroke-width="1.5"/>
+          <line x1="230" y1="230" x2="330" y2="130" stroke="#EFD9C7" stroke-width="1.5"/>
+          <line x1="230" y1="230" x2="130" y2="330" stroke="#EFD9C7" stroke-width="1.5"/>
+          <line x1="230" y1="230" x2="330" y2="330" stroke="#EFD9C7" stroke-width="1.5"/>
+          <line x1="230" y1="230" x2="80" y2="230" stroke="#EFD9C7" stroke-width="1"/>
+          <line x1="230" y1="230" x2="380" y2="230" stroke="#EFD9C7" stroke-width="1"/>
+          <line x1="230" y1="230" x2="230" y2="80" stroke="#EFD9C7" stroke-width="1"/>
+          <line x1="230" y1="230" x2="230" y2="380" stroke="#EFD9C7" stroke-width="1"/>
+          <circle cx="130" cy="130" r="30" stroke="#F16D78" stroke-width="1" stroke-dasharray="4 4"/>
+          <circle cx="330" cy="130" r="30" stroke="#F16D78" stroke-width="1" stroke-dasharray="4 4"/>
+        </svg>
+      </div>
+
+      <div class="hero-content">
+        <div class="hero-tag">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+          Established 2026 · Est. Research Hub
+        </div>
+        <h1 class="hero-title">
+          Pharmis<br><em>Optimus</em><br>Nexus
+        </h1>
+        <p class="hero-subtitle">Advancing Pharmaceutical Knowledge, Research, and Innovation — connecting scientists, clinicians, and visionaries worldwide.</p>
+        <div class="hero-cta">
+          <button class="btn btn-primary" onclick="showPage('publications')">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            View Publications
+          </button>
+          <button class="btn btn-outline" onclick="showPage('blog')">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            Read Blog
+          </button>
+        </div>
+      </div>
+
+      <!-- Slide controls -->
+      <button class="hero-arrow prev" onclick="changeSlide(-1)" aria-label="Previous slide">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <button class="hero-arrow next" onclick="changeSlide(1)" aria-label="Next slide">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+      <div class="hero-dots" id="heroDots">
+        <div class="hero-dot active" onclick="goToSlide(0)"></div>
+        <div class="hero-dot" onclick="goToSlide(1)"></div>
+        <div class="hero-dot" onclick="goToSlide(2)"></div>
+      </div>
+    </section>
+
+    <!-- STATS BAR -->
+    <div class="stats-bar" role="region" aria-label="Key statistics">
+      <div class="stat-item reveal">
+        <div class="stat-num" data-count="">0</div>
+        <div class="stat-label">Publications</div>
+      </div>
+      <div class="stat-item reveal reveal-delay-1">
+        <div class="stat-num" data-count="123">0</div>
+        <div class="stat-label">Researchers</div>
+      </div>
+      <div class="stat-item reveal reveal-delay-2">
+        <div class="stat-num" data-count="0">0</div>
+        <div class="stat-label">blogs</div>
+      </div>
+      <div class="stat-item reveal reveal-delay-3">
+        <div class="stat-num" data-count="300">0</div>
+        <div class="stat-label">academic level</div>
+      </div>
+    </div>
+
+    <!-- ABOUT SECTION -->
+    <section id="about" aria-labelledby="about-title">
+      <div class="about-grid">
+        <div class="about-text">
+          <div class="section-label">About Us</div>
+          <h2 class="section-title reveal" id="about-title">A Global Nexus for<br>Pharmaceutical Excellence</h2>
+          <div class="divider"></div>
+          <p class="reveal reveal-delay-1">Pharmis Optimus Nexus is a public health–driven platform founded by passionate 300-level pharmacy students committed to promoting health awareness, pharmaceutical knowledge, and community impact. Our mission is to educate, inform, and inspire individuals through evidence-based health information, research discussions, and public health advocacy.</p>
+          <p class="reveal reveal-delay-2">We aim to bridge the gap between pharmaceutical education and community healthcare by creating a space where students, healthcare enthusiasts, and professionals can share ideas, discuss emerging health challenges, and promote healthier lifestyles. Through collaboration, innovation, and a commitment to service, Pharmis Optimus Nexus strives to empower communities with reliable health knowledge while nurturing the next generation of public health-conscious pharmacy professionals.</p>
+          <button class="btn btn-primary reveal reveal-delay-3" style="margin-top:8px" onclick="showPage('publications')">
+            Explore Publications
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </button>
+        </div>
+        <div class="about-cards">
+          <div class="about-card reveal" style="grid-column:1/-1">
+            <div class="about-card-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+            </div>
+            <h3>Our Mission</h3>
+            <p>To advance pharmaceutical research and knowledge by fostering collaboration, innovation, and dissemination of high-quality scientific information.</p>
+          </div>
+          <div class="about-card reveal reveal-delay-1">
+            <div class="about-card-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            </div>
+            <h3>Our Vision</h3>
+            <p>To be a global nexus for pharmaceutical excellence and innovation, improving health outcomes worldwide.</p>
+          </div>
+          <div class="about-card reveal reveal-delay-2">
+            <div class="about-card-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            </div>
+            <h3>Our Goal</h3>
+            <p>Empower researchers and professionals through access to quality publications, insights, and collaborative community.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTACT SECTION -->
+    <section id="contact" aria-labelledby="contact-title">
+      <div class="section-header">
+        <div class="section-label">Get In Touch</div>
+        <h2 class="section-title reveal" id="contact-title">Contact Us</h2>
+        <div class="divider"></div>
+        <p class="section-desc reveal reveal-delay-1">Have a question, collaboration idea, or want to submit a publication? We'd love to hear from you.</p>
+      </div>
+      <div class="contact-grid">
+        <form onsubmit="handleContactSubmit(event)" novalidate>
+		
+          <div class="contact-form-group reveal">
+            <label for="name">Full Name</label>
+            <input type="text" id="name" placeholder="Dr. Jane Smith" required />
+          </div>
+          <div class="contact-form-group reveal reveal-delay-1">
+            <label for="email">Email Address</label>
+            <input type="email" id="email" placeholder="jane@institution.edu" required />
+          </div>
+          <div class="contact-form-group reveal reveal-delay-2">
+            <label for="message">Message</label>
+            <textarea id="message" placeholder="Tell us about your inquiry, research, or collaboration proposal…" required></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary reveal reveal-delay-3">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            Send Message
+          </button>
+          <div id="form-success" style="display:none;margin-top:16px;color:var(--blush);font-size:0.9rem;font-weight:500;">✓ Message sent successfully!</div>
+        </form>
+        <div class="reveal reveal-delay-1">
+          <div class="contact-info-item">
+            <div class="contact-info-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            </div>
+            <div>
+              <h4>Email</h4>
+              <p>pharmisoptimusofficials@gmail.com</p>
+            </div>
+          </div>
+          <div class="contact-info-item">
+            <div class="contact-info-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.42 2 2 0 0 1 3.58 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.96a16 16 0 0 0 6.13 6.13l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+            </div>
+            <div>
+              <h4>Phone</h4>
+              <p>+2348147353112</p>
+			  <p>+2349028212126</p>
+            </div>
+          </div>
+          <div class="contact-info-item">
+            <div class="contact-info-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            </div>
+            <div>
+              <h4>Address</h4>
+              <p>Faculty of Pharmaceutical Sciences<br>university of ilorin</p>
+            </div>
+          </div>
+          <div class="social-links">
+            <a href="#" class="social-link" aria-label="LinkedIn">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+            </a>
+            <a href="#" class="social-link" aria-label="Twitter">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/></svg>
+            </a>
+            <a href="#" class="social-link" aria-label="Facebook">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+            </a>
+            <a href="#" class="social-link" aria-label="Instagram">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+            </a>
+          </div>
+          <div class="map-placeholder">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            <span style="font-size:0.85rem">Faculty of Pharmaceutical Sciences, university of ilorin</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <div class="nav-brand">
+            <div class="nav-brand-icon">
+              <img src="class logo.png">
+            </div>
+            <div class="nav-brand-name">
+              Pharmis Optimus Nexus
+              <small>Research & Innovation</small>
+            </div>
+          </div>
+          <p>Advancing Pharmaceutical Knowledge, Research, and Innovation. Connecting the global scientific community.</p>
+        </div>
+        <div class="footer-col">
+          <h4>Quick Links</h4>
+          <ul >
+            <li><button onclick="showPage('publications')" class="nav-link">Publications</button></li>
+            <li><button onclick="showPage('blog')" class="nav-link">Blog</button></li>
+            <li><a href="#" onclick="scrollToSection('about')">About Us</a></li>
+            <li><a href="#" onclick="scrollToSection('contact')">Contact Us</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Research</h4>
+          <ul >
+            <li><a href="#">Pharmacology</a></li>
+            <li><a href="#">Biotechnology</a></li>
+            <li><a href="#">Drug Delivery</a></li>
+            <li><a href="#">Clinical Trials</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Newsletter</h4>
+          <p style="font-size:0.83rem;color:var(--muted);margin-bottom:12px">Stay updated with the latest research and insights.</p>
+          <div class="newsletter-input">
+            <input type="email" placeholder="Enter your email" aria-label="Newsletter email" />
+            <button type="button" onclick="this.textContent='✓'">Subscribe</button>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2026 Pharmis Optimus Nexus. All Rights Reserved.</span>
+        <div class="social-links" style="margin-top:0">
+          <a href="#" class="social-link" style="width:32px;height:32px" aria-label="LinkedIn">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+          </a>
+          <a href="#" class="social-link" style="width:32px;height:32px" aria-label="Twitter">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/></svg>
+          </a>
+          <a href="#" class="social-link" style="width:32px;height:32px" aria-label="Facebook">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+          </a>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <!-- ============================================================
+       PUBLICATIONS PAGE
+  ============================================================ -->
+  <div id="page-publications" class="page">
+    <div class="page-hero">
+      <div class="page-hero-eyebrow"><span>Home</span> › Publications</div>
+      <h1 class="page-hero h1">Publications</h1>
+      <p style="margin-top:14px;color:var(--muted);max-width:500px">Browse peer-reviewed research, clinical studies, and review articles from our global network of researchers.</p>
+    </div>
+
+    <div class="filters-bar">
+      <div class="search-input-wrap">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" placeholder="Search publications..." oninput="filterPubs(this.value)" aria-label="Search publications" />
+      </div>
+      <select class="filter-select" onchange="filterPubsCategory(this.value)">
+        <option value="">All Categories</option>
+        <option value="Pharmacology">Pharmacology</option>
+        <option value="Biotechnology">Biotechnology</option>
+        <option value="Medicinal Chemistry">Medicinal Chemistry</option>
+		<option value="Patient care">Patient care</option>
+      </select>
+      <select class="filter-select" onchange="filterPubsdate(this.value)">
+        <option value="">All Years</option>
+        <option value="2024">2024</option>
+        <option value="2023">2023</option>
+        <option value="2022">2022</option>
+		<option value="2026">2026</option>
+      </select>
+      <select class="filter-select">
+        <option>Sort by: Latest</option>
+        <option>Sort by: Most Cited</option>
+        <option>Sort by: Oldest</option>
+      </select>
+    </div>
+
+    <div class="publications-section">
+      <div class="pubs-grid" id="pubsGrid">
+        <!-- Populated by JS -->
+      </div>
+      <div class="pagination">
+        <button class="page-btn">‹</button>
+        <button class="page-btn active">1</button>
+        <button class="page-btn">2</button>
+        <button class="page-btn">3</button>
+        <button class="page-btn">4</button>
+        <button class="page-btn">5</button>
+        <button class="page-btn">›</button>
+      </div>
+    </div>
+
+    <!-- Footer repeated -->
+    <footer style="margin-top:40">
+      <div class="footer-bottom">
+        <span>© 2026 Pharmis Optimus Nexus. All Rights Reserved.</span>
+      </div>
+    </footer>
+  </div>
+  
+  <!-- ============================================================
+       More PAGE this page will diplay the full content of the publication
+  ============================================================ -->
+ 
+ <div id="page-more" class="page">
+ 
+ 
+ <div class="page-hero">
+      <div class="page-hero-eyebrow"><span>Home</span> › <span>Publication</span> › More</div>
+      <h1 class="page-hero h1">Publication</h1>
+      <p style="margin-top:14px;color:var(--muted);max-width:500px">Insights, perspectives, and commentary from leaders in pharmaceutical research and innovation.</p>
+    </div>
+ 
+ <div class="publications-section">
+      <div  id="journal-container">
+        <!-- Populated by JS -->
+      </div>
+	  
+	  
+	  <footer style="margin-top:40px">
+      <div class="footer-bottom">
+        <span>© 2026 Pharmis Optimus Nexus. All Rights Reserved.</span>
+      </div>
+    </footer>
+ 
+ </div>
+ </div>
+ 
+
+  <!-- ============================================================
+       BLOG PAGE
+  ============================================================ -->
+  <div id="page-blog" class="page">
+    <div class="page-hero">
+      <div class="page-hero-eyebrow"><span>Home</span> › Blog</div>
+      <h1 class="page-hero h1">Blog</h1>
+      <p style="margin-top:14px;color:var(--muted);max-width:500px">Insights, perspectives, and commentary from leaders in pharmaceutical research and innovation.</p>
+    </div>
+
+    <div class="filters-bar">
+      <div class="search-input-wrap">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" placeholder="Search blog posts..." aria-label="Search blog posts" />
+      </div>
+      <select class="filter-select">
+        <option>Categories</option>
+        <option>Research Insights</option>
+        <option>Pharmaceutical Innovation</option>
+        <option>Drug Development</option>
+        <option>Clinical Research</option>
+        <option>Industry News</option>
+      </select>
+    </div>
+
+    <div class="blog-layout">
+      <div>
+        <!-- Featured post -->
+        <div id="readmoreblog" class="featured-post reveal">
+          <div class="featured-img">
+            <div class="featured-img-inner">
+              <!-- Abstract scientific SVG -->
+              <svg width="360" height="320" viewBox="0 0 360 320" xmlns="http://www.w3.org/2000/svg" opacity="0.5">
+                <defs>
+                  <radialGradient id="fg1" cx="50%" cy="50%" r="60%">
+                    <stop offset="0%" stop-color="#F16D78" stop-opacity="0.6"/>
+                    <stop offset="100%" stop-color="#17222B" stop-opacity="0"/>
+                  </radialGradient>
+                </defs>
+                <rect width="360" height="320" fill="#17222B"/>
+                <rect width="360" height="320" fill="url(#fg1)"/>
+                <circle cx="180" cy="160" r="80" stroke="#EFD9C7" stroke-width="1" fill="none" opacity="0.3"/>
+                <circle cx="180" cy="160" r="40" stroke="#F16D78" stroke-width="1.5" fill="none" opacity="0.5"/>
+                <circle cx="180" cy="160" r="12" fill="#F16D78" opacity="0.8"/>
+                <circle cx="260" cy="100" r="8" fill="#EFD9C7" opacity="0.6"/>
+                <circle cx="100" cy="220" r="8" fill="#EFD9C7" opacity="0.6"/>
+                <line x1="180" y1="160" x2="260" y2="100" stroke="#EFD9C7" stroke-width="1" opacity="0.3"/>
+                <line x1="180" y1="160" x2="100" y2="220" stroke="#EFD9C7" stroke-width="1" opacity="0.3"/>
+              </svg>
+            </div>
+            <div class="featured-badge">Featured</div>
+          </div>
+          <div class="featured-body">
+            <div class="featured-cat">Research Insights</div>
+            <h2>The Future of Personalized Medicine in Pharmaceuticals</h2>
+            <p>Personalized medicine is transforming the way we treat diseases by tailoring therapies to individual genetic profiles and biomarkers, opening a new era of precision pharmacotherapy.</p>
+            <div class="post-meta">
+              <span>May 12, 2024</span>
+              <div class="post-meta-dot"></div>
+              <span>5 min read</span>
+            </div>
+            <button onclick="showPage('more-blogs'); openfeatured() " class="btn btn-primary" style="width:fit-content">
+              Read More
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </button>
+          </div>
+		  <script>
+		  function openfeatured(data){
+		  
+		  
+		  
+		  }
+		  
+		  </script>
+        </div>
+
+        <!-- Blog grid -->
+        <h3 style="font-family:var(--font-display);font-size:1.5rem;margin-bottom:24px">Latest Posts</h3>
+        <div class="blog-grid" id="blogGrid">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+      <!-- Sidebar -->
+      <aside class="sidebar" role="complementary">
+        <div class="sidebar-widget">
+          <h3>Categories</h3>
+          <ul class="category-list">
+            <li><span>All Categories</span><span class="cat-count">42</span></li>
+            <li><span>Research Insights</span><span class="cat-count">14</span></li>
+            <li><span>Pharmaceutical Innovation</span><span class="cat-count">9</span></li>
+            <li><span>Drug Development</span><span class="cat-count">8</span></li>
+            <li><span>Clinical Research</span><span class="cat-count">7</span></li>
+            <li><span>Industry News</span><span class="cat-count">4</span></li>
+          </ul>
+        </div>
+        <div class="sidebar-widget">
+          <h3>Tags</h3>
+          <div class="tags-cloud">
+            <span class="tag-chip">Pharma</span>
+            <span class="tag-chip">Research</span>
+            <span class="tag-chip">Innovation</span>
+            <span class="tag-chip">Drug Delivery</span>
+            <span class="tag-chip">Biotechnology</span>
+            <span class="tag-chip">AI</span>
+            <span class="tag-chip">Clinical Trials</span>
+            <span class="tag-chip">Regulation</span>
+            <span class="tag-chip">Genomics</span>
+            <span class="tag-chip">Oncology</span>
+          </div>
+        </div>
+        <div class="sidebar-widget">
+          <h3>Subscribe</h3>
+          <p style="font-size:0.84rem;color:var(--muted);margin-bottom:14px">Get the latest posts delivered to your inbox.</p>
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <input type="email" placeholder="Your email address"
+              style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px 14px;color:var(--text);font-family:var(--font-body);font-size:0.875rem;outline:none;width:100%" />
+            <button class="btn btn-primary" style="justify-content:center;width:100%">Subscribe</button>
+          </div>
+        </div>
+      </aside>
+    </div>
+
+    <footer style="margin-top:0">
+      <div class="footer-bottom">
+        <span>© 2024 Pharmis Optimus Nexus. All Rights Reserved.</span>
+      </div>
+    </footer>
+  </div>
+  
+    <!-- ============================================================
+       READMORE FOR BLOGS--- THIS WILL DIAPLAY THE BLOGS
+  ============================================================ -->
+  <div id="page-more-blogs" class="page">
+  
+  <div class="page-hero">
+      <div class="page-hero-eyebrow"><span>Home</span> › Blog</div>
+      <h1 class="page-hero h1">Blog</h1>
+      <p style="margin-top:14px;color:var(--muted);max-width:500px">Insights, perspectives, and commentary from leaders in pharmaceutical research and innovation.</p>
+    </div>
+
+  <div class="publications-section">
+  <div id="blogs-container">
+  
+  <!-- mainly js -->
+  </div>
+  
+  
+  
+   <footer style="margin-top:40px">
+      <div class="footer-bottom">
+        <span>© 2026 Pharmis Optimus Nexus. All Rights Reserved.</span>
+      </div>
+    </footer>
+	
+  </div>
+  </div>
+  
+  
+  
+  <!-- ============================================================
+       JAVASCRIPT
+  ============================================================ -->
+  <script>
+    /* -------- DATA -------- */
+    const pubColors = [
+      ['#1a2a1a','#2d6a2d'], // green tones
+      ['#1a1a2a','#2d3a7a'],
+      ['#1a1218','#5a2060'],
+      ['#1a1a18','#5a5010'],
+    ];
+
+    const publications = [
+      { id:1, title:'Novel Approaches in Drug Delivery Systems: A Review', authors:'A. Sharma, R. Patel, M. Johnson et al.', year:'2024', date:'May 10, 2024', cat:'Pharmacology', tag:'tag-pharmacology', abstract:'This review discusses the advancements in novel drug delivery systems and their applications in modern pharmacotherapy, covering liposomal systems, nanoparticles, and hydrogels.', introduction:'Drug delivery system in pharmacology is a very key aspect in pharmacology ', col:0 },
+      { id:2, title:'Emerging Trends in Pharmaceutical Research', authors:'L. Wong, T. Nguyen, S. Lee et al.', year:'2024', date:'Apr 28, 2024', cat:'Patient care', tag:'tag-pharmsci', abstract:'An overview of current emerging trends and future perspectives in pharmaceutical research, including AI-assisted drug discovery and personalized medicine.', col:1 },
+      { id:3, title:'Biotechnology Innovations for Better Therapeutics', authors:'K. Ahmed, P. Singh, J. Kim et al.', year:'2022', date:'Apr 15, 2022', cat:'Biotechnology', tag:'tag-biotech', abstract:'Exploring biotechnological innovations driving the next generation of therapeutics, from monoclonal antibodies to CRISPR-based gene therapies.', col:2 },
+      { id:4, title:'Design and Development of Novel Chemical Entities', authors:'R. Verma, D. Brown, L. Zhang et al.', year:'2022', date:'Apr 2, 2022', cat:'Medicinal Chemistry', tag:'tag-medchem', abstract:'A comprehensive study on the design, synthesis, and evaluation of novel chemical entities with potential therapeutic applications in oncology.', col:3 },
+      { id:5, title:'Pharmacokinetics of Next-Generation Antibiotics', authors:'E. Torres, B. Klein, O. Patel et al.', year:'2024', date:'Mar 22, 2024', cat:'Pharmacology', tag:'tag-pharmacology', abstract:'Detailed analysis of pharmacokinetic parameters of novel antibiotic compounds targeting drug-resistant bacterial strains in preclinical models.', col:0 },
+      { id:6, title:'Regulatory Challenges in Biosimilar Development', authors:'M. O\'Brien, Y. Tanaka, F. Hassan et al.', year:'2024', date:'Mar 10, 2024', cat:'Pharmaceutical Sciences', tag:'tag-pharmsci', abstract:'Examining the complex regulatory landscape surrounding biosimilar drug development across multiple jurisdictions including FDA, EMA, and WHO guidelines.', col:1 },
+      { id:7, title:'RNA Therapeutics: Mechanisms and Applications', authors:'C. Liu, A. Müller, S. Okonkwo et al.', year:'2024', date:'Feb 28, 2024', cat:'Biotechnology', tag:'tag-biotech', abstract:'Comprehensive review of RNA-based therapeutic approaches including mRNA vaccines, siRNA, and antisense oligonucleotides with clinical translation perspectives.', col:2 },
+      { id:8, title:'Fragment-Based Drug Discovery in Oncology', authors:'H. Kim, R. Rossi, T. Nakamura et al.', year:'2024', date:'Feb 14, 2024', cat:'Medicinal Chemistry', tag:'tag-medchem', abstract:'Fragment-based approaches have emerged as powerful tools for identifying novel scaffolds for oncological targets, particularly kinases and protein-protein interactions.', col:3 },
+	  { id:9, title:'fibroadeoma', authors:'Johnson et al', year:'2026', date:'Feb 14, 2026', cat:'Pharmacology', tag:'tag-pharmacology', abstract:'Fragment-based approaches have emerged as powerful tools for identifying novel scaffolds for oncological targets, particularly kinases and protein-protein interactions.', col:0 },
+	];
+	
+
+    const blogPosts = [
+      { id:1, title:'Nanotechnology in Drug Delivery: Opportunities and Challenges', cat:'Research Insights', date:'May 8, 2024', read:'4 min read', excerpt:'Nanocarriers are revolutionizing how therapeutics reach their target tissues, offering unprecedented specificity and reduced systemic toxicity.', col:0 },
+      { id:2, title:'AI and Machine Learning in Pharmaceutical Research', cat:'Pharmaceutical Innovation', date:'May 5, 2024', read:'6 min read', excerpt:'Artificial intelligence is accelerating drug discovery pipelines, from target identification to lead optimization and clinical trial design.', col:1 },
+      { id:3, title:'Understanding Bioavailability and Its Importance', cat:'Drug Development', date:'May 1, 2024', read:'5 min read', excerpt:'Bioavailability dictates how much of an administered drug reaches systemic circulation and is one of the most critical parameters in formulation development.', col:2 },
+      { id:4, title:'Regulatory Updates in Pharmaceutical Industries', cat:'Industry News', date:'Apr 28, 2024', read:'3 min read', excerpt:'Recent FDA and EMA guideline updates are reshaping how pharmaceutical companies approach pre-clinical and clinical development strategies.', col:3 },
+    ];
+
+    /* -------- RENDER PUBLICATIONS -------- */
+    function renderPubs(data) {
+      const grid = document.getElementById('pubsGrid');
+      if (!grid) return;
+      const gradients = [
+        'linear-gradient(135deg, #1a2a1a, #2d6a2d)',
+        'linear-gradient(135deg, #1a1a2a, #2d3a7a)',
+        'linear-gradient(135deg, #1a1218, #5a2060)',
+        'linear-gradient(135deg, #1a1a18, #5a5010)',
+      ];
+      grid.innerHTML = data.map(p => `
+        <article class="pub-card reveal" role="article">
+          <div class="pub-card-img">
+            <div class="pub-card-img-inner" style="background:${gradients[p.col % 4]}"></div>
+            <div class="pub-card-img-overlay"></div>
+          </div>
+          <div class="pub-card-body">
+            <span class="pub-tag ${p.tag}">${p.cat}</span>
+            <h3>${p.title}</h3>
+            <div class="pub-meta">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              ${p.authors}
+            </div>
+            <p class="pub-abstract">${p.abstract}</p>
+            <div class="pub-card-footer">
+              <span class="pub-date">${p.date}</span>
+              <button onclick="showPage('more'); openJournal(${p.id})" class="btn-sm">Read More</button>
+            </div>
+          </div>
+        </article>
+      `).join('');
+      observeReveal();
+    }
+	/* -------- Readmore page -------- */
+	
+		function openJournal(id) {
+
+  // Find the selected publication
+  const pub = publications.find(
+    p => p.id === id
+  );
+
+  // Safety check
+  if (!pub) return;
+
+  // Select container
+  const container =
+    document.getElementById("journal-container");
+
+  // Insert publication HTML
+  container.innerHTML =  `
+  
+    <article class="journal-full">
+	
+ <!-- Publication Header -->
+      <div class="journal-header">
+
+        <span class="journal-category ${pub.tag}">${pub.cat} </span>
+
+        <h1 class="journal-title">${pub.title}</h1>
+
+        <div class="journal-meta">
+          <span>${pub.authors}</span>
+          <span>•</span>
+          <span>${pub.date}</span>
+        </div>
+      </div>
+
+	 <!-- Abstract -->
+      <section class="journal-section">
+
+        <h2>Abstract</h2>
+
+        <p>${pub.abstract}</p>
+
+      </section>
+
+       <section class="journal-section">
+
+        <h2>Introduction</h2>
+
+        <p>${pub.introduction}</p>
+         
+      </section>
+	  <!-- Image Section -->
+      <section class="journal-section">
+
+        <h2>Research Image</h2>
+
+        <img
+          src="your-image.jpg"
+          alt="Research illustration"
+          class="journal-image"
+        >
+
+        <p class="image-caption">
+          Figure 1: Pharmaceutical intervention model.
+        </p>
+
+      </section>
+
+      <!-- Table Section -->
+      <section class="journal-section">
+
+        <h2>Research Data</h2>
+
+        <div class="table-wrapper">
+
+          <table class="journal-table">
+
+            <thead>
+              <tr>
+                <th>Group</th>
+                <th>Patients</th>
+                <th>Outcome</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <tr>
+                <td>Urban</td>
+                <td>120</td>
+                <td>Improved</td>
+              </tr>
+
+              <tr>
+                <td>Rural</td>
+                <td>90</td>
+                <td>Moderate</td>
+              </tr>
+            </tbody>
+
+          </table>
+
+        </div>
+
+      </section>
+
+      <!-- Conclusion -->
+      <section class="journal-section">
+
+        <h2>Conclusion</h2>
+
+        <p>
+          Public health pharmacy interventions continue
+          to improve healthcare outcomes globally.
+        </p>
+
+      </section>
+
+      <!-- References -->
+      <section class="journal-section">
+
+        <h2>References</h2>
+
+        <ol class="journal-references">
+
+          <li>
+            WHO. Public Health Pharmacy Report, 2025.
+          </li>
+
+          <li>
+            Smith J. Modern Drug Delivery Systems.
+          </li>
+
+        </ol>
+
+      </section>
+
+    </article>
+
+
+  `;
+}
+    /* -------- RENDER BLOG -------- */
+    function renderBlog() {
+      const grid = document.getElementById('blogGrid');
+      if (!grid) return;
+      const gradients = [
+        'linear-gradient(135deg, #1a2a3a, #2a4a6a)',
+        'linear-gradient(135deg, #1a1a2a, #3a2060)',
+        'linear-gradient(135deg, #2a1a18, #6a3020)',
+        'linear-gradient(135deg, #1a2218, #204a20)',
+      ];
+      grid.innerHTML = blogPosts.map(p => `
+        <article class="blog-card reveal" role="article">
+          <div class="blog-card-img">
+            <div class="blog-card-img-inner" style="background:${gradients[p.col % 4]}"></div>
+          </div>
+          <div class="blog-card-body">
+            <div class="blog-card-cat">${p.cat}</div>
+            <h3>${p.title}</h3>
+            <p>${p.excerpt}</p>
+            <div class="blog-card-footer">
+              <div class="post-meta" style="margin:0">
+                <span>${p.date}</span>
+                <div class="post-meta-dot"></div>
+                <span class="blog-read-time">${p.read}</span>
+              </div>
+              <button onclick="showPage('more-blogs'); openblogsmore(${p.id})" class="btn-sm">Read More</button>
+            </div>
+          </div>
+        </article>
+      `).join('');
+      observeReveal();
+    }
+	
+/* -------- script for more-blogs -------- */
+	function openblogsmore(id){
+	
+	// Find the selected blogs
+  const pub = blogPosts.find(
+    p => p.id === id
+  );
+
+  // Safety check
+  if (!pub) return;
+
+  // Select container
+  const container =
+    document.getElementById("blogs-container");
+
+  // Insert blogs HTML
+  container.innerHTML = `
+
+    <article>
+
+      <h1>${pub.title}</h1>
+
+      <p>
+        <strong>Authors:</strong>
+        ${pub.authors}
+      </p>
+
+      <p>
+        <strong>Date:</strong>
+        ${pub.date}
+      </p>
+		${pub.cat}
+      <hr>
+	
+      <div>Abstract<p>
+        ${pub.abstract}
+		</div>
+		<div>
+		${pub.content}
+      </div>
+
+    </article>
+
+  `;
+	
+	}
+
+
+    /* -------- PAGE SWITCHING -------- */
+    function showPage(name) {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      const target = document.getElementById('page-' + name);
+      if (target) { target.classList.add('active'); window.scrollTo(0,0); }
+      // Update navbar link states
+      document.querySelectorAll('[data-page]').forEach(a => {
+        a.classList.toggle('active', a.dataset.page === name);
+      });
+      if (name === 'publications') renderPubs(publications);
+      if (name === 'blog') { renderBlog(); }
+    }
+
+    /* -------- SMOOTH SCROLL -------- */
+    function scrollToSection(id) {
+      const el = document.getElementById(id);
+      if (el) el.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    /* -------- HERO SLIDESHOW -------- */
+    let currentSlide = 0;
+    const SLIDE_COUNT = 3;
+    let slideInterval;
+
+    function goToSlide(idx) {
+      document.querySelectorAll('.hero-slide').forEach((s,i) => s.classList.toggle('active', i === idx));
+      document.querySelectorAll('.hero-dot').forEach((d,i) => d.classList.toggle('active', i === idx));
+      currentSlide = idx;
+    }
+    function changeSlide(dir) {
+      goToSlide((currentSlide + dir + SLIDE_COUNT) % SLIDE_COUNT);
+      resetInterval();
+    }
+    function resetInterval() {
+      clearInterval(slideInterval);
+      slideInterval = setInterval(() => changeSlide(1), 6000);
+    }
+    slideInterval = setInterval(() => changeSlide(1), 6000);
+
+    /* -------- THEME TOGGLE -------- */
+    function toggleTheme() {
+      const html = document.documentElement;
+      html.setAttribute('data-theme', html.dataset.theme === 'dark' ? 'light' : 'dark');
+    }
+
+    /* -------- MOBILE NAV -------- */
+    function toggleMobileNav() {
+      document.getElementById('mobileNav').classList.toggle('open');
+    }
+
+    /* -------- LOADER -------- */
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        document.getElementById('loader').classList.add('hide');
+        observeReveal();
+        animateCounters();
+      }, 1800);
+    });
+
+    /* -------- SCROLL REVEAL -------- */
+    function observeReveal() {
+      const obs = new IntersectionObserver((entries) => {
+        entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
+      }, { threshold: 0.12 });
+      document.querySelectorAll('.reveal:not(.visible)').forEach(el => obs.observe(el));
+    }
+    document.addEventListener('DOMContentLoaded', () => { setTimeout(observeReveal, 200); });
+
+    /* -------- COUNTER ANIMATION -------- */
+    function animateCounters() {
+      document.querySelectorAll('[data-count]').forEach(el => {
+        const target = +el.dataset.count;
+        let current = 0;
+        const increment = target / 60;
+        const timer = setInterval(() => {
+          current = Math.min(current + increment, target);
+          el.textContent = Math.floor(current) + (target >= 1000 ? '+' : '');
+          if (current >= target) clearInterval(timer);
+        }, 18);
+      });
+    }
+
+    /* -------- PUBLICATION FILTER -------- */
+    function filterPubs(query) {
+      const q = query.toLowerCase();
+      const filtered = publications.filter(p =>
+        p.title.toLowerCase().includes(q) ||
+        p.authors.toLowerCase().includes(q) ||
+        p.abstract.toLowerCase().includes(q)
+      );
+      renderPubs(filtered);
+    }
+    function filterPubsCategory(cat) {
+      const filtered = cat ? publications.filter(p => p.cat === cat) : publications;
+      renderPubs(filtered);
+    }
+	function filterPubsdate(year) {
+      const filtered = year ? publications.filter(p => p.year === year) : publications;
+      renderPubs(filtered);
+    }
+
+    /* -------- CONTACT FORM -------- */
+    async function handleContactSubmit(e) {
+  e.preventDefault();
+
+  const name = document.getElementById('name').value.trim();
+  const email = document.getElementById('email').value.trim();
+  const msg = document.getElementById('message').value.trim();
+
+  if (!name || !email || !msg) {
+    alert('Please fill in all fields.');
+    return;
+  }
+
+  const data = {
+    name: name,
+    email: email,
+    message: msg,
+  };
+
+  try {
+
+    const response = await fetch(
+      "https://script.google.com/macros/s/AKfycbwk9i6f9InYBkw0H6jkNqpPqUtPllpDyXszHZVVFjY-yyVzqy5gLfWqnDM5r6f-frlC/exec",
+      {
+        method: "POST",
+        body: JSON.stringify(data),
+        headers: {
+          "Content-Type": "application/json"
+        }
+      }
+    );
+
+    const result = await response.json();
+
+    if (result.result === "success") {
+      document.getElementById('form-success').style.display = 'block';
+      e.target.reset();
+    }
+
+  } catch (error) {
+    console.error(error);
+    alert("Something went wrong.");
+  }
+}
+    /* -------- PAGINATION -------- */
+    document.querySelectorAll('.page-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        if (this.textContent === '‹' || this.textContent === '›') return;
+        document.querySelectorAll('.page-btn').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+      });
+    });
+  </script>
+</body>
+</html>
