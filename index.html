@@ -2214,35 +2214,31 @@
     }
 
     /* -------- CONTACT FORM -------- */
-    async function handleContactSubmit(e) {
+async function handleContactSubmit(e) {
+
   e.preventDefault();
 
-  const name = document.getElementById('name').value.trim();
-  const email = document.getElementById('email').value.trim();
-  const msg = document.getElementById('message').value.trim();
-
-  if (!name || !email || !msg) {
-    alert('Please fill in all fields.');
-    return;
-  }
+  const name = document.getElementById("name").value;
+  const email = document.getElementById("email").value;
+  const message = document.getElementById("message").value;
 
   const data = {
-    name: name,
-    email: email,
-    message: msg,
+    name,
+    email,
+    message
   };
 
   try {
 
     const response = await fetch(
-      "https://script.google.com/macros/s/AKfycbxCzOEshT_fx3BVQl_RCtcIqfoh258NPKXHZk-HnRI061fJXayDLSlOmNXn--urOqKM/exec",
+      "https://script.google.com/macros/s/AKfycbz14__Ju9ZleZGkhnAAqq19NS1G9BsuzQcTgm-48Bd4Z0006I3Dz4FPx1gjErmKlKjF/exec",
       {
         method: "POST",
         mode: "no-cors",
         headers: {
           "Content-Type": "application/json"
-        }
-		  body: JSON.stringify(data)
+        },
+        body: JSON.stringify(data)
       }
     );
 
@@ -2251,9 +2247,13 @@
     e.target.reset();
 
   } catch (error) {
+
     console.error(error);
+
     alert("Submission failed.");
+
   }
+}
 }
     /* -------- PAGINATION -------- */
     document.querySelectorAll('.page-btn').forEach(btn => {
