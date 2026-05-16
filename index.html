@@ -1811,6 +1811,12 @@
   
   <!-- mainly js -->
   </div>
+
+	  <div class="publications-section">
+  <div id="spread">
+  
+  <!-- mainly js -->
+  </div>
   
   
   
@@ -1829,6 +1835,31 @@
        JAVASCRIPT
   ============================================================ -->
   <script>
+
+	  async function loadPosts() {
+
+  const response = await fetch(
+    "https://script.google.com/macros/s/AKfycby0vr3GuR5vlWqILYbSTqFN8bc8jBFPbJIZ3tUjnai6UmYH_NO2-JU3sMMuDVQjrkR-/exec"
+  );
+
+  const posts = await response.json();
+
+  const container =
+    document.getElementById("spread");
+
+  posts.forEach(post => {
+
+    container.innerHTML += `
+      <div class="card">
+        <h2>${post.title}</h2>
+        <p>${post.author}</p>
+        <small>${post.date}</small>
+      </div>
+    `;
+
+  });
+
+}
     /* -------- DATA -------- */
     const pubColors = [
       ['#1a2a1a','#2d6a2d'], // green tones
