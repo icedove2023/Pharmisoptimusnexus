@@ -1813,12 +1813,7 @@
   
   <!-- mainly js -->
   </div>
-  
-<div id="spread">
-  
-  <!-- mainly js -->
-  </div>
-	  
+    
    <footer style="margin-top:40px">
       <div class="footer-bottom">
         <span>© 2026 Pharmis Optimus Nexus. All Rights Reserved.</span>
@@ -1845,19 +1840,6 @@
       ['#1a1a18','#5a5010'],
     ];
 
-    /* -------- DATA -------- 
-	const publications = [
-      { id:1, title:'Novel Approaches in Drug Delivery Systems: A Review', authors:'A. Sharma, R. Patel, M. Johnson et al.', year:'2024', date:'May 10, 2024', cat:'Pharmacology', tag:'tag-pharmacology', abstract:'This review discusses the advancements in novel drug delivery systems and their applications in modern pharmacotherapy, covering liposomal systems, nanoparticles, and hydrogels.', introduction:'Drug delivery system in pharmacology is a very key aspect in pharmacology ', col:0 },
-      { id:2, title:'Emerging Trends in Pharmaceutical Research', authors:'L. Wong, T. Nguyen, S. Lee et al.', year:'2024', date:'Apr 28, 2024', cat:'Patient care', tag:'tag-pharmsci', abstract:'An overview of current emerging trends and future perspectives in pharmaceutical research, including AI-assisted drug discovery and personalized medicine.', col:1 },
-      { id:3, title:'Biotechnology Innovations for Better Therapeutics', authors:'K. Ahmed, P. Singh, J. Kim et al.', year:'2022', date:'Apr 15, 2022', cat:'Biotechnology', tag:'tag-biotech', abstract:'Exploring biotechnological innovations driving the next generation of therapeutics, from monoclonal antibodies to CRISPR-based gene therapies.', col:2 },
-      { id:4, title:'Design and Development of Novel Chemical Entities', authors:'R. Verma, D. Brown, L. Zhang et al.', year:'2022', date:'Apr 2, 2022', cat:'Medicinal Chemistry', tag:'tag-medchem', abstract:'A comprehensive study on the design, synthesis, and evaluation of novel chemical entities with potential therapeutic applications in oncology.', col:3 },
-      { id:5, title:'Pharmacokinetics of Next-Generation Antibiotics', authors:'E. Torres, B. Klein, O. Patel et al.', year:'2024', date:'Mar 22, 2024', cat:'Pharmacology', tag:'tag-pharmacology', abstract:'Detailed analysis of pharmacokinetic parameters of novel antibiotic compounds targeting drug-resistant bacterial strains in preclinical models.', col:0 },
-      { id:6, title:'Regulatory Challenges in Biosimilar Development', authors:'M. O\'Brien, Y. Tanaka, F. Hassan et al.', year:'2024', date:'Mar 10, 2024', cat:'Pharmaceutical Sciences', tag:'tag-pharmsci', abstract:'Examining the complex regulatory landscape surrounding biosimilar drug development across multiple jurisdictions including FDA, EMA, and WHO guidelines.', col:1 },
-      { id:7, title:'RNA Therapeutics: Mechanisms and Applications', authors:'C. Liu, A. Müller, S. Okonkwo et al.', year:'2024', date:'Feb 28, 2024', cat:'Biotechnology', tag:'tag-biotech', abstract:'Comprehensive review of RNA-based therapeutic approaches including mRNA vaccines, siRNA, and antisense oligonucleotides with clinical translation perspectives.', col:2 },
-      { id:8, title:'Fragment-Based Drug Discovery in Oncology', authors:'H. Kim, R. Rossi, T. Nakamura et al.', year:'2024', date:'Feb 14, 2024', cat:'Medicinal Chemistry', tag:'tag-medchem', abstract:'Fragment-based approaches have emerged as powerful tools for identifying novel scaffolds for oncological targets, particularly kinases and protein-protein interactions.', col:3 },
-	  { id:9, title:'fibroadeoma', authors:'Johnson et al', year:'2026', date:'Feb 14, 2026', cat:'Pharmacology', tag:'tag-pharmacology', abstract:'Fragment-based approaches have emerged as powerful tools for identifying novel scaffolds for oncological targets, particularly kinases and protein-protein interactions.', col:0 },
-	]; */
-	
 
     const blogPosts = [
       { id:1, title:'Nanotechnology in Drug Delivery: Opportunities and Challenges', cat:'Research Insights', date:'May 8, 2024', read:'4 min read', excerpt:'Nanocarriers are revolutionizing how therapeutics reach their target tissues, offering unprecedented specificity and reduced systemic toxicity.', col:0 },
@@ -1866,7 +1848,7 @@
       { id:4, title:'Regulatory Updates in Pharmaceutical Industries', cat:'Industry News', date:'Apr 28, 2024', read:'3 min read', excerpt:'Recent FDA and EMA guideline updates are reshaping how pharmaceutical companies approach pre-clinical and clinical development strategies.', col:3 },
     ];
 
-    /* -------- RENDER PUBLICATIONS -------- */
+    /* -------- RENDER PUBLICATIONS this  also allow us to fatch from google spreadsheet-------- */
     const gradients = [
   'linear-gradient(135deg, #1a2a1a, #2d6a2d)',
   'linear-gradient(135deg, #1a1a2a, #2d3a7a)',
@@ -1994,14 +1976,14 @@ loadPosts();
  <!-- Publication Header -->
       <div class="journal-header">
 
-        <span class="journal-category ${pub.tag}">${pub.cat} </span>
+        <span class="journal-category ${post.tag}">${post.cat} </span>
 
-        <h1 class="journal-title">${pub.title}</h1>
+        <h1 class="journal-title">${post.title}</h1>
 
         <div class="journal-meta">
-          <span>${pub.authors}</span>
+          <span>${post.authors}</span>
           <span>•</span>
-          <span>${pub.date}</span>
+          <span>${post.date}</span>
         </div>
       </div>
 
@@ -2010,7 +1992,7 @@ loadPosts();
 
         <h2>Abstract</h2>
 
-        <p>${pub.abstract}</p>
+        <p>${post.abstract}</p>
 
       </section>
 
@@ -2018,7 +2000,7 @@ loadPosts();
 
         <h2>Introduction</h2>
 
-        <p>${pub.introduction}</p>
+        <p>${post.introduction}</p>
          
       </section>
 	  <!-- Image Section -->
