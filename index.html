@@ -1866,56 +1866,109 @@
     ];
 
     /* -------- RENDER PUBLICATIONS -------- */
-    function renderPubs(data) {
-      const grid = document.getElementById('pubsGrid');
-      if (!grid) return;
-      const gradients = [
-        'linear-gradient(135deg, #1a2a1a, #2d6a2d)',
-        'linear-gradient(135deg, #1a1a2a, #2d3a7a)',
-        'linear-gradient(135deg, #1a1218, #5a2060)',
-        'linear-gradient(135deg, #1a1a18, #5a5010)',
-      ];
-		async function loadPosts() {
+    const gradients = [
+  'linear-gradient(135deg, #1a2a1a, #2d6a2d)',
+  'linear-gradient(135deg, #1a1a2a, #2d3a7a)',
+  'linear-gradient(135deg, #1a1218, #5a2060)',
+  'linear-gradient(135deg, #1a1a18, #5a5010)',
+];
 
-  const response = await fetch(
-    "https://script.google.com/macros/s/AKfycby0vr3GuR5vlWqILYbSTqFN8bc8jBFPbJIZ3tUjnai6UmYH_NO2-JU3sMMuDVQjrkR-/exec"
-  );
+async function loadPosts() {
 
-  const posts = await response.json();
+  try {
 
-  const container =
-    document.getElementById("spread");
+    const response = await fetch(
+      "https://script.google.com/macros/s/AKfycby0vr3GuR5vlWqILYbSTqFN8bc8jBFPbJIZ3tUjnai6UmYH_NO2-JU3sMMuDVQjrkR-/exec"
+    );
 
-  posts.forEach(post => {
+    const posts = await response.json();
 
-    container.innerHTML += `
+    renderPubs(posts);
+
+  } catch (error) {
+
+    console.error("Error loading posts:", error);
+
+  }
+
+}
+
+function renderPubs(posts) {
+
+  const grid = document.getElementById('pubsGrid');
+
+  if (!grid) return;
+
+  grid.innerHTML = '';
+
+  posts.forEach((post, index) => {
+
+    grid.innerHTML += `
+
       <article class="pub-card reveal" role="article">
-          <div class="pub-card-img">
-            <div class="pub-card-img-inner" style="background:${gradients[p.col % 4]}"></div>
-            <div class="pub-card-img-overlay"></div>
+
+        <div class="pub-card-img">
+
+          <div 
+            class="pub-card-img-inner" 
+            style="background:${gradients[index % 4]}"
+          ></div>
+
+          <div class="pub-card-img-overlay"></div>
+
+        </div>
+
+        <div class="pub-card-body">
+
+          <span class="pub-tag ${post.tag || ''}">
+            ${post.cat || 'Publication'}
+          </span>
+
+          <h3>${post.title || 'Untitled'}</h3>
+
+          <div class="pub-meta">
+
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+              <circle cx="12" cy="7" r="4"/>
+            </svg>
+
+            ${post.authors || 'Unknown Author'}
+
           </div>
-          <div class="pub-card-body">
-            <span class="pub-tag ${p.tag}">${p.cat}</span>
-            <h3>${p.title}</h3>
-            <div class="pub-meta">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-              ${p.authors}
-            </div>
-            <p class="pub-abstract">${p.abstract}</p>
-            <div class="pub-card-footer">
-              <span class="pub-date">${p.date}</span>
-              <button onclick="showPage('more'); openJournal(${p.id})" class="btn-sm">Read More</button>
-            </div>
+
+          <p class="pub-abstract">
+            ${post.abstract || 'No abstract available.'}
+          </p>
+
+          <div class="pub-card-footer">
+
+            <span class="pub-date">
+              ${post.date || ''}
+            </span>
+
+            <button 
+              onclick="showPage('more'); openJournal('${post.id}')"
+              class="btn-sm"
+            >
+              Read More
+            </button>
+
           </div>
-        </article>
+
+        </div>
+
+      </article>
+
     `;
 
   });
 
+  observeReveal();
+
 }
-	  loadPosts();
-      observeReveal();
-    }
+
+loadPosts();
 	/* -------- Readmore page -------- */
 	
 		function openJournal(id) {
