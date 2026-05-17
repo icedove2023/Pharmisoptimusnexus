@@ -1835,31 +1835,7 @@
   ============================================================ -->
   <script>
 
-async function loadPosts() {
 
-  const response = await fetch(
-    "https://script.google.com/macros/s/AKfycby0vr3GuR5vlWqILYbSTqFN8bc8jBFPbJIZ3tUjnai6UmYH_NO2-JU3sMMuDVQjrkR-/exec"
-  );
-
-  const posts = await response.json();
-
-  const container =
-    document.getElementById("spread");
-
-  posts.forEach(post => {
-
-    container.innerHTML += `
-      <div>
-        <h2>${post.title}</h2>
-        <p>${post.author}</p>
-        <small>${post.date}</small>
-      </div>
-    `;
-
-  });
-
-}
-	  loadPosts();
 	  
     /* -------- DATA -------- */
     const pubColors = [
@@ -1899,8 +1875,21 @@ async function loadPosts() {
         'linear-gradient(135deg, #1a1218, #5a2060)',
         'linear-gradient(135deg, #1a1a18, #5a5010)',
       ];
-      grid.innerHTML = data.map(p => `
-        <article class="pub-card reveal" role="article">
+		async function loadPosts() {
+
+  const response = await fetch(
+    "https://script.google.com/macros/s/AKfycby0vr3GuR5vlWqILYbSTqFN8bc8jBFPbJIZ3tUjnai6UmYH_NO2-JU3sMMuDVQjrkR-/exec"
+  );
+
+  const posts = await response.json();
+
+  const container =
+    document.getElementById("spread");
+
+  posts.forEach(post => {
+
+    container.innerHTML += `
+      <article class="pub-card reveal" role="article">
           <div class="pub-card-img">
             <div class="pub-card-img-inner" style="background:${gradients[p.col % 4]}"></div>
             <div class="pub-card-img-overlay"></div>
@@ -1919,7 +1908,12 @@ async function loadPosts() {
             </div>
           </div>
         </article>
-      `).join('');
+    `;
+
+  });
+
+}
+	  loadPosts();
       observeReveal();
     }
 	/* -------- Readmore page -------- */
