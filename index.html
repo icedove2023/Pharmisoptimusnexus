@@ -1855,7 +1855,7 @@
   'linear-gradient(135deg, #1a1218, #5a2060)',
   'linear-gradient(135deg, #1a1a18, #5a5010)',
 ];
-
+let publications = [];
 async function loadPosts() {
 
   try {
@@ -1865,6 +1865,7 @@ async function loadPosts() {
     );
 
     const posts = await response.json();
+	  publications = posts;
 
     renderPubs(posts);
 
@@ -1875,6 +1876,7 @@ async function loadPosts() {
   }
 
 }
+	  
 
 function renderPubs(posts) {
 
@@ -2258,22 +2260,26 @@ loadPosts();
 
     /* -------- PUBLICATION FILTER -------- */
     function filterPubs(query) {
-      const q = query.toLowerCase();
-      const filtered = publications.filter(p =>
-        p.title.toLowerCase().includes(q) ||
-        p.authors.toLowerCase().includes(q) ||
-        p.abstract.toLowerCase().includes(q)
-      );
-      renderPubs(filtered);
-    }
+const q = query.toLowerCase();
+const filtered = publications.filter(post =>
+    (post.title || '').toLowerCase().includes(q) ||
+    (post.authors || '').toLowerCase().includes(q) ||
+    (post.abstract || '').toLowerCase().includes(q)
+  );
+  renderPubs(filtered);
+}
     function filterPubsCategory(cat) {
-      const filtered = cat ? publications.filter(p => p.cat === cat) : publications;
-      renderPubs(filtered);
-    }
-	function filterPubsdate(year) {
-      const filtered = year ? publications.filter(p => p.year === year) : publications;
-      renderPubs(filtered);
-    }
+  const filtered = cat
+    ? publications.filter(post => post.cat === cat)
+    : publications;
+  renderPubs(filtered);
+}
+	function filterPubsDate(year) {
+  const filtered = year
+    ? publications.filter(post => String(post.year) === String(year))
+    : publications;
+  renderPubs(filtered);
+}
 
     /* -------- CONTACT FORM -------- */
 async function handleContactSubmit(e) {
