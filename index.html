@@ -2083,9 +2083,7 @@ function renderBlog(postsb) {
           </p>
           <div class="blog-card-footer">
             <div class="post-meta" style="margin:0">
-              <span>
-                ${post.date || 'no published date'}
-              </span>
+              <span>${post.date || 'no published date'}</span>
               <div class="post-meta-dot"></div>
               <span class="blog-read-time">
                 ${post.read || 'No read time available.'}
@@ -2249,7 +2247,7 @@ const filtered = publications.filter(post =>
 }
 	function filterPubsDate(year) {
   const filtered = year
-    ? publications.filter(post => String(post.year) === String(year))
+    ? publications.filter(post => post.year === year)
     : publications;
   renderPubs(filtered);
 }
