@@ -2042,58 +2042,65 @@ WHO. Public Health Pharmacy Report, 2025.
     /* -------- RENDER BLOG -------- */
 
 const gradientsblogs = [
-        'linear-gradient(135deg, #1a2a3a, #2a4a6a)',
-        'linear-gradient(135deg, #1a1a2a, #3a2060)',
-        'linear-gradient(135deg, #2a1a18, #6a3020)',
-        'linear-gradient(135deg, #1a2218, #204a20)', 
+  'linear-gradient(135deg, #1a2a3a, #2a4a6a)',
+  'linear-gradient(135deg, #1a1a2a, #3a2060)',
+  'linear-gradient(135deg, #2a1a18, #6a3020)',
+  'linear-gradient(135deg, #1a2218, #204a20)'
+];
 
-]
-	  /* function used to fatch the blogs data from the google spreadsheet */
-	let blogs = [];
-async function  loadPlogsPost() {
+/* Global blogs array */
+let blogs = [];
+
+/* Fetch blogs from Google Spreadsheet */
+async function loadBlogsPost() {
   try {
     const response = await fetch(
       "https://script.google.com/macros/s/AKfycbxyk2d11BD63yMxa8CCEm6Ma4emoVInxkXGVzkP9trVMtszqh6H7a1g0e42Ce3tuCQf/exec"
     );
     const postsb = await response.json();
-	  blogs = postsb;
-    renderBlog(postsb);
+    blogs = postsb;
+    renderBlog(blogs);
   } catch (error) {
-    console.error("Error loading posts:", error);
+    console.error("Error loading blogs:", error);
   }
 }
-	/* to design the blogs layout from the data fatch from the global variable 'blogs'   */
-	  function renderBlog(postsb) {
-      const grid = document.getElementById('blogGrid');
-      if (!grid) return;
-     
-      grid.innerHTML = '';
-		  posts.forEach((post, index) => {
-	grid.innerHTML +=` 
-        <article class="blog-card reveal" role="article">
-          <div class="blog-card-img">
-            <div class="blog-card-img-inner" style="background:${gradientsblogs[post.col % 4]}"></div>
-          </div>
-          <div class="blog-card-body">
-            <div class="blog-card-cat">${post.cat || ''}</div>
-            <h3>${post.title || 'Untitled'}</h3>
-            <p>${post.excerpt|| 'No excerpt available.'}</p>
-            <div class="blog-card-footer">
-              <div class="post-meta" style="margin:0">
-                <span>${post.date|| ''}</span>
-                <div class="post-meta-dot"></div>
-                <span class="blog-read-time">${post.read|| 'No read time available.'}</span>
-              </div>
-              <button onclick="showPage('more-blogs'); openblogsmore(${post.id})" class="btn-sm">Read More</button>
+/* Render blogs */
+function renderBlog(postsb) {
+  const grid = document.getElementById('blogGrid');
+  if (!grid) return;
+  grid.innerHTML = '';
+  postsb.forEach((post, index) => {
+    grid.innerHTML += `
+      <article class="blog-card reveal" role="article">
+        <div class="blog-card-img">
+          <div class="blog-card-img-inner" style="background:${gradientsblogs[index % 4]}" ></div>
+        </div>
+        <div class="blog-card-body">
+          <div class="blog-card-cat">${post.cat || ''} </div>
+          <h3>${post.title || 'Untitled'}</h3>
+          <p>
+            ${post.excerpt || 'No excerpt available.'}
+          </p>
+          <div class="blog-card-footer">
+            <div class="post-meta" style="margin:0">
+              <span>
+                ${post.date || ''}
+              </span>
+              <div class="post-meta-dot"></div>
+              <span class="blog-read-time">
+                ${post.read || 'No read time available.'}
+              </span>
             </div>
+            <button  onclick="showPage('more-blogs'); openblogsmore('${post.id}')" class="btn-sm">Read More</button>
           </div>
-        </article>
-      `;
+        </div>
+      </article>
+    `;
   });
-      observeReveal();
-	  } 
-	  loadPlogsPost();
-	
+  observeReveal();
+}
+/* Run function */
+loadBlogsPost();
 /* -------- script for readmore-blogs -------- */
 	function openblogsmore(id){
 	
