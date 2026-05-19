@@ -2100,34 +2100,23 @@ loadBlogsPost();
       <h2>
         ${featured.title || 'Untitled'}
       </h2>
-
       <p>
         ${featured.abstract || ''}
       </p>
-
       <div class="post-meta">
-
         <span>
           ${featured.date || ''}
         </span>
-
         <div class="post-meta-dot"></div>
-
         <span>
-          ${featured.readtime || '5 min read'}
+          ${featured.readtime || no read time available}
         </span>
-
       </div>
-
-      <button
-        onclick="showPage('more'); openJournal('${featured.id}')"
-        class="btn-sm"
-      >
+      <button onclick="showPage('more-blogs'); openblogsmore('${featured.id}')"
+        class="btn-sm">
         Read More
       </button>
-
     </div>
-
   `;
 }
     /* -------- PAGE SWITCHING -------- */
