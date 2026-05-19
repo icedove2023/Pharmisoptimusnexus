@@ -2159,7 +2159,7 @@ loadBlogsPost();
         a.classList.toggle('active', a.dataset.page === name);
       });
       if (name === 'publications') renderPubs(publications);
-      if (name === 'blog') { renderBlog(); }
+      if (name === 'blog') { renderBlog(postsb); }
     }
 
     /* -------- SMOOTH SCROLL -------- */
