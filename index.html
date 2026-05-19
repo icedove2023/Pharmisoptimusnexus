@@ -1687,60 +1687,14 @@
     </div>
 
     <div class="blog-layout">
-		<!-- --------------------------------------------------------------------------------------------------------------
+		
       <div>
     
-		  Featured post 
-        <div id="readmoreblog" class="featured-post reveal">
-          <div class="featured-img">
-            <div class="featured-img-inner">
-		
-               Abstract scientific SVG 
-              <svg width="360" height="320" viewBox="0 0 360 320" xmlns="http://www.w3.org/2000/svg" opacity="0.5">
-                <defs>
-                  <radialGradient id="fg1" cx="50%" cy="50%" r="60%">
-                    <stop offset="0%" stop-color="#F16D78" stop-opacity="0.6"/>
-                    <stop offset="100%" stop-color="#17222B" stop-opacity="0"/>
-                  </radialGradient>
-                </defs>
-                <rect width="360" height="320" fill="#17222B"/>
-                <rect width="360" height="320" fill="url(#fg1)"/>
-                <circle cx="180" cy="160" r="80" stroke="#EFD9C7" stroke-width="1" fill="none" opacity="0.3"/>
-                <circle cx="180" cy="160" r="40" stroke="#F16D78" stroke-width="1.5" fill="none" opacity="0.5"/>
-                <circle cx="180" cy="160" r="12" fill="#F16D78" opacity="0.8"/>
-                <circle cx="260" cy="100" r="8" fill="#EFD9C7" opacity="0.6"/>
-                <circle cx="100" cy="220" r="8" fill="#EFD9C7" opacity="0.6"/>
-                <line x1="180" y1="160" x2="260" y2="100" stroke="#EFD9C7" stroke-width="1" opacity="0.3"/>
-                <line x1="180" y1="160" x2="100" y2="220" stroke="#EFD9C7" stroke-width="1" opacity="0.3"/>
-              </svg>
-            </div>
-            <div class="featured-badge">Featured</div>
-          </div>
-          <div class="featured-body">
-            <div class="featured-cat">Research Insights</div>
-            <h2>The Future of Personalized Medicine in Pharmaceuticals</h2>
-            <p>Personalized medicine is transforming the way we treat diseases by tailoring therapies to individual genetic profiles and biomarkers, opening a new era of precision pharmacotherapy.</p>
-            <div class="post-meta">
-              <span>May 12, 2024</span>
-              <div class="post-meta-dot"></div>
-              <span>5 min read</span>
-            </div>
-            <button onclick="showPage('more-blogs'); openfeatured() " class="btn btn-primary" style="width:fit-content">
-              Read More
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-            </button>
-          </div>
-		
-		  <script>
-		  function openfeatured(data){
-		  
-		  
-		  
-		  }
-		  
-		  </script>
+		 <!-- Featured post -->
+        <div id="featuredPost" class="featured-post reveal">
+          Populated vy js
 		</div>	
- ----------------------------------------- !>
+
         <!-- Blog grid -->
         <h3 style="font-family:var(--font-display);font-size:1.5rem;margin-bottom:24px">Latest Posts</h3>
         <div class="blog-grid" id="blogGrid">
@@ -1982,6 +1936,7 @@ async function loadBlogsPost() {
     const postsb = await response.json();
     blogs = postsb;
     renderBlog(blogs);
+	renderFeaturedPost();
   } catch (error) {
     console.error("Error loading blogs:", error);
   }
@@ -2021,6 +1976,7 @@ function renderBlog(postsb) {
 }
 /* Run function */
 loadBlogsPost();
+	  
 /* -------- script for readmore-blogs -------- */
 	function openblogsmore(id) {
 
@@ -2074,6 +2030,104 @@ loadBlogsPost();
         </p>
       </section>
     </article>
+  `;
+}
+/* -------- featured post for blog -------- */
+	  function renderFeaturedPost() {
+
+  // Find featured blogs
+  const featured = blogs.find(
+    post => post.featured === "yes"
+  );
+
+  // Stop if none found
+  if (!featured) return;
+
+  // Select container
+  const container =
+    document.getElementById("featuredPost");
+  // Insert HTML
+  container.innerHTML = `
+    <div class="featured-img">
+      <div class="featured-img-inner">
+        <!-- Abstract scientific SVG -->
+        <svg width="360" height="320" viewBox="0 0 360 320" xmlns="http://www.w3.org/2000/svg" opacity="0.5">
+          <defs>
+            <radialGradient id="fg1" cx="50%" cy="50%" r="60%">
+              <stop offset="0%" stop-color="#F16D78" stop-opacity="0.6"/>
+              <stop offset="100%" stop-color="#17222B" stop-opacity="0"/>
+            </radialGradient>
+          </defs>
+
+          <rect width="360" height="320" fill="#17222B"/>
+          <rect width="360" height="320" fill="url(#fg1)"/>
+
+          <circle cx="180" cy="160" r="80"
+            stroke="#EFD9C7"
+            stroke-width="1"
+            fill="none"
+            opacity="0.3"
+          />
+
+          <circle cx="180" cy="160" r="40"
+            stroke="#F16D78"
+            stroke-width="1.5"
+            fill="none"
+            opacity="0.5"
+          />
+
+          <circle cx="180" cy="160" r="12"
+            fill="#F16D78"
+            opacity="0.8"
+          />
+
+        </svg>
+
+      </div>
+
+      <div class="featured-badge">
+        Featured
+      </div>
+
+    </div>
+
+    <div class="featured-body">
+
+      <div class="featured-cat">
+        ${featured.cat || 'Research'}
+      </div>
+
+      <h2>
+        ${featured.title || 'Untitled'}
+      </h2>
+
+      <p>
+        ${featured.abstract || ''}
+      </p>
+
+      <div class="post-meta">
+
+        <span>
+          ${featured.date || ''}
+        </span>
+
+        <div class="post-meta-dot"></div>
+
+        <span>
+          ${featured.readtime || '5 min read'}
+        </span>
+
+      </div>
+
+      <button
+        onclick="showPage('more'); openJournal('${featured.id}')"
+        class="btn-sm"
+      >
+        Read More
+      </button>
+
+    </div>
+
   `;
 }
     /* -------- PAGE SWITCHING -------- */
