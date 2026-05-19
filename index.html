@@ -2109,7 +2109,7 @@ loadBlogsPost();
         </span>
         <div class="post-meta-dot"></div>
         <span>
-          ${featured.readtime || no read time available}
+          ${featured.readtime || 'no read time available'}
         </span>
       </div>
       <button onclick="showPage('more-blogs'); openblogsmore('${featured.id}')"
