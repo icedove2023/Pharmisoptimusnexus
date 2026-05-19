@@ -1855,105 +1855,64 @@
   'linear-gradient(135deg, #1a1218, #5a2060)',
   'linear-gradient(135deg, #1a1a18, #5a5010)',
 ];
+
+	  /* to fetch data from the google spreadsheet for the publication detail note that  'let publications = [];' is a public variable used to store the data fetched from the google spreadsheet  */
 let publications = [];
-async function loadPosts() {
 
+	  /* function used to fatch the publication data from the google spreadsheet */
+async function loadPublicationsPosts() {
   try {
-
     const response = await fetch(
       "https://script.google.com/macros/s/AKfycby0vr3GuR5vlWqILYbSTqFN8bc8jBFPbJIZ3tUjnai6UmYH_NO2-JU3sMMuDVQjrkR-/exec"
     );
-
     const posts = await response.json();
 	  publications = posts;
-
     renderPubs(posts);
-
   } catch (error) {
-
     console.error("Error loading posts:", error);
-
   }
-
 }
-	  
-
+/* to design the pulication layout from the data fatch from the global variable 'publications' */
 function renderPubs(posts) {
-
   const grid = document.getElementById('pubsGrid');
-
   if (!grid) return;
-
   grid.innerHTML = '';
-
   posts.forEach((post, index) => {
-
     grid.innerHTML += `
-
       <article class="pub-card reveal" role="article">
-
         <div class="pub-card-img">
-
-          <div 
-            class="pub-card-img-inner" 
-            style="background:${gradients[index % 4]}"
-          ></div>
-
+          <div class="pub-card-img-inner" style="background:${gradients[index % 4]}" ></div>
           <div class="pub-card-img-overlay"></div>
-
         </div>
-
         <div class="pub-card-body">
-
           <span class="journal-category; pub-tag ${post.tag || ''}">
             ${post.cat || 'Publication'}
           </span>
-
           <h3>${post.title || 'Untitled'}</h3>
-
           <div class="pub-meta">
-
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
               <circle cx="12" cy="7" r="4"/>
             </svg>
-
             ${post.authors || 'Unknown Author'}
-
           </div>
-
           <p class="pub-abstract">
             ${post.abstract || 'No abstract available.'}
           </p>
-
           <div class="pub-card-footer">
-
             <span class="pub-date">
               ${post.date || ''}
             </span>
-
-            <button 
-              onclick="showPage('more'); openJournal('${post.id}')"
-              class="btn-sm"
-            >
-              Read More
-            </button>
-
+            <button onclick="showPage('more'); openJournal('${post.id}')" class="btn-sm"> Read More </button>
           </div>
-
         </div>
-
       </article>
-
     `;
-
   });
-
   observeReveal();
-
 }
-
-loadPosts();
+loadPublicationsPosts();
+	  
 	/* -------- Readmore page -------- */
 	
 		function openJournal(id) {
@@ -2077,58 +2036,73 @@ loadPosts();
         <h2>References</h2>
 
         <ol class="journal-references">
-
           <li>
-            WHO. Public Health Pharmacy Report, 2025.
+WHO. Public Health Pharmacy Report, 2025.
           </li>
-
           <li>
             Smith J. Modern Drug Delivery Systems.
           </li>
-
         </ol>
-
       </section>
-
     </article>
-
-
   `;
 }
     /* -------- RENDER BLOG -------- */
-    function renderBlog() {
-      const grid = document.getElementById('blogGrid');
-      if (!grid) return;
-      const gradients = [
+
+const gradientsblogs = [
         'linear-gradient(135deg, #1a2a3a, #2a4a6a)',
         'linear-gradient(135deg, #1a1a2a, #3a2060)',
         'linear-gradient(135deg, #2a1a18, #6a3020)',
-        'linear-gradient(135deg, #1a2218, #204a20)',
-      ];
-      grid.innerHTML = blogPosts.map(p => `
+        'linear-gradient(135deg, #1a2218, #204a20)', 
+
+
+	  /* function used to fatch the blogs data from the google spreadsheet */
+	let blogs = [];
+async function  loadPlogsPost() {
+  try {
+    const response = await fetch(
+      "https://script.google.com/macros/s/AKfycbxyk2d11BD63yMxa8CCEm6Ma4emoVInxkXGVzkP9trVMtszqh6H7a1g0e42Ce3tuCQf/exec"
+    );
+    const postsb = await response.json();
+	  blogs = postsb;
+    renderPubs(postsb);
+  } catch (error) {
+    console.error("Error loading posts:", error);
+  }
+}
+	/* to design the blogs layout from the data fatch from the global variable 'blogs'   */
+	  function renderBlog(postsb) {
+      const grid = document.getElementById('blogGrid');
+      if (!grid) return;
+     
+      grid.innerHTML = '';
+		  posts.forEach((post, index) => {
+	grid.innerHTML +=` 
         <article class="blog-card reveal" role="article">
           <div class="blog-card-img">
-            <div class="blog-card-img-inner" style="background:${gradients[p.col % 4]}"></div>
+            <div class="blog-card-img-inner" style="background:${gradientsblogs[post.col % 4]}"></div>
           </div>
           <div class="blog-card-body">
-            <div class="blog-card-cat">${p.cat}</div>
-            <h3>${p.title}</h3>
-            <p>${p.excerpt}</p>
+            <div class="blog-card-cat">${post.cat || ''}</div>
+            <h3>${post.title || 'Untitled'}</h3>
+            <p>${post.excerpt|| 'No excerpt available.'}</p>
             <div class="blog-card-footer">
               <div class="post-meta" style="margin:0">
-                <span>${p.date}</span>
+                <span>${post.date|| ''}</span>
                 <div class="post-meta-dot"></div>
-                <span class="blog-read-time">${p.read}</span>
+                <span class="blog-read-time">${post.read|| 'No read time available.'}</span>
               </div>
-              <button onclick="showPage('more-blogs'); openblogsmore(${p.id})" class="btn-sm">Read More</button>
+              <button onclick="showPage('more-blogs'); openblogsmore(${post.id})" class="btn-sm">Read More</button>
             </div>
           </div>
         </article>
-      `).join('');
+      `;
+  });
       observeReveal();
-    }
+	  } 
+	  loadPlogsPost();
 	
-/* -------- script for more-blogs -------- */
+/* -------- script for readmore-blogs -------- */
 	function openblogsmore(id){
 	
 	// Find the selected blogs
