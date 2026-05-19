@@ -2032,8 +2032,8 @@ loadBlogsPost();
 /* -------- script for readmore-blogs -------- */
 	function openblogsmore(id) {
 
-  // Find selected publication
-  const pub = publications.find(
+  // Find selected blogs
+  const pub = blogs.find(
     post => String(post.id) === String(id)
   );
   // Safety check
@@ -2056,9 +2056,9 @@ loadBlogsPost();
           <span>  ${pub.date || ''} </span>
         </div>
       </div>
-      <!-- Abstract -->
+      <!-- excerpt -->
       <section class="journal-section">
-        <h2>Abstract</h2>
+        <h2>Excerpt</h2>
         <p> ${pub.excerpt || 'No excerpt available.'} </p>
       </section>
       <!-- Content -->
