@@ -1601,10 +1601,10 @@
       </select>
       <select class="filter-select" onchange="filterPubsdate(this.value)">
         <option value="">All Years</option>
-        <option value="2024">2024</option>
-        <option value="2023">2023</option>
-        <option value="2022">2022</option>
-		<option value="2026">2026</option>
+        <option value="2026">2026</option>
+        <option value="2027">2027</option>
+        <option value="2028">2028</option>
+		<option value="2029">2029</option>
       </select>
       <select class="filter-select">
         <option>Sort by: Latest</option>
@@ -2233,9 +2233,9 @@ loadBlogsPost();
     function filterPubs(query) {
 const q = query.toLowerCase();
 const filtered = publications.filter(post =>
-    (post.title || '').toLowerCase().includes(q) ||
-    (post.authors || '').toLowerCase().includes(q) ||
-    (post.abstract || '').toLowerCase().includes(q)
+    (post.title || 'not found').toLowerCase().includes(q) ||
+    (post.authors || 'not found').toLowerCase().includes(q) ||
+    (post.abstract || 'not found').toLowerCase().includes(q)
   );
   renderPubs(filtered);
 }
@@ -2247,11 +2247,11 @@ const filtered = publications.filter(post =>
 }
 	function filterPubsDate(year) {
   const filtered = year
-    ? publications.filter(post => post.year === year)
+    ? publications.filter(post => String(post.year) === String(year))
     : publications;
   renderPubs(filtered);
 }
-
+loadPublicationsPosts()
     /* -------- CONTACT FORM -------- */
 async function handleContactSubmit(e) {
 
