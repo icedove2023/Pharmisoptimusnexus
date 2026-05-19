@@ -1909,66 +1909,88 @@ loadPublicationsPosts();
 	
 		function openJournal(id) {
 
-  // Find the selected publication
+  // Find selected publication
   const pub = publications.find(
-    post => post.id === id
+    post => String(post.id) === String(id)
   );
 
   // Safety check
-  if (!pub) return;
+  if (!pub) {
+    console.error("Publication not found");
+    return;
+  }
 
   // Select container
   const container =
     document.getElementById("journal-container");
 
-  // Insert publication HTML
-  container.innerHTML =  `
-  
+  // Insert publication content
+  container.innerHTML = `
+
     <article class="journal-full">
-	
- <!-- Publication Header -->
+
+      <!-- Publication Header -->
       <div class="journal-header">
 
-        <span class="journal-category ${post.tag}">${post.cat} </span>
+        <span class="journal-category ${pub.tag || ''}">
+          ${pub.cat || 'Publication'}
+        </span>
 
-        <h1 class="journal-title">${post.title}</h1>
+        <h1 class="journal-title">
+          ${pub.title || 'Untitled'}
+        </h1>
 
         <div class="journal-meta">
-          <span>${post.authors}</span>
+
+          <span>
+            ${pub.authors || 'Unknown Author'}
+          </span>
+
           <span>•</span>
-          <span>${post.date}</span>
+
+          <span>
+            ${pub.date || ''}
+          </span>
+
         </div>
+
       </div>
 
-	 <!-- Abstract -->
+      <!-- Abstract -->
       <section class="journal-section">
 
         <h2>Abstract</h2>
 
-        <p>${post.abstract}</p>
+        <p>
+          ${pub.abstract || 'No abstract available.'}
+        </p>
 
       </section>
 
-       <section class="journal-section">
+      <!-- Introduction -->
+      <section class="journal-section">
 
         <h2>Introduction</h2>
 
-        <p>${post.introduction}</p>
-         
+        <p>
+          ${pub.introduction || 'No introduction available.'}
+        </p>
+
       </section>
-	  <!-- Image Section -->
+
+      <!-- Image Section -->
       <section class="journal-section">
 
         <h2>Research Image</h2>
 
         <img
-          src="your-image.jpg"
+          src="${pub.image || 'your-image.jpg'}"
           alt="Research illustration"
           class="journal-image"
         >
 
         <p class="image-caption">
-          Figure 1: Pharmaceutical intervention model.
+          ${pub.caption || 'Research illustration'}
         </p>
 
       </section>
@@ -2016,8 +2038,7 @@ loadPublicationsPosts();
         <h2>Conclusion</h2>
 
         <p>
-          Public health pharmacy interventions continue
-          to improve healthcare outcomes globally.
+          ${pub.conclusion || 'No conclusion available.'}
         </p>
 
       </section>
@@ -2027,16 +2048,14 @@ loadPublicationsPosts();
 
         <h2>References</h2>
 
-        <ol class="journal-references">
-          <li>
-WHO. Public Health Pharmacy Report, 2025.
-          </li>
-          <li>
-            Smith J. Modern Drug Delivery Systems.
-          </li>
-        </ol>
+        <p>
+          ${pub.references || 'No references available.'}
+        </p>
+
       </section>
+
     </article>
+
   `;
 }
     /* -------- RENDER BLOG -------- */
