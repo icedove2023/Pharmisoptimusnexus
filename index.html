@@ -2057,7 +2057,7 @@ async function  loadPlogsPost() {
     );
     const postsb = await response.json();
 	  blogs = postsb;
-    renderPubs(postsb);
+    renderBlog(postsb);
   } catch (error) {
     console.error("Error loading posts:", error);
   }
