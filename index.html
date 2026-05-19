@@ -2247,7 +2247,7 @@ const filtered = publications.filter(post =>
 }
 	function filterPubsDate(year) {
   const filtered = year
-    ? publications.filter(post => String(post.year) === String(year))
+    ? publications.filter(post => post.year === year)
     : publications;
   renderPubs(filtered);
 }
