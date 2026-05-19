@@ -1913,149 +1913,60 @@ loadPublicationsPosts();
   const pub = publications.find(
     post => String(post.id) === String(id)
   );
-
   // Safety check
   if (!pub) {
     console.error("Publication not found");
     return;
   }
-
   // Select container
   const container =
     document.getElementById("journal-container");
-
   // Insert publication content
   container.innerHTML = `
-
     <article class="journal-full">
-
       <!-- Publication Header -->
       <div class="journal-header">
-
-        <span class="journal-category ${pub.tag || ''}">
-          ${pub.cat || 'Publication'}
-        </span>
-
-        <h1 class="journal-title">
-          ${pub.title || 'Untitled'}
-        </h1>
-
+        <span class="journal-category ${pub.tag || ''}">${pub.cat || 'Publication'}</span>
+        <h1 class="journal-title">${pub.title || 'Untitled'}</h1>
         <div class="journal-meta">
-
-          <span>
-            ${pub.authors || 'Unknown Author'}
-          </span>
-
+          <span>${pub.authors || 'Unknown Author'} </span>
           <span>•</span>
-
-          <span>
-            ${pub.date || ''}
-          </span>
-
+          <span>  ${pub.date || ''} </span>
         </div>
-
       </div>
-
       <!-- Abstract -->
       <section class="journal-section">
-
         <h2>Abstract</h2>
-
-        <p>
-          ${pub.abstract || 'No abstract available.'}
-        </p>
-
+        <p> ${pub.abstract || 'No abstract available.'} </p>
       </section>
-
       <!-- Introduction -->
       <section class="journal-section">
-
         <h2>Introduction</h2>
-
-        <p>
-          ${pub.introduction || 'No introduction available.'}
-        </p>
-
+	<p> ${pub.introduction || 'No introduction available.'}</p>
       </section>
-
       <!-- Image Section -->
       <section class="journal-section">
-
         <h2>Research Image</h2>
-
-        <img
-          src="${pub.image || 'your-image.jpg'}"
-          alt="Research illustration"
-          class="journal-image"
-        >
-
-        <p class="image-caption">
-          ${pub.caption || 'Research illustration'}
-        </p>
-
+        <img src="${pub.image || 'no image found'}" alt="Research illustration" class="journal-image" >
+        <p class="image-caption">${pub.caption || 'No Research illustration'}</p>
       </section>
-
-      <!-- Table Section -->
-      <section class="journal-section">
-
-        <h2>Research Data</h2>
-
-        <div class="table-wrapper">
-
-          <table class="journal-table">
-
-            <thead>
-              <tr>
-                <th>Group</th>
-                <th>Patients</th>
-                <th>Outcome</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              <tr>
-                <td>Urban</td>
-                <td>120</td>
-                <td>Improved</td>
-              </tr>
-
-              <tr>
-                <td>Rural</td>
-                <td>90</td>
-                <td>Moderate</td>
-              </tr>
-            </tbody>
-
-          </table>
-
         </div>
-
       </section>
-
       <!-- Conclusion -->
       <section class="journal-section">
-
         <h2>Conclusion</h2>
-
         <p>
           ${pub.conclusion || 'No conclusion available.'}
         </p>
-
       </section>
-
       <!-- References -->
       <section class="journal-section">
-
         <h2>References</h2>
-
         <p>
           ${pub.references || 'No references available.'}
         </p>
-
       </section>
-
     </article>
-
   `;
 }
     /* -------- RENDER BLOG -------- */
@@ -2119,53 +2030,60 @@ function renderBlog(postsb) {
 /* Run function */
 loadBlogsPost();
 /* -------- script for readmore-blogs -------- */
-	function openblogsmore(id){
-	
-	// Find the selected blogs
-  const pub = blogPosts.find(
-    p => p.id === id
+	function openblogsmore(id) {
+
+  // Find selected publication
+  const pub = publications.find(
+    post => String(post.id) === String(id)
   );
-
   // Safety check
-  if (!pub) return;
-
+  if (!pub) {
+    console.error("blogs not found");
+    return;
+  }
   // Select container
   const container =
     document.getElementById("blogs-container");
-
-  // Insert blogs HTML
+  // Insert publication content
   container.innerHTML = `
-
-    <article>
-
-      <h1>${pub.title}</h1>
-
-      <p>
-        <strong>Authors:</strong>
-        ${pub.authors}
-      </p>
-
-      <p>
-        <strong>Date:</strong>
-        ${pub.date}
-      </p>
-		${pub.cat}
-      <hr>
-	
-      <div>Abstract<p>
-        ${pub.abstract}
-		</div>
-		<div>
-		${pub.content}
+    <article class="journal-full">
+      <!-- blogs Header -->
+      <div class="journal-header">
+        <h1 class="journal-title">${pub.title || 'Untitled'}</h1>
+        <div class="journal-meta">
+          <span>${pub.authors || 'Unknown Author'} </span>
+          <span>•</span>
+          <span>  ${pub.date || ''} </span>
+        </div>
       </div>
-
+      <!-- Abstract -->
+      <section class="journal-section">
+        <h2>Abstract</h2>
+        <p> ${pub.excerpt || 'No excerpt available.'} </p>
+      </section>
+      <!-- Content -->
+      <section class="journal-section">
+        <h2>Content</h2>
+	<p> ${pub.content || 'No content available.'}</p>
+      </section>
+      <!-- Image Section -->
+      <section class="journal-section">
+        <h2>Research Image</h2>
+        <img src="${pub.image || 'no image found'}" alt="Research illustration" class="journal-image" >
+        <p class="image-caption">${pub.caption || 'No Research illustration'}</p>
+      </section>
+        </div>
+      </section>
+      <!-- References -->
+      <section class="journal-section">
+        <h2>References</h2>
+        <p>
+          ${pub.references || 'No references available.'}
+        </p>
+      </section>
     </article>
-
   `;
-	
-	}
-
-
+}
     /* -------- PAGE SWITCHING -------- */
     function showPage(name) {
       document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
