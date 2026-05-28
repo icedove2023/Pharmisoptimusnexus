@@ -1235,6 +1235,9 @@
 
   .journal-full {
     padding: 25px;
+	margin: auto;
+	padding: 2rem;
+  	line-height: 1.8;
   }
 
   .journal-title {
@@ -1994,7 +1997,7 @@ loadBlogsPost();
   // Select container
   const container =
     document.getElementById("blogs-container");
-  // Insert publication content
+  // Insert blog content
   container.innerHTML = `
     <article class="journal-full">
       <!-- blogs Header -->
@@ -2012,8 +2015,7 @@ loadBlogsPost();
         <p> ${pub.excerpt || 'No excerpt available.'} </p>
       </section>
       <!-- Content -->
-      <section class="journal-section">
-        <h2>Content</h2>
+      <section>
 	<p> ${pub.content || 'No content available.'}</p>
       </section>
       <!-- Image Section -->
