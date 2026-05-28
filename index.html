@@ -754,7 +754,7 @@
 
     /* Publications grid */
     .publications-section {
-      padding: 60px 40px;
+      padding: 10px 7.5px;
     }
     .pubs-grid {
       display: grid;
@@ -1156,7 +1156,7 @@
 /* CONTENT */
 
 .journal-section {
-  margin-bottom: 0;
+  margin-bottom: 3rem;
 }
 
 .journal-section h2 {
@@ -1241,12 +1241,20 @@
  .journal-full {
   max-width: 500px; 
   margin: 0 auto;
+margin-bottom:20px;	 
 }
-
+	/*Remove margin from the last one */
+.journal-full:last-child {
+  margin-bottom: 0;
+}
   .journal-title {
     font-size: 1.8rem;
   }
-
+#blogs-container {
+  display: flex;
+  flex-direction: column;
+  gap: 15px; /* controls spacing between articles */
+}
 }
   </style>
 </head>
