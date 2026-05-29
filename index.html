@@ -1233,10 +1233,6 @@
 
 @media (max-width: 768px) {
 
-  .journal-full {
-    padding: 25px;
-  }
-
   .journal-title {
     font-size: 1.8rem;
   }
@@ -1855,7 +1851,7 @@ function renderPubs(posts) {
 }
 loadPublicationsPosts();
 	  
-	/* -------- Readmore page -------- */
+	/* -------- Readmore pub page -------- */
 	
 		function openJournal(id) {
 
@@ -1873,7 +1869,7 @@ loadPublicationsPosts();
     document.getElementById("journal-container");
   // Insert publication content
   container.innerHTML = `
-    <article class="journal-full">
+    <article>
       <!-- Publication Header -->
       <div class="journal-header">
         <span class="journal-category ${pub.tag || ''}">${pub.cat || 'Publication'}</span>
@@ -1998,7 +1994,7 @@ loadBlogsPost();
     document.getElementById("blogs-container");
   // Insert blog content
   container.innerHTML = `
-    <article class="journal-full">
+    <article>
       <!-- blogs Header -->
       <div class="journal-header">
         <h1 class="journal-title">${pub.title || 'Untitled'}</h1>
