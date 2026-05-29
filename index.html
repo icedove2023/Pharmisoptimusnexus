@@ -1227,12 +1227,16 @@
 
 .journal-references {
   color: var(--muted);
-  padding-left: 20px;
+}
+.journal-references ul{
+	text-align: left;
 }
 
 .journal-references li {
-  margin-bottom: 10px;
-  line-height: 1.7;
+  margin-bottom: 0.5em;
+  line-height: 1.6;
+  text-indent: -1.5rem;
+  padding-left: 1.5rem;
 }
 
 /* MOBILE */
@@ -2028,11 +2032,10 @@ loadBlogsPost();
         </div>
       </section>
       <!-- References -->
-      <section class="journal-section">
-        <h2>References</h2>
-        <p>
+      <section class="journal-references">
+        
           ${pub.references || 'No references available.'}
-        </p>
+        
       </section>
     </article>
   `;
