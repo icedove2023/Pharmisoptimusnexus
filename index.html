@@ -5,16 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="Pharmis Optimus Nexus – Advancing Pharmaceutical Knowledge, Research, and Innovation" />
   <title>Pharmis Optimus Nexus</title>
-	<link rel="icon" type="image/png" href="classlogo2.png"/>
+  <link rel="icon" type="image/png" href="classlogo2.png"/>
+  
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
-
-  <!-- Lucide Icons -->
-  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/docx/8.5.0/docx.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
 
   <style>
     /* ============================================================
@@ -25,6 +21,7 @@
       --crimson:    #86373E;
       --brown:      #443320;
       --blush:      #F16D78;
+      --blush-12:   rgba(241,109,120,0.12);
       --cream:      #EFD9C7;
       --off-white:  #FBFBF0;
 
@@ -34,7 +31,7 @@
       --surface:    rgba(255,255,255,0.04);
       --border:     rgba(239,217,199,0.12);
       --text:       var(--off-white);
-      --muted:      rgba(251,251,240,0.5);
+      --muted:      rgba(251,251,240,0.6);
       --accent:     var(--blush);
       --accent2:    var(--cream);
 
@@ -56,7 +53,7 @@
       --surface: rgba(0,0,0,0.04);
       --border:  rgba(68,51,32,0.14);
       --text:    var(--dark);
-      --muted:   rgba(23,34,43,0.5);
+      --muted:   rgba(23,34,43,0.6);
     }
 
     /* ============================================================
@@ -139,11 +136,18 @@
     }
     .nav-brand {
       display: flex; align-items: center; gap: 10px;
+      cursor: pointer;
     }
     .nav-brand-icon {
       width: 38px; height: 38px;
       border-radius: 10px;
       display: flex; align-items: center; justify-content: center;
+      overflow: hidden;
+    }
+    .nav-brand-icon img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
     }
     .nav-brand-name {
       font-family: var(--font-display);
@@ -188,6 +192,7 @@
       border-radius: 99px;
       position: relative;
       transition: background var(--transition);
+      flex-shrink: 0;
     }
     .theme-toggle::after {
       content: '';
@@ -269,6 +274,7 @@
       background-position: center;
       transform: scale(1.05);
       transition: transform 8s ease;
+      will-change: transform;
     }
     .hero-slide.active .hero-slide-bg { transform: scale(1); }
     .hero-slide-overlay {
@@ -370,6 +376,7 @@
       border-radius: 99px;
       background: rgba(255,255,255,0.3);
       transition: var(--transition);
+      cursor: pointer;
     }
     .hero-dot.active {
       width: 28px;
@@ -546,7 +553,7 @@
     .contact-form-group input:focus,
     .contact-form-group textarea:focus {
       border-color: var(--blush);
-      box-shadow: 0 0 0 3px rgba(241,109,120,0.12);
+      box-shadow: 0 0 0 3px var(--blush-12);
     }
     .contact-form-group textarea { min-height: 140px; }
     .contact-info-item {
@@ -572,6 +579,7 @@
     .contact-info-item p { font-size: 0.95rem; }
     .social-links {
       display: flex; gap: 12px; margin-top: 32px;
+      flex-wrap: wrap;
     }
     .social-link {
       width: 40px; height: 40px;
@@ -620,7 +628,7 @@
       max-width: 280px;
       line-height: 1.7;
     }
-	
+    
     .footer-col h4 {
       font-size: 0.8rem;
       font-weight: 600;
@@ -655,6 +663,9 @@
       font-size: 0.875rem;
       outline: none;
     }
+    .newsletter-input input:focus {
+      border-color: var(--blush);
+    }
     .newsletter-input button {
       background: var(--crimson);
       color: white;
@@ -663,8 +674,16 @@
       font-size: 0.85rem;
       font-weight: 600;
       transition: var(--transition);
+      white-space: nowrap;
     }
     .newsletter-input button:hover { background: var(--blush); }
+    .newsletter-success {
+      color: var(--blush);
+      font-size: 0.85rem;
+      margin-top: 8px;
+      display: none;
+    }
+    .newsletter-success.show { display: block; }
     .footer-bottom {
       display: flex;
       align-items: center;
@@ -750,14 +769,17 @@
       outline: none;
       cursor: pointer;
     }
+    .filter-select:focus {
+      border-color: var(--blush);
+    }
 
     /* Publications grid */
     .publications-section {
       padding: 60px 40px;
     }
-	  .mainbody-section{
-		  padding: 60px 40px;
-	  }
+      .mainbody-section{
+          padding: 60px 40px;
+      }
     .pubs-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -807,6 +829,7 @@
     .tag-pharmsci     { background: rgba(68,51,32,0.5); color: var(--cream); }
     .tag-biotech      { background: rgba(134,55,62,0.3); color: #f09; }
     .tag-medchem      { background: rgba(70,100,150,0.3); color: #7af; }
+    .tag-patient-care { background: rgba(50,150,100,0.3); color: #5f5; }
 
     .pub-card h3 {
       font-family: var(--font-display);
@@ -873,6 +896,10 @@
       background: var(--crimson);
       color: white;
       border-color: var(--crimson);
+    }
+    .page-btn:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
     }
 
     /* ============================================================
@@ -1062,7 +1089,7 @@
       color: var(--blush);
       background: rgba(241,109,120,0.08);
     }
-	
+    
     /* ============================================================
        SCROLL REVEAL
     ============================================================ */
@@ -1092,6 +1119,101 @@
     @keyframes rotate { to { transform: rotate(360deg); } }
 
     /* ============================================================
+       FULL PUBLICATION PAGE
+    ============================================================ */
+    .journal-header {
+      margin-bottom: 40px;
+    }
+    .journal-category {
+      display: inline-block;
+      color: var(--muted);
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      margin-bottom: 20px;
+    }
+    .journal-title {
+      font-size: 2.4rem;
+      line-height: 1.3;
+      margin-bottom: 20px;
+      color: var(--text);
+    }
+    .journal-meta {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+    .journal-section {
+      margin-bottom: 40px;
+      padding: 0;
+      text-align: justify;
+      letter-spacing: 0.5px;
+    }
+    .journal-section h2 {
+      font-size: 1.5rem;
+      margin-bottom: 18px;
+      color: var(--text);
+    }
+    .journal-section p {
+      color: var(--muted);
+      line-height: 1.9;
+      font-size: 1rem;
+    }
+    .journal-image {
+      width: 100%;
+      border-radius: 16px;
+      margin-top: 20px;
+      margin-bottom: 10px;
+    }
+    .image-caption {
+      text-align: center;
+      font-size: 0.9rem;
+      color: #8b949e;
+    }
+    .table-wrapper {
+      overflow-x: auto;
+      margin-top: 20px;
+    }
+    .journal-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #0d1117;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .journal-table th,
+    .journal-table td {
+      padding: 16px;
+      border: 1px solid #30363d;
+      text-align: left;
+    }
+    .journal-table th {
+      background: #21262d;
+      color: white;
+    }
+    .journal-table td {
+      color: #c9d1d9;
+    }
+    .journal-references {
+      color: var(--muted);
+    }
+    .journal-references ul {
+      text-align: left;
+      padding-left: 20px;
+    }
+    .journal-references li {
+      margin-bottom: 0.5em;
+      line-height: 1.6;
+    }
+    .no-content {
+      text-align: center;
+      color: var(--muted);
+      padding: 60px 20px;
+    }
+
+    /* ============================================================
        RESPONSIVE
     ============================================================ */
     @media (max-width: 1024px) {
@@ -1114,140 +1236,17 @@
       .blog-grid { grid-template-columns: 1fr; }
       .filters-bar { padding: 16px 20px; }
       .publications-section, .blog-layout { padding: 40px 20px; }
-		.mainbody-section { padding: 10px; }
+      .mainbody-section { padding: 10px; }
       .page-hero { padding: 130px 20px 60px; }
       .footer-grid { grid-template-columns: 1fr; }
       .footer-bottom { flex-direction: column; gap: 10px; text-align: center; }
       .about-cards { grid-template-columns: 1fr; }
+      .hero-arrow.prev { left: 10px; }
+      .hero-arrow.next { right: 10px; }
+      .journal-title {
+        font-size: 1.8rem;
+      }
     }
-	
-	/* ============================================================
-       page layout for full publication page
-    ============================================================ */
-
-/* HEADER */
-
-.journal-header {
-  margin-bottom: 40px;
-}
-
-.journal-category {
-  display: inline-block;
-  
-  color: var(--muted);
-  padding: 6px 14px;
-  border-radius: 999px;
-  font-size: 0.8rem;
-  margin-bottom: 20px;
-}
-
-.journal-title {
-  font-size: 2.4rem;
-  line-height: 1.3;
-  margin-bottom: 20px;
-  color: var(--muted);
-}
-
-.journal-meta {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-  color: var(--muted);
-  font-size: 0.95rem;
-}
-
-/* CONTENT */
-
-.journal-section {
-  	margin-bottom: 10px;
-    padding: 0;
-    text-align: justify;
-    letter-spacing: 0.5px;
-}
-
-.journal-section h2 {
-  font-size: 1.5rem;
-  margin-bottom: 18px;
-  color: var(--muted);
-}
-
-.journal-section p {
-  color: var(--muted);
-  line-height: 1.9;
-  font-size: 1rem;
-}
-
-/* IMAGES */
-
-.journal-image {
-  width: 100%;
-  border-radius: 16px;
-  margin-top: 20px;
-  margin-bottom: 10px;
-}
-
-.image-caption {
-  text-align: center;
-  font-size: 0.9rem;
-  color: #8b949e;
-}
-
-/* TABLES */
-
-.table-wrapper {
-  overflow-x: auto;
-  margin-top: 20px;
-}
-
-.journal-table {
-  width: 100%;
-  border-collapse: collapse;
-  background: #0d1117;
-  border-radius: 12px;
-  overflow: hidden;
-}
-
-.journal-table th,
-.journal-table td {
-  padding: 16px;
-  border: 1px solid #30363d;
-  text-align: left;
-}
-
-.journal-table th {
-  background: #21262d;
-  color: white;
-}
-
-.journal-table td {
-  color: #c9d1d9;
-}
-
-/* REFERENCES */
-
-.journal-references {
-  color: var(--muted);
-}
-.journal-references ul{
-	text-align: left;
-}
-
-.journal-references li {
-  margin-bottom: 0.5em;
-  line-height: 1.6;
-  text-indent: -1.5rem;
-  padding-left: 1.5rem;
-}
-
-/* MOBILE */
-
-@media (max-width: 768px) {
-
-  .journal-title {
-    font-size: 1.8rem;
-  }
-
-}
   </style>
 </head>
 <body>
@@ -1255,8 +1254,8 @@
   <!-- ============================================================
        LOADER
   ============================================================ -->
-  <div id="loader">
-	 <div class="loader-logo"><img src="Classlogo.png" width="120" height="120"></div>
+  <div id="loader" role="status" aria-label="Loading">
+    <div class="loader-logo"><img src="Classlogo.png" width="120" height="120" alt="Pharmis Optimus Nexus Logo" /></div>
     <div class="loader-bar"><div class="loader-fill"></div></div>
   </div>
 
@@ -1264,9 +1263,9 @@
        NAVBAR
   ============================================================ -->
   <nav class="navbar" role="navigation" aria-label="Main navigation">
-    <div class="nav-brand">
+    <div class="nav-brand" onclick="navigateTo('home')">
       <div class="nav-brand-icon">
-	  <img src="Classlogo.png">
+        <img src="Classlogo.png" alt="Pharmis Optimus Nexus Logo" />
       </div>
       <div class="nav-brand-name">
         Pharmis Optimus Nexus
@@ -1275,29 +1274,29 @@
     </div>
 
     <div class="nav-links">
-      <a href="#" onclick="showPage('home'); scrollToSection('hero')" class="active" data-page="home">Home</a>
-      <a href="#" onclick="showPage('publications')" data-page="publications">Publications</a>
-      <a href="#" onclick="showPage('blog')" data-page="blog">Blog</a>
-      <a href="#" onclick="showPage('home'); setTimeout(()=>scrollToSection('about'),100)">About Us</a>
-      <a href="#" onclick="showPage('home'); setTimeout(()=>scrollToSection('contact'),100)">Contact Us</a>
+      <a href="#home" data-page="home" class="active">Home</a>
+      <a href="#publications" data-page="publications">Publications</a>
+      <a href="#blog" data-page="blog">Blog</a>
+      <a href="#about" data-page="home">About Us</a>
+      <a href="#contact" data-page="home">Contact Us</a>
     </div>
 
     <div class="nav-actions">
-      <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark/light mode"></button>
-      <button class="hamburger" onclick="toggleMobileNav()" aria-label="Open menu">
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark/light mode"></button>
+      <button class="hamburger" id="hamburgerBtn" aria-label="Open menu">
         <span></span><span></span><span></span>
       </button>
     </div>
   </nav>
 
   <!-- Mobile nav -->
-  <div class="mobile-nav" id="mobileNav" onclick="toggleMobileNav()">
+  <div class="mobile-nav" id="mobileNav" role="dialog" aria-label="Mobile navigation">
     <div class="mobile-nav-panel" onclick="event.stopPropagation()">
-      <a href="#" onclick="showPage('home');toggleMobileNav()">Home</a>
-      <a href="#" onclick="showPage('publications');toggleMobileNav()">Publications</a>
-      <a href="#" onclick="showPage('blog');toggleMobileNav()">Blog</a>
-      <a href="#" onclick="showPage('home');setTimeout(()=>scrollToSection('about'),100);toggleMobileNav()">About Us</a>
-      <a href="#" onclick="showPage('home');setTimeout(()=>scrollToSection('contact'),100);toggleMobileNav()">Contact Us</a>
+      <a href="#home" data-page="home">Home</a>
+      <a href="#publications" data-page="publications">Publications</a>
+      <a href="#blog" data-page="blog">Blog</a>
+      <a href="#about" data-page="home">About Us</a>
+      <a href="#contact" data-page="home">Contact Us</a>
     </div>
   </div>
 
@@ -1310,21 +1309,21 @@
     <section class="hero" id="hero" aria-label="Hero section">
       <div class="hero-slides" id="heroSlides">
         <div class="hero-slide slide-1 active">
-          <div class="hero-slide-bg"><img src="Classlogo.png"></div>
+          <div class="hero-slide-bg" role="img" aria-label="Abstract pharmaceutical background"></div>
           <div class="hero-slide-overlay"></div>
         </div>
         <div class="hero-slide slide-2">
-          <div class="hero-slide-bg"> <img src="aa.jpg"></div>
+          <div class="hero-slide-bg" role="img" aria-label="Abstract pharmaceutical background"></div>
           <div class="hero-slide-overlay"></div>
         </div>
         <div class="hero-slide slide-3">
-          <div class="hero-slide-bg"> <img src="bb.jpg" ></div>
+          <div class="hero-slide-bg" role="img" aria-label="Abstract pharmaceutical background"></div>
           <div class="hero-slide-overlay"></div>
         </div>
       </div>
 
       <!-- Molecule SVG deco -->
-      <div class="hero-deco">
+      <div class="hero-deco" aria-hidden="true">
         <svg width="460" height="460" viewBox="0 0 460 460" fill="none" xmlns="http://www.w3.org/2000/svg">
           <circle cx="230" cy="230" r="60" stroke="#EFD9C7" stroke-width="2"/>
           <circle cx="230" cy="230" r="8" fill="#EFD9C7"/>
@@ -1359,11 +1358,11 @@
         </h1>
         <p class="hero-subtitle">Advancing Pharmaceutical Knowledge, Research, and Innovation — connecting scientists, clinicians, and visionaries worldwide.</p>
         <div class="hero-cta">
-          <button class="btn btn-primary" onclick="showPage('publications')">
+          <button class="btn btn-primary" data-nav="publications">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
             View Publications
           </button>
-          <button class="btn btn-outline" onclick="showPage('blog')">
+          <button class="btn btn-outline" data-nav="blog">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
             Read Blog
           </button>
@@ -1371,23 +1370,23 @@
       </div>
 
       <!-- Slide controls -->
-      <button class="hero-arrow prev" onclick="changeSlide(-1)" aria-label="Previous slide">
+      <button class="hero-arrow prev" id="heroPrev" aria-label="Previous slide">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
       </button>
-      <button class="hero-arrow next" onclick="changeSlide(1)" aria-label="Next slide">
+      <button class="hero-arrow next" id="heroNext" aria-label="Next slide">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
       </button>
       <div class="hero-dots" id="heroDots">
-        <div class="hero-dot active" onclick="goToSlide(0)"></div>
-        <div class="hero-dot" onclick="goToSlide(1)"></div>
-        <div class="hero-dot" onclick="goToSlide(2)"></div>
+        <div class="hero-dot active" data-slide="0"></div>
+        <div class="hero-dot" data-slide="1"></div>
+        <div class="hero-dot" data-slide="2"></div>
       </div>
     </section>
 
     <!-- STATS BAR -->
     <div class="stats-bar" role="region" aria-label="Key statistics">
       <div class="stat-item reveal">
-        <div class="stat-num" data-count="">0</div>
+        <div class="stat-num" data-count="0">0</div>
         <div class="stat-label">Publications</div>
       </div>
       <div class="stat-item reveal reveal-delay-1">
@@ -1396,11 +1395,11 @@
       </div>
       <div class="stat-item reveal reveal-delay-2">
         <div class="stat-num" data-count="0">0</div>
-        <div class="stat-label">blogs</div>
+        <div class="stat-label">Blogs</div>
       </div>
       <div class="stat-item reveal reveal-delay-3">
         <div class="stat-num" data-count="300">0</div>
-        <div class="stat-label">academic level</div>
+        <div class="stat-label">Academic Level</div>
       </div>
     </div>
 
@@ -1413,7 +1412,7 @@
           <div class="divider"></div>
           <p class="reveal reveal-delay-1">Pharmis Optimus Nexus is a public health–driven platform founded by passionate 300-level pharmacy students committed to promoting health awareness, pharmaceutical knowledge, and community impact. Our mission is to educate, inform, and inspire individuals through evidence-based health information, research discussions, and public health advocacy.</p>
           <p class="reveal reveal-delay-2">We aim to bridge the gap between pharmaceutical education and community healthcare by creating a space where students, healthcare enthusiasts, and professionals can share ideas, discuss emerging health challenges, and promote healthier lifestyles. Through collaboration, innovation, and a commitment to service, Pharmis Optimus Nexus strives to empower communities with reliable health knowledge while nurturing the next generation of public health-conscious pharmacy professionals.</p>
-          <button class="btn btn-primary reveal reveal-delay-3" style="margin-top:8px" onclick="showPage('publications')">
+          <button class="btn btn-primary reveal reveal-delay-3" style="margin-top:8px" data-nav="publications">
             Explore Publications
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
           </button>
@@ -1453,8 +1452,7 @@
         <p class="section-desc reveal reveal-delay-1">Have a question, collaboration idea, or want to submit a publication? We'd love to hear from you.</p>
       </div>
       <div class="contact-grid">
-        <form onsubmit="handleContactSubmit(event)" novalidate>
-		
+        <form id="contactForm" novalidate>
           <div class="contact-form-group reveal">
             <label for="name">Full Name</label>
             <input type="text" id="name" placeholder="Dr. Jane Smith" required />
@@ -1490,7 +1488,7 @@
             <div>
               <h4>Phone</h4>
               <p>+2348147353112</p>
-			  <p>+2349028212126</p>
+              <p>+2349028212126</p>
             </div>
           </div>
           <div class="contact-info-item">
@@ -1499,87 +1497,34 @@
             </div>
             <div>
               <h4>Address</h4>
-              <p>Faculty of Pharmaceutical Sciences<br>university of ilorin</p>
+              <p>Faculty of Pharmaceutical Sciences<br>University of Ilorin</p>
             </div>
           </div>
           <div class="social-links">
-            <a href="#" class="social-link" aria-label="LinkedIn">
+            <a href="#" class="social-link" aria-label="LinkedIn" data-social="linkedin">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
             </a>
-            <a href="#" class="social-link" aria-label="Twitter">
+            <a href="#" class="social-link" aria-label="Twitter" data-social="twitter">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/></svg>
             </a>
-            <a href="#" class="social-link" aria-label="Facebook">
+            <a href="#" class="social-link" aria-label="Facebook" data-social="facebook">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
             </a>
-            <a href="#" class="social-link" aria-label="Instagram">
+            <a href="#" class="social-link" aria-label="Instagram" data-social="instagram">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
             </a>
           </div>
           <div class="map-placeholder">
             <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-            <span style="font-size:0.85rem">Faculty of Pharmaceutical Sciences, university of ilorin</span>
+            <span style="font-size:0.85rem">Faculty of Pharmaceutical Sciences, University of Ilorin</span>
           </div>
         </div>
       </div>
     </section>
 
     <!-- FOOTER -->
-    <footer>
-      <div class="footer-grid">
-        <div class="footer-brand">
-          <div class="nav-brand">
-            <div class="nav-brand-icon">
-              <img src="Classlogo.png">
-            </div>
-            <div class="nav-brand-name">
-              Pharmis Optimus Nexus
-              <small>Research & Innovation</small>
-            </div>
-          </div>
-          <p>Advancing Pharmaceutical Knowledge, Research, and Innovation. Connecting the global scientific community.</p>
-        </div>
-        <div class="footer-col">
-          <h4>Quick Links</h4>
-          <ul >
-            <li><button onclick="showPage('publications')" class="nav-link">Publications</button></li>
-            <li><button onclick="showPage('blog')" class="nav-link">Blog</button></li>
-            <li><a href="#" onclick="scrollToSection('about')">About Us</a></li>
-            <li><a href="#" onclick="scrollToSection('contact')">Contact Us</a></li>
-          </ul>
-        </div>
-        <div class="footer-col">
-          <h4>Research</h4>
-          <ul >
-            <li><a href="#">Pharmacology</a></li>
-            <li><a href="#">Biotechnology</a></li>
-            <li><a href="#">Drug Delivery</a></li>
-            <li><a href="#">Clinical Trials</a></li>
-          </ul>
-        </div>
-        <div class="footer-col">
-          <h4>Newsletter</h4>
-          <p style="font-size:0.83rem;color:var(--muted);margin-bottom:12px">Stay updated with the latest research and insights.</p>
-          <div class="newsletter-input">
-            <input type="email" placeholder="Enter your email" aria-label="Newsletter email" />
-            <button type="button" onclick="this.textContent='✓'">Subscribe</button>
-          </div>
-        </div>
-      </div>
-      <div class="footer-bottom">
-        <span>© 2026 Pharmis Optimus Nexus. All Rights Reserved.</span>
-        <div class="social-links" style="margin-top:0">
-          <a href="#" class="social-link" style="width:32px;height:32px" aria-label="LinkedIn">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
-          </a>
-          <a href="#" class="social-link" style="width:32px;height:32px" aria-label="Twitter">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/></svg>
-          </a>
-          <a href="#" class="social-link" style="width:32px;height:32px" aria-label="Facebook">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
-          </a>
-        </div>
-      </div>
+    <footer id="mainFooter">
+      <!-- Footer will be injected by JavaScript -->
     </footer>
   </div>
 
@@ -1589,33 +1534,28 @@
   <div id="page-publications" class="page">
     <div class="page-hero">
       <div class="page-hero-eyebrow"><span>Home</span> › Publications</div>
-      <h1 class="page-hero h1">Publications</h1>
+      <h1>Publications</h1>
       <p style="margin-top:14px;color:var(--muted);max-width:500px">Browse peer-reviewed research, clinical studies, and review articles from our global network of researchers.</p>
     </div>
 
     <div class="filters-bar">
       <div class="search-input-wrap">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        <input type="text" placeholder="Search publications..." oninput="filterPubs(this.value)" aria-label="Search publications" />
+        <input type="text" id="pubSearch" placeholder="Search publications..." aria-label="Search publications" />
       </div>
-      <select class="filter-select" onchange="filterPubsCategory(this.value)">
+      <select class="filter-select" id="pubCategoryFilter">
         <option value="">All Categories</option>
         <option value="Pharmacology">Pharmacology</option>
         <option value="Biotechnology">Biotechnology</option>
         <option value="Medicinal Chemistry">Medicinal Chemistry</option>
-		<option value="Patient care">Patient care</option>
+        <option value="Patient care">Patient Care</option>
       </select>
-      <select class="filter-select" onchange="filterPubsdate(this.value)">
+      <select class="filter-select" id="pubYearFilter">
         <option value="">All Years</option>
         <option value="2026">2026</option>
         <option value="2027">2027</option>
         <option value="2028">2028</option>
-		<option value="2029">2029</option>
-      </select>
-      <select class="filter-select">
-        <option>Sort by: Latest</option>
-        <option>Sort by: Most Cited</option>
-        <option>Sort by: Oldest</option>
+        <option value="2029">2029</option>
       </select>
     </div>
 
@@ -1623,51 +1563,34 @@
       <div class="pubs-grid" id="pubsGrid">
         <!-- Populated by JS -->
       </div>
-      <div class="pagination">
-        <button class="page-btn">‹</button>
-        <button class="page-btn active">1</button>
-        <button class="page-btn">2</button>
-        <button class="page-btn">3</button>
-        <button class="page-btn">4</button>
-        <button class="page-btn">5</button>
-        <button class="page-btn">›</button>
+      <div class="pagination" id="paginationControls">
+        <!-- Populated by JS -->
       </div>
     </div>
 
-    <!-- Footer repeated -->
-    <footer style="margin-top:40">
-      <div class="footer-bottom">
-        <span>© 2026 Pharmis Optimus Nexus. All Rights Reserved.</span>
-      </div>
+    <footer id="publicationsFooter">
+      <!-- Footer will be injected by JavaScript -->
     </footer>
   </div>
   
   <!-- ============================================================
-       More PAGE this page will diplay the full content of the publication
+       MORE PAGE - Full Publication Content
   ============================================================ -->
- 
- <div id="page-more" class="page">
- <div class="page-hero">
+  <div id="page-more" class="page">
+    <div class="page-hero">
       <div class="page-hero-eyebrow"><span>Home</span> › <span>Publication</span> › More</div>
- </div>
- <div>
-	 <div class="mainbody-section">
-      <div  id="journal-container">
-        <!-- Populated by JS -->
+    </div>
+    <div>
+      <div class="mainbody-section">
+        <div id="journal-container">
+          <!-- Populated by JS -->
+        </div>
+        <footer id="moreFooter">
+          <!-- Footer will be injected by JavaScript -->
+        </footer>
       </div>
-	  
-	  
-	  <footer style="margin-top:40px">
-      <div class="footer-bottom">
-        <span>© 2026 Pharmis Optimus Nexus. All Rights Reserved.</span>
-      </div>
-    </footer>
- 
- 		</div>
- 	</div>
- </div>
-	
- 
+    </div>
+  </div>
 
   <!-- ============================================================
        BLOG PAGE
@@ -1675,33 +1598,31 @@
   <div id="page-blog" class="page">
     <div class="page-hero">
       <div class="page-hero-eyebrow"><span>Home</span> › Blog</div>
-      <h1 class="page-hero">Blog</h1>
+      <h1>Blog</h1>
       <p style="margin-top:14px;color:var(--muted);max-width:500px">Insights, perspectives, and commentary from leaders in pharmaceutical research and innovation.</p>
     </div>
 
     <div class="filters-bar">
       <div class="search-input-wrap">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        <input type="text" placeholder="Search blog posts..." aria-label="Search blog posts" />
+        <input type="text" id="blogSearch" placeholder="Search blog posts..." aria-label="Search blog posts" />
       </div>
-      <select class="filter-select">
-        <option>Categories</option>
-        <option>Research Insights</option>
-        <option>Pharmaceutical Innovation</option>
-        <option>Drug Development</option>
-        <option>Clinical Research</option>
-        <option>Industry News</option>
+      <select class="filter-select" id="blogCategoryFilter">
+        <option value="">All Categories</option>
+        <option value="Research Insights">Research Insights</option>
+        <option value="Pharmaceutical Innovation">Pharmaceutical Innovation</option>
+        <option value="Drug Development">Drug Development</option>
+        <option value="Clinical Research">Clinical Research</option>
+        <option value="Industry News">Industry News</option>
       </select>
     </div>
 
     <div class="blog-layout">
-		
       <div>
-    
-		 <!-- Featured post -->
+        <!-- Featured post -->
         <div id="featuredPost" class="featured-post reveal">
-         <!-- Populated by JS -->
-		</div>	
+          <!-- Populated by JS -->
+        </div>
 
         <!-- Blog grid -->
         <h3 style="font-family:var(--font-display);font-size:1.5rem;margin-bottom:24px">Latest Posts</h3>
@@ -1714,574 +1635,1043 @@
       <aside class="sidebar" role="complementary">
         <div class="sidebar-widget">
           <h3>Categories</h3>
-          <ul class="category-list">
-            <li><span>All Categories</span><span class="cat-count">0</span></li>
-            <li><span>Research Insights</span><span class="cat-count">0</span></li>
-            <li><span>Pharmaceutical Innovation</span><span class="cat-count">0</span></li>
-            <li><span>Drug Development</span><span class="cat-count">0</span></li>
-            <li><span>Clinical Research</span><span class="cat-count">0</span></li>
-            <li><span>Industry News</span><span class="cat-count">0</span></li>
+          <ul class="category-list" id="blogCategories">
+            <!-- Populated by JS -->
           </ul>
         </div>
         <div class="sidebar-widget">
           <h3>Tags</h3>
-          <div class="tags-cloud">
-            <span class="tag-chip">Pharma</span>
-            <span class="tag-chip">Research</span>
-            <span class="tag-chip">Innovation</span>
-            <span class="tag-chip">Drug Delivery</span>
-            <span class="tag-chip">Biotechnology</span>
-            <span class="tag-chip">AI</span>
-            <span class="tag-chip">Clinical Trials</span>
-            <span class="tag-chip">Regulation</span>
-            <span class="tag-chip">Genomics</span>
-            <span class="tag-chip">Oncology</span>
+          <div class="tags-cloud" id="blogTags">
+            <!-- Populated by JS -->
           </div>
         </div>
         <div class="sidebar-widget">
           <h3>Subscribe</h3>
           <p style="font-size:0.84rem;color:var(--muted);margin-bottom:14px">Get the latest posts delivered to your inbox.</p>
           <div style="display:flex;flex-direction:column;gap:10px">
-            <input type="email" placeholder="Your email address"
+            <input type="email" id="blogSubscribeEmail" placeholder="Your email address"
               style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px 14px;color:var(--text);font-family:var(--font-body);font-size:0.875rem;outline:none;width:100%" />
-            <button class="btn btn-primary" style="justify-content:center;width:100%">Subscribe</button>
+            <button class="btn btn-primary" id="blogSubscribeBtn" style="justify-content:center;width:100%">Subscribe</button>
+            <div id="blogSubscribeSuccess" style="display:none;color:var(--blush);font-size:0.85rem;">✓ Subscribed successfully!</div>
           </div>
         </div>
       </aside>
     </div>
 
-    <footer style="margin-top:0">
-      <div class="footer-bottom">
-        <span>© 2024 Pharmis Optimus Nexus. All Rights Reserved.</span>
-      </div>
+    <footer id="blogFooter">
+      <!-- Footer will be injected by JavaScript -->
     </footer>
   </div>
   
-    <!-- ============================================================
-       READMORE FOR BLOGS--- THIS WILL DIAPLAY THE BLOGS
+  <!-- ============================================================
+       READMORE FOR BLOGS - Full Blog Content
   ============================================================ -->
   <div id="page-more-blogs" class="page">
-	   <div class="page-hero">
-      <div class="page-hero-eyebrow"><span>Home</span> › <span>Publication</span> › More</div>
- </div>
-  <div class="mainbody-section">
-	  <div id="blogs-container">
-  
-  <!-- mainly js -->
- 	 </div>
-    
-   <footer style="margin-top:40px">
-      <div class="footer-bottom">
-        <span>© 2026 Pharmis Optimus Nexus. All Rights Reserved.</span>
+    <div class="page-hero">
+      <div class="page-hero-eyebrow"><span>Home</span> › <span>Blog</span> › More</div>
+    </div>
+    <div class="mainbody-section">
+      <div id="blogs-container">
+        <!-- Populated by JS -->
       </div>
-    </footer>
-	
+      <footer id="moreBlogsFooter">
+        <!-- Footer will be injected by JavaScript -->
+      </footer>
+    </div>
   </div>
-  
-  
-  
-  
+
   <!-- ============================================================
        JAVASCRIPT
   ============================================================ -->
   <script>
+    (function() {
+      'use strict';
 
+      // ============================================================
+      // DATA
+      // ============================================================
+      const gradients = [
+        'linear-gradient(135deg, #1a2a1a, #2d6a2d)',
+        'linear-gradient(135deg, #1a1a2a, #2d3a7a)',
+        'linear-gradient(135deg, #1a1218, #5a2060)',
+        'linear-gradient(135deg, #1a1a18, #5a5010)'
+      ];
 
-	  
-    /* -------- DATA -------- */
-    const pubColors = [
-      ['#1a2a1a','#2d6a2d'], // green tones
-      ['#1a1a2a','#2d3a7a'],
-      ['#1a1218','#5a2060'],
-      ['#1a1a18','#5a5010'],
-    ];
+      const gradientsblogs = [
+        'linear-gradient(135deg, #1a2a3a, #2a4a6a)',
+        'linear-gradient(135deg, #1a1a2a, #3a2060)',
+        'linear-gradient(135deg, #2a1a18, #6a3020)',
+        'linear-gradient(135deg, #1a2218, #204a20)'
+      ];
 
-    /* -------- RENDER PUBLICATIONS this  also allow us to fatch from google spreadsheet-------- */
-    const gradients = [
-  'linear-gradient(135deg, #1a2a1a, #2d6a2d)',
-  'linear-gradient(135deg, #1a1a2a, #2d3a7a)',
-  'linear-gradient(135deg, #1a1218, #5a2060)',
-  'linear-gradient(135deg, #1a1a18, #5a5010)',
-];
+      // Tag color mapping
+      const tagColors = {
+        'Pharmacology': 'tag-pharmacology',
+        'Biotechnology': 'tag-biotech',
+        'Medicinal Chemistry': 'tag-medchem',
+        'Patient care': 'tag-patient-care',
+        'Research Insights': 'tag-pharmacology',
+        'Pharmaceutical Innovation': 'tag-biotech',
+        'Drug Development': 'tag-medchem',
+        'Clinical Research': 'tag-pharmacology',
+        'Industry News': 'tag-patient-care'
+      };
 
-	  /* to fetch data from the google spreadsheet for the publication detail note that  'let publications = [];' is a public variable used to store the data fetched from the google spreadsheet  */
-let publications = [];
+      // ============================================================
+      // STATE
+      // ============================================================
+      let publications = [];
+      let blogs = [];
+      let currentPubPage = 1;
+      const pubsPerPage = 6;
+      let filteredPublications = [];
+      let filteredBlogs = [];
 
-	  /* function used to fatch the publication data from the google spreadsheet */
-async function loadPublicationsPosts() {
-  try {
-    const response = await fetch(
-      "https://script.google.com/macros/s/AKfycby0vr3GuR5vlWqILYbSTqFN8bc8jBFPbJIZ3tUjnai6UmYH_NO2-JU3sMMuDVQjrkR-/exec"
-    );
-    const posts = await response.json();
-	  publications = posts;
-    renderPubs(posts);
-  } catch (error) {
-    console.error("Error loading posts:", error);
-  }
-}
-/* to design the pulication layout from the data fatch from the global variable 'publications' */
-function renderPubs(posts) {
-  const grid = document.getElementById('pubsGrid');
-  if (!grid) return;
-  grid.innerHTML = '';
-  posts.forEach((post, index) => {
-    grid.innerHTML += `
-      <article class="pub-card reveal" role="article">
-        <div class="pub-card-img">
-          <div class="pub-card-img-inner" style="background:${gradients[index % 4]}" ></div>
-          <div class="pub-card-img-overlay"></div>
-        </div>
-        <div class="pub-card-body">
-          <span class="journal-category; pub-tag ${post.tag || ''}">
-            ${post.cat || 'Publication'}
-          </span>
-          <h3>${post.title || 'Untitled'}</h3>
-          <div class="pub-meta">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-              <circle cx="12" cy="7" r="4"/>
-            </svg>
-            ${post.authors || 'Unknown Author'}
-          </div>
-          <p class="pub-abstract">
-            ${post.abstract || 'No abstract available.'}
-          </p>
-          <div class="pub-card-footer">
-            <span class="pub-date">
-              ${post.date || ''}
-            </span>
-            <button onclick="showPage('more'); openJournal('${post.id}')" class="btn-sm"> Read More </button>
-          </div>
-        </div>
-      </article>
-    `;
-  });
-  observeReveal();
-}
-loadPublicationsPosts();
-	  
-	/* -------- Readmore pub page -------- */
-	
-		function openJournal(id) {
+      // ============================================================
+      // DOM REFS
+      // ============================================================
+      const $ = (sel) => document.querySelector(sel);
+      const $$ = (sel) => document.querySelectorAll(sel);
 
-  // Find selected publication
-  const pub = publications.find(
-    post => String(post.id) === String(id)
-  );
-  // Safety check
-  if (!pub) {
-    console.error("Publication not found");
-    return;
-  }
-  // Select container
-  const container =
-    document.getElementById("journal-container");
-  // Insert publication content
-  container.innerHTML = `
-    <article>
-      <!-- Publication Header -->
-      <div class="journal-header">
-        <span class="journal-category ${pub.tag || ''}">${pub.cat || 'Publication'}</span>
-        <h1 class="journal-title">${pub.title || 'Untitled'}</h1>
-        <div class="journal-meta">
-          <span>${pub.authors || 'Unknown Author'} </span>
-          <span>•</span>
-          <span>  ${pub.date || ''} </span>
-        </div>
-      </div>
-      <!-- Abstract -->
-      <section class="journal-section">
-        <h2>Abstract</h2>
-        <p> ${pub.abstract || 'No abstract available.'} </p>
-      </section>
-      <!-- Introduction -->
-      <section class="journal-section">
-        <h2>Introduction</h2>
-	<p> ${pub.introduction || 'No introduction available.'}</p>
-      </section>
-      <!-- Image Section -->
-      <section class="journal-section">
-        <h2>Research Image</h2>
-        <img src="${pub.image || 'no image found'}" alt="Research illustration" class="journal-image" >
-        <p class="image-caption">${pub.caption || 'No Research illustration'}</p>
-      </section>
-        </div>
-      </section>
-      <!-- Conclusion -->
-      <section class="journal-section">
-        <h2>Conclusion</h2>
-        <p>
-          ${pub.conclusion || 'No conclusion available.'}
-        </p>
-      </section>
-      <!-- References -->
-      <section class="journal-section">
-        <h2>References</h2>
-        <p>
-          ${pub.references || 'No references available.'}
-        </p>
-      </section>
-    </article>
-  `;
-}
-    /* -------- RENDER BLOG -------- */
-
-const gradientsblogs = [
-  'linear-gradient(135deg, #1a2a3a, #2a4a6a)',
-  'linear-gradient(135deg, #1a1a2a, #3a2060)',
-  'linear-gradient(135deg, #2a1a18, #6a3020)',
-  'linear-gradient(135deg, #1a2218, #204a20)'
-];
-
-/* Global blogs array */
-let blogs = [];
-
-/* Fetch blogs from Google Spreadsheet */
-async function loadBlogsPost() {
-  try {
-    const response = await fetch(
-      "https://script.google.com/macros/s/AKfycbxyk2d11BD63yMxa8CCEm6Ma4emoVInxkXGVzkP9trVMtszqh6H7a1g0e42Ce3tuCQf/exec"
-    );
-    const postsb = await response.json();
-    blogs = postsb;
-    renderBlog(blogs);
-	renderFeaturedPost();
-  } catch (error) {
-    console.error("Error loading blogs:", error);
-  }
-}
-/* Render blogs */
-function renderBlog(postsb) {
-  const grid = document.getElementById('blogGrid');
-  if (!grid) return;
-  grid.innerHTML = '';
-  postsb.forEach((post, index) => {
-    grid.innerHTML += `
-      <article class="blog-card reveal" role="article">
-        <div class="blog-card-img">
-          <div class="blog-card-img-inner" style="background:${gradientsblogs[index % 4]}" ></div>
-        </div>
-        <div class="blog-card-body">
-          <div class="blog-card-cat">${post.cat || ''} </div>
-          <h3>${post.title || 'Untitled'}</h3>
-          <p>
-            ${post.excerpt || 'No excerpt available.'}
-          </p>
-          <div class="blog-card-footer">
-            <div class="post-meta" style="margin:0">
-              <span>${post.date || 'no published date'}</span>
-              <div class="post-meta-dot"></div>
-              <span class="blog-read-time">
-                ${post.read || 'No read time available.'}
-              </span>
-            </div>
-            <button  onclick="showPage('more-blogs'); openblogsmore('${post.id}')" class="btn-sm">Read More</button>
-          </div>
-        </div>
-      </article>
-    `;
-  });
-  observeReveal();
-}
-/* Run function */
-loadBlogsPost();
-	  
-/* -------- script for readmore-blogs -------- */
-	function openblogsmore(id) {
-
-  // Find selected blogs
-  const pub = blogs.find(
-    post => String(post.id) === String(id)
-  );
-  // Safety check
-  if (!pub) {
-    console.error("blogs not found");
-    return;
-  }
-  // Select container
-  const container =
-    document.getElementById("blogs-container");
-  // Insert blog content
-  container.innerHTML = `
-    <article>
-      <!-- blogs Header -->
-      <div class="journal-header">
-        <h1 class="journal-title">${pub.title || 'Untitled'}</h1>
-        <div class="journal-meta">
-          <span>${pub.authors || 'Unknown Author'} </span>
-          <span>•</span>
-          <span>  ${pub.date || ''} </span>
-        </div>
-      </div>
-      <!-- excerpt -->
-      <section class="journal-section">
-        <h2>Excerpt</h2>
-        <p> ${pub.excerpt || 'No excerpt available.'} </p>
-      </section>
-      <!-- Content -->
-      <section class="journal-section">
-	<p> ${pub.content || 'No content available.'}</p>
-      </section>
-      <!-- Image Section -->
-      <section class="journal-section">
-        <h2>Research Image</h2>
-        <img src="${pub.image || 'no image found'}" alt="Research illustration" class="journal-image" >
-        <p class="image-caption">${pub.caption || 'No Research illustration'}</p>
-      </section>
-        </div>
-      </section>
-      <!-- References -->
-      <section class="journal-references">
-        
-          ${pub.references || 'No references available.'}
-        
-      </section>
-    </article>
-  `;
-}
-/* -------- featured post for blog -------- */
-	  function renderFeaturedPost() {
-
-  // Find featured blogs
-  const featured = blogs.find(
-    post => post.featured === "yes"
-  );
-
-  // Stop if none found
-  if (!featured) return;
-
-  // Select container
-  const container =
-    document.getElementById("featuredPost");
-  // Insert HTML
-  container.innerHTML = `
-    <div class="featured-img">
-      <div class="featured-img-inner">
-        <!-- Abstract scientific SVG -->
-        <svg width="360" height="320" viewBox="0 0 360 320" xmlns="http://www.w3.org/2000/svg" opacity="0.5">
-          <defs>
-            <radialGradient id="fg1" cx="50%" cy="50%" r="60%">
-              <stop offset="0%" stop-color="#F16D78" stop-opacity="0.6"/>
-              <stop offset="100%" stop-color="#17222B" stop-opacity="0"/>
-            </radialGradient>
-          </defs>
-
-          <rect width="360" height="320" fill="#17222B"/>
-          <rect width="360" height="320" fill="url(#fg1)"/>
-
-          <circle cx="180" cy="160" r="80"
-            stroke="#EFD9C7"
-            stroke-width="1"
-            fill="none"
-            opacity="0.3"
-          />
-
-          <circle cx="180" cy="160" r="40"
-            stroke="#F16D78"
-            stroke-width="1.5"
-            fill="none"
-            opacity="0.5"
-          />
-
-          <circle cx="180" cy="160" r="12"
-            fill="#F16D78"
-            opacity="0.8"
-          />
-
-        </svg>
-
-      </div>
-
-      <div class="featured-badge">
-        Featured
-      </div>
-
-    </div>
-
-    <div class="featured-body">
-
-      <div class="featured-cat">
-        ${featured.cat || 'Blog'}
-      </div>
-
-      <h2>
-        ${featured.title || 'Untitled'}
-      </h2>
-      <p>
-        ${featured.abstract || ''}
-      </p>
-      <div class="post-meta">
-        <span>
-          ${featured.date || ''}
-        </span>
-        <div class="post-meta-dot"></div>
-        <span>
-          ${featured.readtime || 'no read time available'}
-        </span>
-      </div>
-      <button onclick="showPage('more-blogs'); openblogsmore('${featured.id}')"
-        class="btn-sm">
-        Read More
-      </button>
-    </div>
-  `;
-}
-    /* -------- PAGE SWITCHING -------- */
-    function showPage(name) {
-      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-      const target = document.getElementById('page-' + name);
-      if (target) { target.classList.add('active'); window.scrollTo(0,0); }
-      // Update navbar link states
-      document.querySelectorAll('[data-page]').forEach(a => {
-        a.classList.toggle('active', a.dataset.page === name);
-      });
-      if (name === 'publications') renderPubs(publications);
-      if (name === 'blog') { renderBlog(postsb); }
-    }
-
-    /* -------- SMOOTH SCROLL -------- */
-    function scrollToSection(id) {
-      const el = document.getElementById(id);
-      if (el) el.scrollIntoView({ behavior: 'smooth' });
-    }
-
-    /* -------- HERO SLIDESHOW -------- */
-    let currentSlide = 0;
-    const SLIDE_COUNT = 3;
-    let slideInterval;
-
-    function goToSlide(idx) {
-      document.querySelectorAll('.hero-slide').forEach((s,i) => s.classList.toggle('active', i === idx));
-      document.querySelectorAll('.hero-dot').forEach((d,i) => d.classList.toggle('active', i === idx));
-      currentSlide = idx;
-    }
-    function changeSlide(dir) {
-      goToSlide((currentSlide + dir + SLIDE_COUNT) % SLIDE_COUNT);
-      resetInterval();
-    }
-    function resetInterval() {
-      clearInterval(slideInterval);
-      slideInterval = setInterval(() => changeSlide(1), 6000);
-    }
-    slideInterval = setInterval(() => changeSlide(1), 6000);
-
-    /* -------- THEME TOGGLE -------- */
-    function toggleTheme() {
-      const html = document.documentElement;
-      html.setAttribute('data-theme', html.dataset.theme === 'dark' ? 'light' : 'dark');
-    }
-
-    /* -------- MOBILE NAV -------- */
-    function toggleMobileNav() {
-      document.getElementById('mobileNav').classList.toggle('open');
-    }
-
-    /* -------- LOADER -------- */
-    window.addEventListener('load', () => {
-      setTimeout(() => {
-        document.getElementById('loader').classList.add('hide');
-        observeReveal();
-        animateCounters();
-      }, 1800);
-    });
-
-    /* -------- SCROLL REVEAL -------- */
-    function observeReveal() {
-      const obs = new IntersectionObserver((entries) => {
-        entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
-      }, { threshold: 0.12 });
-      document.querySelectorAll('.reveal:not(.visible)').forEach(el => obs.observe(el));
-    }
-    document.addEventListener('DOMContentLoaded', () => { setTimeout(observeReveal, 200); });
-
-    /* -------- COUNTER ANIMATION -------- */
-    function animateCounters() {
-      document.querySelectorAll('[data-count]').forEach(el => {
-        const target = +el.dataset.count;
-        let current = 0;
-        const increment = target / 60;
-        const timer = setInterval(() => {
-          current = Math.min(current + increment, target);
-          el.textContent = Math.floor(current) + (target >= 1000 ? '+' : '');
-          if (current >= target) clearInterval(timer);
-        }, 18);
-      });
-    }
-
-    /* -------- PUBLICATION FILTER -------- */
-    function filterPubs(query) {
-const q = query.toLowerCase();
-const filtered = publications.filter(post =>
-    (post.title || 'not found').toLowerCase().includes(q) ||
-    (post.authors || 'not found').toLowerCase().includes(q) ||
-    (post.abstract || 'not found').toLowerCase().includes(q)
-  );
-  renderPubs(filtered);
-}
-    function filterPubsCategory(cat) {
-  const filtered = cat
-    ? publications.filter(post => post.cat === cat)
-    : publications;
-  renderPubs(filtered);
-}
-	function filterPubsDate(year) {
-  const filtered = year
-    ? publications.filter(post => post.year === year)
-    : publications;
-  renderPubs(filtered);
-}
-loadPublicationsPosts()
-    /* -------- CONTACT FORM -------- */
-async function handleContactSubmit(e) {
-
-  e.preventDefault();
-
-  const name = document.getElementById("name").value;
-  const email = document.getElementById("email").value;
-  const message = document.getElementById("message").value;
-
-  const data = {
-    name,
-    email,
-    message
-  };
-
-  try {
-
-    const response = await fetch(
-      "https://script.google.com/macros/s/AKfycbz14__Ju9ZleZGkhnAAqq19NS1G9BsuzQcTgm-48Bd4Z0006I3Dz4FPx1gjErmKlKjF/exec",
-      {
-        method: "POST",
-        mode: "no-cors",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(data)
+      // ============================================================
+      // ROUTING - Hash-based navigation
+      // ============================================================
+      function navigateTo(page, section) {
+        let hash = page;
+        if (section) {
+          hash = page + '?section=' + section;
+        }
+        window.location.hash = hash;
+        showPage(page);
+        if (section) {
+          setTimeout(() => scrollToSection(section), 100);
+        }
       }
-    );
 
-    document.getElementById("form-success").style.display = "block";
+      function showPage(name) {
+        // Handle section-based navigation from hash
+        if (name.includes('?section=')) {
+          const parts = name.split('?section=');
+          name = parts[0];
+          const section = parts[1];
+          document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+          const target = document.getElementById('page-' + name);
+          if (target) {
+            target.classList.add('active');
+            setTimeout(() => scrollToSection(section), 100);
+          }
+          updateNavLinks(name);
+          return;
+        }
 
-    e.target.reset();
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        const target = document.getElementById('page-' + name);
+        if (target) {
+          target.classList.add('active');
+          window.scrollTo(0, 0);
+        }
+        updateNavLinks(name);
+        
+        // Re-render content if needed
+        if (name === 'publications') {
+          renderPubs(filteredPublications.length ? filteredPublications : publications);
+        }
+        if (name === 'blog') {
+          renderBlog(filteredBlogs.length ? filteredBlogs : blogs);
+          renderFeaturedPost();
+        }
+      }
 
-  } catch (error) {
+      function updateNavLinks(pageName) {
+        $$('[data-page]').forEach(a => {
+          a.classList.toggle('active', a.dataset.page === pageName);
+        });
+      }
 
-    console.error(error);
+      function scrollToSection(id) {
+        const el = document.getElementById(id);
+        if (el) {
+          const offset = 70; // navbar height
+          const top = el.getBoundingClientRect().top + window.pageYOffset - offset;
+          window.scrollTo({ top, behavior: 'smooth' });
+        }
+      }
 
-    alert("Submission failed.");
-
-  }
-}
-
-    /* -------- PAGINATION -------- */
-    document.querySelectorAll('.page-btn').forEach(btn => {
-      btn.addEventListener('click', function() {
-        if (this.textContent === '‹' || this.textContent === '›') return;
-        document.querySelectorAll('.page-btn').forEach(b => b.classList.remove('active'));
-        this.classList.add('active');
+      // Handle hash changes
+      window.addEventListener('hashchange', function() {
+        const hash = window.location.hash.replace('#', '') || 'home';
+        showPage(hash);
       });
-    });
+
+      // ============================================================
+      // FOOTER INJECTION
+      // ============================================================
+      function createFooter() {
+        return `
+          <div class="footer-grid">
+            <div class="footer-brand">
+              <div class="nav-brand">
+                <div class="nav-brand-icon">
+                  <img src="Classlogo.png" alt="Pharmis Optimus Nexus Logo" />
+                </div>
+                <div class="nav-brand-name">
+                  Pharmis Optimus Nexus
+                  <small>Research & Innovation</small>
+                </div>
+              </div>
+              <p>Advancing Pharmaceutical Knowledge, Research, and Innovation. Connecting the global scientific community.</p>
+            </div>
+            <div class="footer-col">
+              <h4>Quick Links</h4>
+              <ul>
+                <li><button class="nav-link" data-nav="publications">Publications</button></li>
+                <li><button class="nav-link" data-nav="blog">Blog</button></li>
+                <li><button class="nav-link" data-nav="about">About Us</button></li>
+                <li><button class="nav-link" data-nav="contact">Contact Us</button></li>
+              </ul>
+            </div>
+            <div class="footer-col">
+              <h4>Research</h4>
+              <ul>
+                <li><a href="#">Pharmacology</a></li>
+                <li><a href="#">Biotechnology</a></li>
+                <li><a href="#">Drug Delivery</a></li>
+                <li><a href="#">Clinical Trials</a></li>
+              </ul>
+            </div>
+            <div class="footer-col">
+              <h4>Newsletter</h4>
+              <p style="font-size:0.83rem;color:var(--muted);margin-bottom:12px">Stay updated with the latest research and insights.</p>
+              <div class="newsletter-input">
+                <input type="email" class="newsletter-email" placeholder="Enter your email" aria-label="Newsletter email" />
+                <button class="newsletter-submit">Subscribe</button>
+              </div>
+              <div class="newsletter-success">✓ Subscribed successfully!</div>
+            </div>
+          </div>
+          <div class="footer-bottom">
+            <span>© 2026 Pharmis Optimus Nexus. All Rights Reserved.</span>
+            <div class="social-links" style="margin-top:0">
+              <a href="#" class="social-link" style="width:32px;height:32px" aria-label="LinkedIn" data-social="linkedin">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+              </a>
+              <a href="#" class="social-link" style="width:32px;height:32px" aria-label="Twitter" data-social="twitter">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/></svg>
+              </a>
+              <a href="#" class="social-link" style="width:32px;height:32px" aria-label="Facebook" data-social="facebook">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+              </a>
+            </div>
+          </div>
+        `;
+      }
+
+      function injectFooters() {
+        const footerIds = ['mainFooter', 'publicationsFooter', 'moreFooter', 'blogFooter', 'moreBlogsFooter'];
+        footerIds.forEach(id => {
+          const el = document.getElementById(id);
+          if (el) {
+            el.innerHTML = createFooter();
+          }
+        });
+      }
+
+      // ============================================================
+      // FETCH DATA
+      // ============================================================
+      async function loadPublicationsPosts() {
+        try {
+          const response = await fetch(
+            "https://script.google.com/macros/s/AKfycby0vr3GuR5vlWqILYbSTqFN8bc8jBFPbJIZ3tUjnai6UmYH_NO2-JU3sMMuDVQjrkR-/exec"
+          );
+          const posts = await response.json();
+          publications = posts;
+          filteredPublications = posts;
+          renderPubs(posts);
+          updateStats();
+          return posts;
+        } catch (error) {
+          console.error("Error loading publications:", error);
+          return [];
+        }
+      }
+
+      async function loadBlogsPost() {
+        try {
+          const response = await fetch(
+            "https://script.google.com/macros/s/AKfycbxyk2d11BD63yMxa8CCEm6Ma4emoVInxkXGVzkP9trVMtszqh6H7a1g0e42Ce3tuCQf/exec"
+          );
+          const postsb = await response.json();
+          blogs = postsb;
+          filteredBlogs = postsb;
+          renderBlog(postsb);
+          renderFeaturedPost();
+          updateBlogSidebar(postsb);
+          updateStats();
+          return postsb;
+        } catch (error) {
+          console.error("Error loading blogs:", error);
+          return [];
+        }
+      }
+
+      // ============================================================
+      // RENDER PUBLICATIONS
+      // ============================================================
+      function renderPubs(posts, page = 1) {
+        const grid = document.getElementById('pubsGrid');
+        if (!grid) return;
+        
+        const totalPages = Math.ceil(posts.length / pubsPerPage);
+        const start = (page - 1) * pubsPerPage;
+        const end = start + pubsPerPage;
+        const pagePosts = posts.slice(start, end);
+        
+        grid.innerHTML = '';
+        if (pagePosts.length === 0) {
+          grid.innerHTML = '<p style="grid-column:1/-1;text-align:center;color:var(--muted);padding:40px;">No publications found.</p>';
+          renderPagination(0, 1);
+          return;
+        }
+        
+        pagePosts.forEach((post, index) => {
+          const tagClass = tagColors[post.cat] || 'tag-pharmacology';
+          grid.innerHTML += `
+            <article class="pub-card reveal" role="article">
+              <div class="pub-card-img">
+                <div class="pub-card-img-inner" style="background:${gradients[index % 4]}"></div>
+                <div class="pub-card-img-overlay"></div>
+              </div>
+              <div class="pub-card-body">
+                <span class="pub-tag ${tagClass}">
+                  ${post.cat || 'Publication'}
+                </span>
+                <h3>${post.title || 'Untitled'}</h3>
+                <div class="pub-meta">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                    <circle cx="12" cy="7" r="4"/>
+                  </svg>
+                  ${post.authors || 'Unknown Author'}
+                </div>
+                <p class="pub-abstract">
+                  ${post.abstract || 'No abstract available.'}
+                </p>
+                <div class="pub-card-footer">
+                  <span class="pub-date">
+                    ${post.date || ''}
+                  </span>
+                  <button class="btn-sm read-more-pub" data-id="${post.id}">Read More</button>
+                </div>
+              </div>
+            </article>
+          `;
+        });
+        
+        renderPagination(totalPages, page);
+        observeReveal();
+        attachPubReadMoreEvents();
+      }
+
+      function renderPagination(totalPages, currentPage) {
+        const container = document.getElementById('paginationControls');
+        if (!container) return;
+        
+        if (totalPages <= 1) {
+          container.innerHTML = '';
+          return;
+        }
+        
+        let html = '';
+        html += `<button class="page-btn" data-page="${currentPage - 1}" ${currentPage <= 1 ? 'disabled' : ''}>‹</button>`;
+        
+        for (let i = 1; i <= totalPages; i++) {
+          html += `<button class="page-btn ${i === currentPage ? 'active' : ''}" data-page="${i}">${i}</button>`;
+        }
+        
+        html += `<button class="page-btn" data-page="${currentPage + 1}" ${currentPage >= totalPages ? 'disabled' : ''}>›</button>`;
+        container.innerHTML = html;
+        
+        container.querySelectorAll('.page-btn').forEach(btn => {
+          btn.addEventListener('click', function() {
+            const page = parseInt(this.dataset.page);
+            if (page && page >= 1 && page <= totalPages) {
+              currentPubPage = page;
+              renderPubs(filteredPublications.length ? filteredPublications : publications, page);
+            }
+          });
+        });
+      }
+
+      function attachPubReadMoreEvents() {
+        document.querySelectorAll('.read-more-pub').forEach(btn => {
+          btn.addEventListener('click', function() {
+            const id = this.dataset.id;
+            window.location.hash = 'more';
+            showPage('more');
+            openJournal(id);
+          });
+        });
+      }
+
+      // ============================================================
+      // OPEN PUBLICATION FULL VIEW
+      // ============================================================
+      function openJournal(id) {
+        const pub = publications.find(post => String(post.id) === String(id));
+        const container = document.getElementById('journal-container');
+        
+        if (!pub) {
+          container.innerHTML = `<div class="no-content"><p>Publication not found.</p></div>`;
+          return;
+        }
+        
+        const tagClass = tagColors[pub.cat] || 'tag-pharmacology';
+        container.innerHTML = `
+          <article>
+            <div class="journal-header">
+              <span class="journal-category ${tagClass}">${pub.cat || 'Publication'}</span>
+              <h1 class="journal-title">${pub.title || 'Untitled'}</h1>
+              <div class="journal-meta">
+                <span>${pub.authors || 'Unknown Author'}</span>
+                <span>•</span>
+                <span>${pub.date || ''}</span>
+              </div>
+            </div>
+            <section class="journal-section">
+              <h2>Abstract</h2>
+              <p>${pub.abstract || 'No abstract available.'}</p>
+            </section>
+            <section class="journal-section">
+              <h2>Introduction</h2>
+              <p>${pub.introduction || 'No introduction available.'}</p>
+            </section>
+            <section class="journal-section">
+              <h2>Research Image</h2>
+              <img src="${pub.image || 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22800%22 height=%22400%22%3E%3Crect width=%22800%22 height=%22400%22 fill=%22%2317222B%22/%3E%3Ctext x=%22400%22 y=%22200%22 font-family=%22sans-serif%22 font-size=%2220%22 fill=%22%23666%22 text-anchor=%22middle%22%3ENo Image Available%3C/text%3E%3C/svg%3E'}" alt="Research illustration" class="journal-image" loading="lazy" />
+              <p class="image-caption">${pub.caption || 'No caption available'}</p>
+            </section>
+            <section class="journal-section">
+              <h2>Conclusion</h2>
+              <p>${pub.conclusion || 'No conclusion available.'}</p>
+            </section>
+            <section class="journal-section">
+              <h2>References</h2>
+              <div class="journal-references">
+                ${pub.references || '<p>No references available.</p>'}
+              </div>
+            </section>
+          </article>
+        `;
+      }
+
+      // ============================================================
+      // RENDER BLOG
+      // ============================================================
+      function renderBlog(postsb) {
+        const grid = document.getElementById('blogGrid');
+        if (!grid) return;
+        
+        grid.innerHTML = '';
+        if (postsb.length === 0) {
+          grid.innerHTML = '<p style="grid-column:1/-1;text-align:center;color:var(--muted);padding:40px;">No blog posts found.</p>';
+          return;
+        }
+        
+        postsb.forEach((post, index) => {
+          grid.innerHTML += `
+            <article class="blog-card reveal" role="article">
+              <div class="blog-card-img">
+                <div class="blog-card-img-inner" style="background:${gradientsblogs[index % 4]}"></div>
+              </div>
+              <div class="blog-card-body">
+                <div class="blog-card-cat">${post.cat || ''}</div>
+                <h3>${post.title || 'Untitled'}</h3>
+                <p>${post.excerpt || 'No excerpt available.'}</p>
+                <div class="blog-card-footer">
+                  <div class="post-meta" style="margin:0">
+                    <span>${post.date || 'No date'}</span>
+                    <div class="post-meta-dot"></div>
+                    <span class="blog-read-time">${post.read || 'No read time'}</span>
+                  </div>
+                  <button class="btn-sm read-more-blog" data-id="${post.id}">Read More</button>
+                </div>
+              </div>
+            </article>
+          `;
+        });
+        
+        observeReveal();
+        attachBlogReadMoreEvents();
+      }
+
+      function attachBlogReadMoreEvents() {
+        document.querySelectorAll('.read-more-blog').forEach(btn => {
+          btn.addEventListener('click', function() {
+            const id = this.dataset.id;
+            window.location.hash = 'more-blogs';
+            showPage('more-blogs');
+            openBlogsMore(id);
+          });
+        });
+      }
+
+      // ============================================================
+      // OPEN BLOG FULL VIEW
+      // ============================================================
+      function openBlogsMore(id) {
+        const pub = blogs.find(post => String(post.id) === String(id));
+        const container = document.getElementById('blogs-container');
+        
+        if (!pub) {
+          container.innerHTML = `<div class="no-content"><p>Blog post not found.</p></div>`;
+          return;
+        }
+        
+        container.innerHTML = `
+          <article>
+            <div class="journal-header">
+              <h1 class="journal-title">${pub.title || 'Untitled'}</h1>
+              <div class="journal-meta">
+                <span>${pub.authors || 'Unknown Author'}</span>
+                <span>•</span>
+                <span>${pub.date || ''}</span>
+              </div>
+            </div>
+            <section class="journal-section">
+              <h2>Excerpt</h2>
+              <p>${pub.excerpt || 'No excerpt available.'}</p>
+            </section>
+            <section class="journal-section">
+              ${pub.content || '<p>No content available.</p>'}
+            </section>
+            <section class="journal-section">
+              <h2>Image</h2>
+              <img src="${pub.image || 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22800%22 height=%22400%22%3E%3Crect width=%22800%22 height=%22400%22 fill=%22%2317222B%22/%3E%3Ctext x=%22400%22 y=%22200%22 font-family=%22sans-serif%22 font-size=%2220%22 fill=%22%23666%22 text-anchor=%22middle%22%3ENo Image Available%3C/text%3E%3C/svg%3E'}" alt="Blog illustration" class="journal-image" loading="lazy" />
+              <p class="image-caption">${pub.caption || 'No caption available'}</p>
+            </section>
+            <section class="journal-references">
+              ${pub.references || ''}
+            </section>
+          </article>
+        `;
+      }
+
+      // ============================================================
+      // FEATURED POST
+      // ============================================================
+      function renderFeaturedPost() {
+        const featured = blogs.find(post => post.featured === "yes");
+        const container = document.getElementById('featuredPost');
+        if (!container) return;
+        
+        if (!featured) {
+          container.style.display = 'none';
+          return;
+        }
+        
+        container.style.display = 'grid';
+        container.innerHTML = `
+          <div class="featured-img">
+            <div class="featured-img-inner">
+              <svg width="360" height="320" viewBox="0 0 360 320" xmlns="http://www.w3.org/2000/svg" opacity="0.5">
+                <defs>
+                  <radialGradient id="fg1" cx="50%" cy="50%" r="60%">
+                    <stop offset="0%" stop-color="#F16D78" stop-opacity="0.6"/>
+                    <stop offset="100%" stop-color="#17222B" stop-opacity="0"/>
+                  </radialGradient>
+                </defs>
+                <rect width="360" height="320" fill="#17222B"/>
+                <rect width="360" height="320" fill="url(#fg1)"/>
+                <circle cx="180" cy="160" r="80" stroke="#EFD9C7" stroke-width="1" fill="none" opacity="0.3"/>
+                <circle cx="180" cy="160" r="40" stroke="#F16D78" stroke-width="1.5" fill="none" opacity="0.5"/>
+                <circle cx="180" cy="160" r="12" fill="#F16D78" opacity="0.8"/>
+              </svg>
+            </div>
+            <div class="featured-badge">Featured</div>
+          </div>
+          <div class="featured-body">
+            <div class="featured-cat">${featured.cat || 'Blog'}</div>
+            <h2>${featured.title || 'Untitled'}</h2>
+            <p>${featured.abstract || ''}</p>
+            <div class="post-meta">
+              <span>${featured.date || ''}</span>
+              <div class="post-meta-dot"></div>
+              <span>${featured.readtime || 'No read time'}</span>
+            </div>
+            <button class="btn-sm read-more-blog" data-id="${featured.id}">Read More</button>
+          </div>
+        `;
+        attachBlogReadMoreEvents();
+      }
+
+      // ============================================================
+      // BLOG SIDEBAR
+      // ============================================================
+      function updateBlogSidebar(posts) {
+        // Categories
+        const catContainer = document.getElementById('blogCategories');
+        if (catContainer) {
+          const catMap = {};
+          posts.forEach(post => {
+            if (post.cat) {
+              catMap[post.cat] = (catMap[post.cat] || 0) + 1;
+            }
+          });
+          let html = `<li><span>All Categories</span><span class="cat-count">${posts.length}</span></li>`;
+          for (const [cat, count] of Object.entries(catMap)) {
+            html += `<li data-cat="${cat}"><span>${cat}</span><span class="cat-count">${count}</span></li>`;
+          }
+          catContainer.innerHTML = html;
+          
+          // Add click handlers for category filtering
+          catContainer.querySelectorAll('li[data-cat]').forEach(item => {
+            item.addEventListener('click', function() {
+              const cat = this.dataset.cat;
+              const filtered = blogs.filter(post => post.cat === cat);
+              filteredBlogs = filtered;
+              renderBlog(filtered);
+              document.querySelector('#blogCategoryFilter').value = cat;
+            });
+          });
+          // "All Categories" click
+          const allItem = catContainer.querySelector('li:first-child');
+          if (allItem) {
+            allItem.addEventListener('click', function() {
+              filteredBlogs = blogs;
+              renderBlog(blogs);
+              document.querySelector('#blogCategoryFilter').value = '';
+            });
+          }
+        }
+        
+        // Tags
+        const tagContainer = document.getElementById('blogTags');
+        if (tagContainer) {
+          const tagSet = new Set();
+          posts.forEach(post => {
+            if (post.tags) {
+              post.tags.split(',').forEach(t => tagSet.add(t.trim()));
+            }
+          });
+          let html = '';
+          const tags = Array.from(tagSet).slice(0, 10);
+          tags.forEach(tag => {
+            html += `<span class="tag-chip" data-tag="${tag}">${tag}</span>`;
+          });
+          tagContainer.innerHTML = html || '<span style="color:var(--muted)">No tags</span>';
+          
+          tagContainer.querySelectorAll('.tag-chip').forEach(tag => {
+            tag.addEventListener('click', function() {
+              const tagName = this.dataset.tag;
+              const filtered = blogs.filter(post => post.tags && post.tags.includes(tagName));
+              filteredBlogs = filtered;
+              renderBlog(filtered);
+            });
+          });
+        }
+      }
+
+      // ============================================================
+      // STATS COUNTER
+      // ============================================================
+      function updateStats() {
+        const pubCount = publications.length;
+        const blogCount = blogs.length;
+        
+        const statEls = document.querySelectorAll('.stat-num');
+        if (statEls.length >= 4) {
+          statEls[0].dataset.count = pubCount;
+          statEls[2].dataset.count = blogCount;
+        }
+      }
+
+      function animateCounters() {
+        document.querySelectorAll('.stat-num').forEach(el => {
+          const target = parseInt(el.dataset.count) || 0;
+          let current = 0;
+          const increment = Math.max(1, Math.floor(target / 60));
+          const timer = setInterval(() => {
+            current = Math.min(current + increment, target);
+            el.textContent = current + (target >= 1000 ? '+' : '');
+            if (current >= target) clearInterval(timer);
+          }, 18);
+        });
+      }
+
+      // ============================================================
+      // FILTERS
+      // ============================================================
+      function setupFilters() {
+        // Publication search
+        const pubSearch = document.getElementById('pubSearch');
+        if (pubSearch) {
+          pubSearch.addEventListener('input', function() {
+            const query = this.value.toLowerCase();
+            const filtered = publications.filter(post =>
+              (post.title || '').toLowerCase().includes(query) ||
+              (post.authors || '').toLowerCase().includes(query) ||
+              (post.abstract || '').toLowerCase().includes(query)
+            );
+            filteredPublications = filtered;
+            currentPubPage = 1;
+            renderPubs(filtered, 1);
+          });
+        }
+        
+        // Publication category filter
+        const pubCat = document.getElementById('pubCategoryFilter');
+        if (pubCat) {
+          pubCat.addEventListener('change', function() {
+            const cat = this.value;
+            const filtered = cat ? publications.filter(post => post.cat === cat) : publications;
+            filteredPublications = filtered;
+            currentPubPage = 1;
+            renderPubs(filtered, 1);
+          });
+        }
+        
+        // Publication year filter
+        const pubYear = document.getElementById('pubYearFilter');
+        if (pubYear) {
+          pubYear.addEventListener('change', function() {
+            const year = this.value;
+            const filtered = year ? publications.filter(post => post.year === year) : publications;
+            filteredPublications = filtered;
+            currentPubPage = 1;
+            renderPubs(filtered, 1);
+          });
+        }
+        
+        // Blog search
+        const blogSearch = document.getElementById('blogSearch');
+        if (blogSearch) {
+          blogSearch.addEventListener('input', function() {
+            const query = this.value.toLowerCase();
+            const filtered = blogs.filter(post =>
+              (post.title || '').toLowerCase().includes(query) ||
+              (post.excerpt || '').toLowerCase().includes(query) ||
+              (post.content || '').toLowerCase().includes(query)
+            );
+            filteredBlogs = filtered;
+            renderBlog(filtered);
+          });
+        }
+        
+        // Blog category filter
+        const blogCat = document.getElementById('blogCategoryFilter');
+        if (blogCat) {
+          blogCat.addEventListener('change', function() {
+            const cat = this.value;
+            const filtered = cat ? blogs.filter(post => post.cat === cat) : blogs;
+            filteredBlogs = filtered;
+            renderBlog(filtered);
+          });
+        }
+      }
+
+      // ============================================================
+      // HERO SLIDESHOW
+      // ============================================================
+      let currentSlide = 0;
+      const SLIDE_COUNT = 3;
+      let slideInterval;
+
+      function goToSlide(idx) {
+        document.querySelectorAll('.hero-slide').forEach((s, i) => s.classList.toggle('active', i === idx));
+        document.querySelectorAll('.hero-dot').forEach((d, i) => d.classList.toggle('active', i === idx));
+        currentSlide = idx;
+      }
+
+      function changeSlide(dir) {
+        goToSlide((currentSlide + dir + SLIDE_COUNT) % SLIDE_COUNT);
+        resetInterval();
+      }
+
+      function resetInterval() {
+        clearInterval(slideInterval);
+        slideInterval = setInterval(() => changeSlide(1), 6000);
+      }
+
+      function setupHero() {
+        const prevBtn = document.getElementById('heroPrev');
+        const nextBtn = document.getElementById('heroNext');
+        const dots = document.querySelectorAll('.hero-dot');
+        
+        if (prevBtn) prevBtn.addEventListener('click', () => changeSlide(-1));
+        if (nextBtn) nextBtn.addEventListener('click', () => changeSlide(1));
+        
+        dots.forEach(dot => {
+          dot.addEventListener('click', function() {
+            goToSlide(parseInt(this.dataset.slide));
+            resetInterval();
+          });
+        });
+        
+        slideInterval = setInterval(() => changeSlide(1), 6000);
+      }
+
+      // ============================================================
+      // THEME TOGGLE
+      // ============================================================
+      function setupTheme() {
+        const toggle = document.getElementById('themeToggle');
+        if (toggle) {
+          toggle.addEventListener('click', function() {
+            const html = document.documentElement;
+            const current = html.getAttribute('data-theme');
+            html.setAttribute('data-theme', current === 'dark' ? 'light' : 'dark');
+          });
+        }
+      }
+
+      // ============================================================
+      // MOBILE NAV
+      // ============================================================
+      function setupMobileNav() {
+        const hamburger = document.getElementById('hamburgerBtn');
+        const mobileNav = document.getElementById('mobileNav');
+        
+        if (hamburger && mobileNav) {
+          hamburger.addEventListener('click', function(e) {
+            e.stopPropagation();
+            mobileNav.classList.toggle('open');
+          });
+          
+          mobileNav.addEventListener('click', function() {
+            this.classList.remove('open');
+          });
+        }
+      }
+
+      // ============================================================
+      // SCROLL REVEAL
+      // ============================================================
+      function observeReveal() {
+        const obs = new IntersectionObserver((entries) => {
+          entries.forEach(e => {
+            if (e.isIntersecting) {
+              e.target.classList.add('visible');
+              obs.unobserve(e.target);
+            }
+          });
+        }, { threshold: 0.12 });
+        
+        document.querySelectorAll('.reveal:not(.visible)').forEach(el => obs.observe(el));
+      }
+
+      // ============================================================
+      // CONTACT FORM
+      // ============================================================
+      function setupContactForm() {
+        const form = document.getElementById('contactForm');
+        if (!form) return;
+        
+        form.addEventListener('submit', async function(e) {
+          e.preventDefault();
+          
+          const name = document.getElementById('name').value;
+          const email = document.getElementById('email').value;
+          const message = document.getElementById('message').value;
+          
+          try {
+            await fetch(
+              "https://script.google.com/macros/s/AKfycbz14__Ju9ZleZGkhnAAqq19NS1G9BsuzQcTgm-48Bd4Z0006I3Dz4FPx1gjErmKlKjF/exec",
+              {
+                method: "POST",
+                mode: "no-cors",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ name, email, message })
+              }
+            );
+            
+            document.getElementById('form-success').style.display = 'block';
+            form.reset();
+          } catch (error) {
+            console.error(error);
+            alert('Submission failed. Please try again.');
+          }
+        });
+      }
+
+      // ============================================================
+      // NEWSLETTER
+      // ============================================================
+      function setupNewsletters() {
+        document.querySelectorAll('.newsletter-submit').forEach(btn => {
+          btn.addEventListener('click', function() {
+            const container = this.closest('.footer-col') || this.closest('.sidebar-widget');
+            const input = container ? container.querySelector('.newsletter-email') : null;
+            const success = container ? container.querySelector('.newsletter-success') : null;
+            
+            if (input && input.value.trim()) {
+              if (success) {
+                success.classList.add('show');
+                setTimeout(() => {
+                  success.classList.remove('show');
+                  input.value = '';
+                }, 3000);
+              }
+            } else if (input) {
+              input.style.borderColor = 'var(--blush)';
+              setTimeout(() => input.style.borderColor = '', 2000);
+            }
+          });
+        });
+        
+        // Blog subscribe
+        const blogBtn = document.getElementById('blogSubscribeBtn');
+        const blogEmail = document.getElementById('blogSubscribeEmail');
+        const blogSuccess = document.getElementById('blogSubscribeSuccess');
+        
+        if (blogBtn && blogEmail && blogSuccess) {
+          blogBtn.addEventListener('click', function() {
+            if (blogEmail.value.trim()) {
+              blogSuccess.style.display = 'block';
+              setTimeout(() => {
+                blogSuccess.style.display = 'none';
+                blogEmail.value = '';
+              }, 3000);
+            } else {
+              blogEmail.style.borderColor = 'var(--blush)';
+              setTimeout(() => blogEmail.style.borderColor = '', 2000);
+            }
+          });
+        }
+      }
+
+      // ============================================================
+      // SOCIAL LINKS
+      // ============================================================
+      function setupSocialLinks() {
+        document.querySelectorAll('[data-social]').forEach(link => {
+          link.addEventListener('click', function(e) {
+            e.preventDefault();
+            const social = this.dataset.social;
+            // Placeholder - replace with actual URLs
+            const urls = {
+              linkedin: 'https://linkedin.com',
+              twitter: 'https://twitter.com',
+              facebook: 'https://facebook.com',
+              instagram: 'https://instagram.com'
+            };
+            if (urls[social]) {
+              window.open(urls[social], '_blank');
+            }
+          });
+        });
+      }
+
+      // ============================================================
+      // NAVIGATION EVENT HANDLERS
+      // ============================================================
+      function setupNavigation() {
+        // Nav links
+        document.querySelectorAll('[data-nav]').forEach(el => {
+          el.addEventListener('click', function(e) {
+            e.preventDefault();
+            const page = this.dataset.nav;
+            if (page === 'about' || page === 'contact') {
+              window.location.hash = 'home?section=' + page;
+              navigateTo('home', page);
+            } else {
+              window.location.hash = page;
+              navigateTo(page);
+            }
+          });
+        });
+        
+        // Navbar links
+        document.querySelectorAll('.nav-links a, .mobile-nav-panel a').forEach(link => {
+          link.addEventListener('click', function(e) {
+            e.preventDefault();
+            const href = this.getAttribute('href');
+            if (href) {
+              const hash = href.replace('#', '');
+              if (hash === 'about' || hash === 'contact') {
+                window.location.hash = 'home?section=' + hash;
+                navigateTo('home', hash);
+              } else {
+                window.location.hash = hash;
+                navigateTo(hash);
+              }
+              document.getElementById('mobileNav')?.classList.remove('open');
+            }
+          });
+        });
+        
+        // Footer nav buttons
+        document.querySelectorAll('.footer-col .nav-link').forEach(btn => {
+          btn.addEventListener('click', function() {
+            const page = this.dataset.nav;
+            if (page === 'about' || page === 'contact') {
+              window.location.hash = 'home?section=' + page;
+              navigateTo('home', page);
+            } else {
+              window.location.hash = page;
+              navigateTo(page);
+            }
+          });
+        });
+      }
+
+      // ============================================================
+      // LOADER
+      // ============================================================
+      function setupLoader() {
+        window.addEventListener('load', () => {
+          setTimeout(() => {
+            document.getElementById('loader').classList.add('hide');
+            observeReveal();
+            setTimeout(animateCounters, 200);
+          }, 1800);
+        });
+      }
+
+      // ============================================================
+      // INIT
+      // ============================================================
+      async function init() {
+        // Inject footers
+        injectFooters();
+        
+        // Setup components
+        setupTheme();
+        setupMobileNav();
+        setupLoader();
+        setupHero();
+        setupContactForm();
+        setupNewsletters();
+        setupSocialLinks();
+        setupNavigation();
+        setupFilters();
+        
+        // Load data
+        await loadPublicationsPosts();
+        await loadBlogsPost();
+        
+        // Handle initial hash
+        const hash = window.location.hash.replace('#', '') || 'home';
+        if (hash.includes('?section=')) {
+          const parts = hash.split('?section=');
+          showPage(parts[0]);
+          setTimeout(() => scrollToSection(parts[1]), 100);
+        } else {
+          showPage(hash);
+        }
+        
+        // Re-observe after content loads
+        setTimeout(observeReveal, 500);
+      }
+
+      // Run when DOM is ready
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+      } else {
+        init();
+      }
+
+    })();
   </script>
 </body>
 </html>
