@@ -615,15 +615,11 @@
       display: flex;
       align-items: center;
       overflow: hidden;
-      /* Consistent aspect ratio */
-  aspect-ratio: 16 / 9;
-  max-height: 900px;
-  min-height: 500px;
     }
     .hero-slides {
       position: absolute;
       inset: 0;
-       width: 100%;
+      width: 100%;
       height: 100%;
     }
     .hero-slide {
@@ -643,16 +639,25 @@
     .hero-slide-bg {
       position: absolute;
       inset: 0;
+      width: 100%;
+      height: 100%;
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
       transform: scale(1.05);
-      transition: transform 8s ease;
+      transition: transform 8s ease, opacity 0.5s ease;
       will-change: transform;
-      background-color: var(--dark); /* fallback while image loads */
+      background-color: var(--dark);
     }
     .hero-slide.active .hero-slide-bg {
       transform: scale(1);
+    }
+    /* Loading state */
+    .hero-slide-bg.loading {
+      opacity: 0;
+    }
+    .hero-slide-bg.loaded {
+      opacity: 1;
     }
     .hero-slide-overlay {
       position: absolute;
@@ -983,7 +988,7 @@
     }
     .map-placeholder svg { opacity: 0.4; }
 
-  /* ============================================================
+    /* ============================================================
    FOOTER - Complete with Light/Dark Mode
    ============================================================ */
 footer {
@@ -1186,6 +1191,7 @@ footer {
     text-align: center;
   }
 }
+
     /* ============================================================
        PUBLICATIONS PAGE
     ============================================================ */
@@ -1714,10 +1720,6 @@ footer {
       .sidebar { position: static; }
       .featured-post { grid-template-columns: 1fr; }
       .featured-img { min-height: 220px; }
-      .hero {
-    aspect-ratio: 16 / 10;
-    min-height: 400px;
-  }
     }
     @media (max-width: 768px) {
       .navbar { padding: 0 20px; }
@@ -1742,28 +1744,7 @@ footer {
       .journal-title {
         font-size: 1.8rem;
       }
-      .hero {
-    aspect-ratio: 4 / 3;
-    min-height: 350px;
-  }
     }
-
-    @media (max-width: 480px) {
-  .hero {
-    aspect-ratio: 3 / 4;
-    min-height: 300px;
-  }
-}
-
-   /* Loading state */
-.hero-slide-bg.loading {
-  opacity: 0;
-}
-
-.hero-slide-bg.loaded {
-  opacity: 1;
-  transition: opacity 0.5s ease;
-} 
   </style>
 </head>
 <body>
@@ -2005,9 +1986,8 @@ footer {
             </div>
           </div>
           <div class="social-links">
-             <a href="#" class="social-link" aria-label="tiktok" data-social="tiktok">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/>
-            </svg>
+            <a href="#" class="social-link" aria-label="TikTok" data-social="tiktok">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg>
             </a>
             <a href="#" class="social-link" aria-label="Instagram" data-social="instagram">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
@@ -2187,39 +2167,33 @@ footer {
       'use strict';
 
       // ============================================================
-      // HERO IMAGES - Why Different Percentages?
-// Different images have different subjects. You want to control where the image focuses when it's cropped:
-
-//I mage Subject	Best Focus	Why
-// Person's face	center 30%	Face is usually in the upper third
-// Buildings/skyline	center 40%	Focus on the middle-upper area
-// Laboratory equipment	center 50%	Centered on the equipment
-// Nature/mountains	center 60%	Focus on the lower-middle
-// Text/documents	center 70%	Focus on the lower portion
-// Group of people	center 45%	Focus on faces at eye level
- // ============================================================
+      // HERO IMAGES - Add your images here
+      // ============================================================
       const heroImages = [
-  {
-    url: 'classlogo2.jpeg',
-    alt: 'Pharmaceutical research laboratory',
-    focusX: 'center',
-    focusY: '50%'  // Centered on the equipment
-  },
-  {
-    url: 'aa.jpg',
-    alt: 'outreach',
-    focusX: 'center',
-    focusY: '45%'  // group of ppl
-  },
-  {
-    url: 'bb.jpg',
-    alt: 'winner',
-    focusX: 'center',
-    focusY: '45%'  // group of ppl
-  },
-  // Just add more images here!
+        {
+          url: 'classlogo2.jpeg',
+          alt: 'Pharmaceutical research laboratory',
+          focusX: 'center',
+          focusY: '50%'
+        },
+        {
+          url: 'aa.jpg',
+          alt: 'Community outreach program',
+          focusX: 'center',
+          focusY: '45%'
+        },
+        {
+          url: 'bb.jpg',
+          alt: 'Award winning team',
+          focusX: 'center',
+          focusY: '45%'
+        }
+      ];
 
-];
+      // ============================================================
+      // HERO IMAGE DESCRIPTIONS - For accessibility
+      // ============================================================
+      const heroImageDescriptions = heroImages.map(img => img.alt);
 
       // ============================================================
       // DATA
@@ -2283,7 +2257,6 @@ footer {
       }
 
       function showPage(name) {
-        // Handle section-based navigation from hash
         if (name.includes('?section=')) {
           const parts = name.split('?section=');
           name = parts[0];
@@ -2306,7 +2279,6 @@ footer {
         }
         updateNavLinks(name);
         
-        // Re-render content if needed
         if (name === 'publications') {
           renderPubs(filteredPublications.length ? filteredPublications : publications);
         }
@@ -2325,13 +2297,12 @@ footer {
       function scrollToSection(id) {
         const el = document.getElementById(id);
         if (el) {
-          const offset = 70; // navbar height
+          const offset = 70;
           const top = el.getBoundingClientRect().top + window.pageYOffset - offset;
           window.scrollTo({ top, behavior: 'smooth' });
         }
       }
 
-      // Handle hash changes
       window.addEventListener('hashchange', function() {
         const hash = window.location.hash.replace('#', '') || 'home';
         showPage(hash);
@@ -2386,13 +2357,12 @@ footer {
           <div class="footer-bottom">
             <span>© 2026 Pharmis Optimus Nexus. All Rights Reserved.</span>
             <div class="social-links" style="margin-top:0">
-               <a href="#" class="social-link" aria-label="tiktok" data-social="tiktok">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/>
-            </svg>
-            </a>
-            <a href="#" class="social-link" aria-label="Instagram" data-social="instagram">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
-            </a>
+              <a href="#" class="social-link" style="width:32px;height:32px" aria-label="TikTok" data-social="tiktok">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg>
+              </a>
+              <a href="#" class="social-link" style="width:32px;height:32px" aria-label="Instagram" data-social="instagram">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+              </a>
             </div>
           </div>
         `;
@@ -2649,175 +2619,171 @@ footer {
       }
 
       // ============================================================
-// RENDER JSON BLOG CONTENT
-// ============================================================
-function renderJsonContent(jsonData) {
-  if (!jsonData || typeof jsonData === 'string') {
-    try {
-      jsonData = JSON.parse(jsonData);
-    } catch (e) {
-      return `<div class="no-content"><p>Unable to parse content.</p></div>`;
-    }
-  }
-
-  let html = '<div class="blog-content-json">';
-  
-  // Render sections
-  if (jsonData.sections && Array.isArray(jsonData.sections)) {
-    jsonData.sections.forEach(section => {
-      switch (section.type) {
-        case 'heading':
-          const level = section.level || 2;
-          html += `<h${level} class="heading-${level}">${escapeHtml(section.text)}</h${level}>`;
-          break;
-          
-        case 'paragraph':
-          html += `<p class="paragraph">${escapeHtml(section.text)}</p>`;
-          break;
-          
-        case 'list':
-          const listClass = section.ordered ? 'list-ol' : 'list-ul';
-          html += `<ul class="${listClass}">`;
-          if (section.items && Array.isArray(section.items)) {
-            section.items.forEach(item => {
-              html += `<li>${escapeHtml(item)}</li>`;
-            });
+      // RENDER JSON BLOG CONTENT
+      // ============================================================
+      function renderJsonContent(jsonData) {
+        if (!jsonData || typeof jsonData === 'string') {
+          try {
+            jsonData = JSON.parse(jsonData);
+          } catch (e) {
+            return `<div class="no-content"><p>Unable to parse content.</p></div>`;
           }
+        }
+
+        let html = '<div class="blog-content-json">';
+        
+        if (jsonData.sections && Array.isArray(jsonData.sections)) {
+          jsonData.sections.forEach(section => {
+            switch (section.type) {
+              case 'heading':
+                const level = section.level || 2;
+                html += `<h${level} class="heading-${level}">${escapeHtml(section.text)}</h${level}>`;
+                break;
+                
+              case 'paragraph':
+                html += `<p class="paragraph">${escapeHtml(section.text)}</p>`;
+                break;
+                
+              case 'list':
+                const listClass = section.ordered ? 'list-ol' : 'list-ul';
+                html += `<ul class="${listClass}">`;
+                if (section.items && Array.isArray(section.items)) {
+                  section.items.forEach(item => {
+                    html += `<li>${escapeHtml(item)}</li>`;
+                  });
+                }
+                html += `</ul>`;
+                break;
+                
+              case 'note':
+                const variant = section.variant || 'info';
+                html += `<div class="note note-${variant}">`;
+                html += `<p>${escapeHtml(section.text)}</p>`;
+                html += `</div>`;
+                break;
+                
+              case 'quote':
+                html += `<blockquote class="quote">`;
+                html += `<p>${escapeHtml(section.text)}</p>`;
+                if (section.source) {
+                  html += `<div class="quote-source">— ${escapeHtml(section.source)}</div>`;
+                }
+                html += `</blockquote>`;
+                break;
+                
+              case 'image':
+                html += `<div class="image-wrapper">`;
+                html += `<img src="${escapeHtml(section.src || '')}" alt="${escapeHtml(section.caption || 'Image')}" loading="lazy" />`;
+                if (section.caption) {
+                  html += `<div class="image-caption">${escapeHtml(section.caption)}</div>`;
+                }
+                html += `</div>`;
+                break;
+                
+              case 'table':
+                html += `<div class="table-wrapper">`;
+                html += `<table>`;
+                if (section.headers && Array.isArray(section.headers)) {
+                  html += `<thead><tr>`;
+                  section.headers.forEach(header => {
+                    html += `<th>${escapeHtml(header)}</th>`;
+                  });
+                  html += `</tr></thead>`;
+                }
+                if (section.rows && Array.isArray(section.rows)) {
+                  html += `<tbody>`;
+                  section.rows.forEach(row => {
+                    html += `<tr>`;
+                    row.forEach(cell => {
+                      html += `<td>${escapeHtml(cell)}</td>`;
+                    });
+                    html += `</tr>`;
+                  });
+                  html += `</tbody>`;
+                }
+                html += `</table>`;
+                html += `</div>`;
+                break;
+                
+              case 'hr':
+                html += `<hr class="hr" />`;
+                break;
+                
+              default:
+                break;
+            }
+          });
+        }
+        
+        html += '</div>';
+        
+        if (jsonData.references && Array.isArray(jsonData.references) && jsonData.references.length > 0) {
+          html += `<div class="blog-references-json">`;
+          html += `<h2 class="heading-2">References</h2>`;
+          html += `<ul>`;
+          jsonData.references.forEach(ref => {
+            let refText = '';
+            if (ref.authors) refText += ref.authors;
+            if (ref.year) refText += ` (${ref.year}).`;
+            if (ref.title) refText += ` ${ref.title}.`;
+            if (ref.source) refText += ` ${ref.source}.`;
+            if (ref.url) {
+              refText += ` <a href="${escapeHtml(ref.url)}" target="_blank" rel="noopener noreferrer">Link</a>`;
+            }
+            html += `<li class="reference-item">${escapeHtml(refText)}</li>`;
+          });
           html += `</ul>`;
-          break;
-          
-        case 'note':
-          const variant = section.variant || 'info';
-          html += `<div class="note note-${variant}">`;
-          html += `<p>${escapeHtml(section.text)}</p>`;
           html += `</div>`;
-          break;
-          
-        case 'quote':
-          html += `<blockquote class="quote">`;
-          html += `<p>${escapeHtml(section.text)}</p>`;
-          if (section.source) {
-            html += `<div class="quote-source">— ${escapeHtml(section.source)}</div>`;
-          }
-          html += `</blockquote>`;
-          break;
-          
-        case 'image':
-          html += `<div class="image-wrapper">`;
-          html += `<img src="${escapeHtml(section.src || '')}" alt="${escapeHtml(section.caption || 'Image')}" loading="lazy" />`;
-          if (section.caption) {
-            html += `<div class="image-caption">${escapeHtml(section.caption)}</div>`;
-          }
-          html += `</div>`;
-          break;
-          
-        case 'table':
-          html += `<div class="table-wrapper">`;
-          html += `<table>`;
-          if (section.headers && Array.isArray(section.headers)) {
-            html += `<thead><tr>`;
-            section.headers.forEach(header => {
-              html += `<th>${escapeHtml(header)}</th>`;
-            });
-            html += `</tr></thead>`;
-          }
-          if (section.rows && Array.isArray(section.rows)) {
-            html += `<tbody>`;
-            section.rows.forEach(row => {
-              html += `<tr>`;
-              row.forEach(cell => {
-                html += `<td>${escapeHtml(cell)}</td>`;
-              });
-              html += `</tr>`;
-            });
-            html += `</tbody>`;
-          }
-          html += `</table>`;
-          html += `</div>`;
-          break;
-          
-        case 'hr':
-          html += `<hr class="hr" />`;
-          break;
-          
-        default:
-          break;
+        }
+        
+        return html;
       }
-    });
-  }
-  
-  html += '</div>';
-  
-  // Render references
-  if (jsonData.references && Array.isArray(jsonData.references) && jsonData.references.length > 0) {
-    html += `<div class="blog-references-json">`;
-    html += `<h2 class="heading-2">References</h2>`;
-    html += `<ul>`;
-    jsonData.references.forEach(ref => {
-      let refText = '';
-      if (ref.authors) refText += ref.authors;
-      if (ref.year) refText += ` (${ref.year}).`;
-      if (ref.title) refText += ` ${ref.title}.`;
-      if (ref.source) refText += ` ${ref.source}.`;
-      if (ref.url) {
-        refText += ` <a href="${escapeHtml(ref.url)}" target="_blank" rel="noopener noreferrer">Link</a>`;
+
+      function escapeHtml(text) {
+        if (!text) return '';
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
       }
-      html += `<li class="reference-item">${escapeHtml(refText)}</li>`;
-    });
-    html += `</ul>`;
-    html += `</div>`;
-  }
-  
-  return html;
-}
 
-// Simple HTML escaping function
-function escapeHtml(text) {
-  if (!text) return '';
-  const div = document.createElement('div');
-  div.textContent = text;
-  return div.innerHTML;
-}
+      // ============================================================
+      // OPEN BLOG FULL VIEW - Updated for JSON
+      // ============================================================
+      function openBlogsMore(id) {
+        const pub = blogs.find(post => String(post.id) === String(id));
+        const container = document.getElementById('blogs-container');
+        
+        if (!pub) {
+          container.innerHTML = `<div class="no-content"><p>Blog post not found.</p></div>`;
+          return;
+        }
+        
+        let contentHtml = '';
+        try {
+          const jsonData = typeof pub.content === 'string' ? JSON.parse(pub.content) : pub.content;
+          contentHtml = renderJsonContent(jsonData);
+        } catch (e) {
+          contentHtml = `<div class="blog-content-json"><p>${escapeHtml(pub.content || 'No content available.')}</p></div>`;
+        }
+        
+        container.innerHTML = `
+          <article class="blog-article">
+            <div class="journal-header">
+              <h1 class="journal-title">${escapeHtml(pub.title || 'Untitled')}</h1>
+              <div class="journal-meta">
+                <span>${escapeHtml(pub.authors || 'Unknown Author')}</span>
+                <span>•</span>
+                <span>${escapeHtml(pub.date || '')}</span>
+                ${pub.read ? `<span>•</span><span class="blog-read-time">${escapeHtml(pub.read)}</span>` : ''}
+              </div>
+              ${pub.cat ? `<div class="blog-category-tag" style="display:inline-block;margin-top:12px;font-size:0.75rem;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--blush);padding:4px 12px;border:1px solid var(--blush);border-radius:99px;">${escapeHtml(pub.cat)}</div>` : ''}
+            </div>
+            
+            ${contentHtml}
+          </article>
+        `;
+      }
 
-// ============================================================
-// OPEN BLOG FULL VIEW - Updated for JSON
-// ============================================================
-function openBlogsMore(id) {
-  const pub = blogs.find(post => String(post.id) === String(id));
-  const container = document.getElementById('blogs-container');
-  
-  if (!pub) {
-    container.innerHTML = `<div class="no-content"><p>Blog post not found.</p></div>`;
-    return;
-  }
-  
-  // Parse content as JSON
-  let contentHtml = '';
-  try {
-    const jsonData = typeof pub.content === 'string' ? JSON.parse(pub.content) : pub.content;
-    contentHtml = renderJsonContent(jsonData);
-  } catch (e) {
-    // Fallback: if content is not JSON, display as plain text
-    contentHtml = `<div class="blog-content-json"><p>${escapeHtml(pub.content || 'No content available.')}</p></div>`;
-  }
-  
-  container.innerHTML = `
-    <article class="blog-article">
-      <div class="journal-header">
-        <h1 class="journal-title">${escapeHtml(pub.title || 'Untitled')}</h1>
-        <div class="journal-meta">
-          <span>${escapeHtml(pub.authors || 'Unknown Author')}</span>
-          <span>•</span>
-          <span>${escapeHtml(pub.date || '')}</span>
-          ${pub.read ? `<span>•</span><span class="blog-read-time">${escapeHtml(pub.read)}</span>` : ''}
-        </div>
-        ${pub.cat ? `<div class="blog-category-tag" style="display:inline-block;margin-top:12px;font-size:0.75rem;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--blush);padding:4px 12px;border:1px solid var(--blush);border-radius:99px;">${escapeHtml(pub.cat)}</div>` : ''}
-      </div>
-      
-      ${contentHtml}
-    </article>
-  `;
-    }
       // ============================================================
       // FEATURED POST
       // ============================================================
@@ -2870,7 +2836,6 @@ function openBlogsMore(id) {
       // BLOG SIDEBAR
       // ============================================================
       function updateBlogSidebar(posts) {
-        // Categories
         const catContainer = document.getElementById('blogCategories');
         if (catContainer) {
           const catMap = {};
@@ -2885,7 +2850,6 @@ function openBlogsMore(id) {
           }
           catContainer.innerHTML = html;
           
-          // Add click handlers for category filtering
           catContainer.querySelectorAll('li[data-cat]').forEach(item => {
             item.addEventListener('click', function() {
               const cat = this.dataset.cat;
@@ -2903,7 +2867,6 @@ function openBlogsMore(id) {
           });
         }
         
-        // Tags
         const tagContainer = document.getElementById('blogTags');
         if (tagContainer) {
           const tagSet = new Set();
@@ -2961,7 +2924,6 @@ function openBlogsMore(id) {
       // FILTERS
       // ============================================================
       function setupFilters() {
-        // Publication search
         const pubSearch = document.getElementById('pubSearch');
         if (pubSearch) {
           pubSearch.addEventListener('input', function() {
@@ -2977,7 +2939,6 @@ function openBlogsMore(id) {
           });
         }
         
-        // Publication category filter
         const pubCat = document.getElementById('pubCategoryFilter');
         if (pubCat) {
           pubCat.addEventListener('change', function() {
@@ -2989,7 +2950,6 @@ function openBlogsMore(id) {
           });
         }
         
-        // Publication year filter
         const pubYear = document.getElementById('pubYearFilter');
         if (pubYear) {
           pubYear.addEventListener('change', function() {
@@ -3001,7 +2961,6 @@ function openBlogsMore(id) {
           });
         }
         
-        // Blog search
         const blogSearch = document.getElementById('blogSearch');
         if (blogSearch) {
           blogSearch.addEventListener('input', function() {
@@ -3016,7 +2975,6 @@ function openBlogsMore(id) {
           });
         }
         
-        // Blog category filter
         const blogCat = document.getElementById('blogCategoryFilter');
         if (blogCat) {
           blogCat.addEventListener('change', function() {
@@ -3036,40 +2994,40 @@ function openBlogsMore(id) {
       const SLIDE_COUNT = heroImages.length;
 
       function preloadHeroImages() {
-  heroImages.forEach(img => {
-    const image = new Image();
-    image.src = img.url;
-    image.onerror = function() {
-      if (img.fallback) {
-        this.src = img.fallback;
+        heroImages.forEach(img => {
+          const image = new Image();
+          image.src = img.url;
+          image.onload = function() {
+            // Image loaded successfully
+          };
+          image.onerror = function() {
+            console.warn('Failed to load hero image:', img.url);
+          };
+        });
       }
-    };
-  });
-}
-
 
       function initHeroSlides() {
         const container = document.getElementById('heroSlides');
         const dotsContainer = document.getElementById('heroDots');
         
         if (!container) return;
+        
         preloadHeroImages();
-        // Build slides
+        
         container.innerHTML = heroImages.map((img, i) => `
           <div class="hero-slide ${i === 0 ? 'active' : ''}">
-            <div class="hero-slide-bg" 
+            <div class="hero-slide-bg loading" 
                  style="background-image: url('${img.url}'); 
                         background-size: cover; 
                         background-position: ${img.focusX || 'center'} ${img.focusY || '50%'};
-                  background-repeat: no-repeat;"
+                        background-repeat: no-repeat;"
                  role="img"
-                 aria-label="${heroImageDescriptions[i] || 'Hero slide ' + (i+1)}">
+                 aria-label="${img.alt || 'Hero slide ' + (i+1)}">
             </div>
             <div class="hero-slide-overlay"></div>
           </div>
         `).join('');
         
-        // Build dots
         dotsContainer.innerHTML = heroImages.map((_, i) => `
           <div class="hero-dot ${i === 0 ? 'active' : ''}" 
                data-slide="${i}" 
@@ -3077,7 +3035,21 @@ function openBlogsMore(id) {
                aria-label="Go to slide ${i + 1}"></div>
         `).join('');
         
-        // Attach controls
+        // Add loaded class after images load
+        document.querySelectorAll('.hero-slide-bg').forEach(bg => {
+          const imgUrl = bg.style.backgroundImage.slice(5, -2);
+          const img = new Image();
+          img.src = imgUrl;
+          img.onload = function() {
+            bg.classList.remove('loading');
+            bg.classList.add('loaded');
+          };
+          img.onerror = function() {
+            bg.classList.remove('loading');
+            bg.classList.add('loaded');
+          };
+        });
+        
         setupHeroControls();
         startAutoSlide();
       }
@@ -3241,7 +3213,6 @@ function openBlogsMore(id) {
           });
         });
         
-        // Blog subscribe
         const blogBtn = document.getElementById('blogSubscribeBtn');
         const blogEmail = document.getElementById('blogSubscribeEmail');
         const blogSuccess = document.getElementById('blogSubscribeSuccess');
@@ -3271,8 +3242,7 @@ function openBlogsMore(id) {
             e.preventDefault();
             const social = this.dataset.social;
             const urls = {
-              
-             tiktok: 'https://www.tiktok.com/@pharmis_optimus?_r=1&_t=ZS-97NS3DVS17h',
+              tiktok: 'https://www.tiktok.com/@pharmis_optimus?_r=1&_t=ZS-97NS3DVS17h',
               instagram: 'https://www.instagram.com/pharmis_optimus?igsh=MXA3NXE0bG1pb3N3dQ%3D%3D&utm_source=qr'
             };
             if (urls[social]) {
@@ -3286,7 +3256,6 @@ function openBlogsMore(id) {
       // NAVIGATION EVENT HANDLERS
       // ============================================================
       function setupNavigation() {
-        // Nav links
         document.querySelectorAll('[data-nav]').forEach(el => {
           el.addEventListener('click', function(e) {
             e.preventDefault();
@@ -3301,7 +3270,6 @@ function openBlogsMore(id) {
           });
         });
         
-        // Navbar links
         document.querySelectorAll('.nav-links a, .mobile-nav-panel a').forEach(link => {
           link.addEventListener('click', function(e) {
             e.preventDefault();
@@ -3320,7 +3288,6 @@ function openBlogsMore(id) {
           });
         });
         
-        // Footer nav buttons
         document.querySelectorAll('.footer-col .nav-link').forEach(btn => {
           btn.addEventListener('click', function() {
             const page = this.dataset.nav;
@@ -3344,8 +3311,6 @@ function openBlogsMore(id) {
             document.getElementById('loader').classList.add('hide');
             observeReveal();
             setTimeout(animateCounters, 200);
-            
-            // Initialize hero slides after loader
             initHeroSlides();
           }, 1800);
         });
@@ -3355,10 +3320,8 @@ function openBlogsMore(id) {
       // INIT
       // ============================================================
       async function init() {
-        // Inject footers
         injectFooters();
         
-        // Setup components
         setupTheme();
         setupMobileNav();
         setupLoader();
@@ -3368,11 +3331,9 @@ function openBlogsMore(id) {
         setupNavigation();
         setupFilters();
         
-        // Load data
         await loadPublicationsPosts();
         await loadBlogsPost();
         
-        // Handle initial hash
         const hash = window.location.hash.replace('#', '') || 'home';
         if (hash.includes('?section=')) {
           const parts = hash.split('?section=');
@@ -3382,11 +3343,9 @@ function openBlogsMore(id) {
           showPage(hash);
         }
         
-        // Re-observe after content loads
         setTimeout(observeReveal, 500);
       }
 
-      // Run when DOM is ready
       if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', init);
       } else {
