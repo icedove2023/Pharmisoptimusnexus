@@ -14,6 +14,362 @@
 
   <style>
     /* ============================================================
+   BLOG CONTENT - JSON Renderer Styles
+   ============================================================ */
+
+/* Main content container */
+.blog-content-json {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px 0;
+  line-height: 1.8;
+  color: var(--text);
+}
+
+/* Headings */
+.blog-content-json .heading-1 {
+  font-family: var(--font-display);
+  font-size: 2.8rem;
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: 24px;
+  color: var(--text);
+  letter-spacing: -0.01em;
+}
+
+.blog-content-json .heading-2 {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-weight: 600;
+  margin-top: 48px;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid var(--border);
+  color: var(--text);
+}
+
+.blog-content-json .heading-2:first-child {
+  margin-top: 0;
+}
+
+.blog-content-json .heading-3 {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-top: 32px;
+  margin-bottom: 12px;
+  color: var(--text);
+}
+
+.blog-content-json .heading-4 {
+  font-family: var(--font-body);
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-top: 24px;
+  margin-bottom: 8px;
+  color: var(--text);
+}
+
+/* Paragraphs */
+.blog-content-json .paragraph {
+  font-size: 1.05rem;
+  line-height: 1.9;
+  margin-bottom: 20px;
+  color: var(--muted);
+}
+
+.blog-content-json .paragraph:last-child {
+  margin-bottom: 0;
+}
+
+/* Lists */
+.blog-content-json .list-ul {
+  padding-left: 24px;
+  margin: 20px 0 24px 0;
+}
+
+.blog-content-json .list-ul li {
+  font-size: 1.05rem;
+  line-height: 1.8;
+  margin-bottom: 8px;
+  color: var(--muted);
+  list-style-type: none;
+  position: relative;
+}
+
+.blog-content-json .list-ul li::before {
+  content: "▸";
+  color: var(--blush);
+  font-weight: bold;
+  display: inline-block;
+  width: 20px;
+  margin-left: -20px;
+}
+
+.blog-content-json .list-ol {
+  padding-left: 24px;
+  margin: 20px 0 24px 0;
+  counter-reset: list-counter;
+}
+
+.blog-content-json .list-ol li {
+  font-size: 1.05rem;
+  line-height: 1.8;
+  margin-bottom: 8px;
+  color: var(--muted);
+  list-style-type: none;
+  position: relative;
+  padding-left: 28px;
+}
+
+.blog-content-json .list-ol li::before {
+  counter-increment: list-counter;
+  content: counter(list-counter) ".";
+  position: absolute;
+  left: 0;
+  color: var(--blush);
+  font-weight: 500;
+}
+
+/* Notes / Callouts */
+.blog-content-json .note {
+  padding: 16px 20px;
+  margin: 24px 0;
+  border-radius: 0 8px 8px 0;
+  border-left: 4px solid var(--blush);
+  background: var(--surface);
+}
+
+.blog-content-json .note-info {
+  border-left-color: #2d6a2d;
+}
+
+.blog-content-json .note-warning {
+  border-left-color: #d4a017;
+}
+
+.blog-content-json .note-danger {
+  border-left-color: #c0392b;
+}
+
+.blog-content-json .note p {
+  margin-bottom: 0;
+  color: var(--text);
+  font-size: 1rem;
+}
+
+.blog-content-json .note strong {
+  color: var(--blush);
+}
+
+/* Quotes */
+.blog-content-json .quote {
+  background: var(--surface);
+  border-left: 4px solid var(--blush);
+  padding: 20px 24px;
+  margin: 24px 0;
+  border-radius: 0 8px 8px 0;
+}
+
+.blog-content-json .quote p {
+  font-style: italic;
+  font-size: 1.1rem;
+  margin-bottom: 8px;
+  color: var(--text);
+}
+
+.blog-content-json .quote-source {
+  font-size: 0.9rem;
+  color: var(--muted);
+  text-align: right;
+  font-style: normal;
+}
+
+/* Images */
+.blog-content-json .image-wrapper {
+  margin: 24px 0;
+}
+
+.blog-content-json .image-wrapper img {
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  border-radius: 12px;
+  box-shadow: var(--shadow-sm);
+}
+
+.blog-content-json .image-caption {
+  text-align: center;
+  font-size: 0.9rem;
+  color: var(--muted);
+  margin-top: 8px;
+  font-style: italic;
+}
+
+/* Tables */
+.blog-content-json .table-wrapper {
+  overflow-x: auto;
+  margin: 24px 0;
+}
+
+.blog-content-json .table-wrapper table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+
+.blog-content-json .table-wrapper th {
+  background: var(--bg2);
+  color: var(--text);
+  padding: 12px 16px;
+  text-align: left;
+  font-weight: 600;
+  border-bottom: 2px solid var(--border);
+}
+
+.blog-content-json .table-wrapper td {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  color: var(--muted);
+}
+
+.blog-content-json .table-wrapper tr:hover td {
+  background: var(--surface);
+}
+
+/* Horizontal rule */
+.blog-content-json .hr {
+  border: none;
+  height: 1px;
+  background: var(--border);
+  margin: 40px 0;
+}
+
+/* Links */
+.blog-content-json .paragraph a {
+  color: var(--blush);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  transition: color var(--transition);
+}
+
+.blog-content-json .paragraph a:hover {
+  color: var(--text);
+}
+
+/* ============================================================
+   REFERENCES SECTION
+   ============================================================ */
+.blog-references-json {
+  margin-top: 48px;
+  padding-top: 32px;
+  border-top: 2px solid var(--border);
+}
+
+.blog-references-json .heading-2 {
+  font-family: var(--font-display);
+  font-size: 1.8rem;
+  font-weight: 600;
+  margin-bottom: 20px;
+  color: var(--text);
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.blog-references-json .reference-item {
+  font-size: 0.92rem;
+  line-height: 1.7;
+  padding: 8px 0 8px 28px;
+  position: relative;
+  color: var(--muted);
+  border-bottom: 1px solid var(--border);
+  list-style: none;
+}
+
+.blog-references-json .reference-item:last-child {
+  border-bottom: none;
+}
+
+.blog-references-json .reference-item::before {
+  content: "[" counter(ref-counter) "]";
+  counter-increment: ref-counter;
+  position: absolute;
+  left: 0;
+  color: var(--blush);
+  font-weight: 500;
+  font-size: 0.85rem;
+}
+
+.blog-references-json {
+  counter-reset: ref-counter;
+}
+
+.blog-references-json .reference-item a {
+  color: var(--blush);
+  text-decoration: none;
+  transition: color var(--transition);
+}
+
+.blog-references-json .reference-item a:hover {
+  color: var(--text);
+  text-decoration: underline;
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 768px) {
+  .blog-content-json {
+    padding: 0 16px;
+  }
+  
+  .blog-content-json .heading-1 {
+    font-size: 2rem;
+  }
+  
+  .blog-content-json .heading-2 {
+    font-size: 1.6rem;
+  }
+  
+  .blog-content-json .heading-3 {
+    font-size: 1.3rem;
+  }
+  
+  .blog-content-json .paragraph,
+  .blog-content-json .list-ul li,
+  .blog-content-json .list-ol li {
+    font-size: 0.95rem;
+  }
+  
+  .blog-content-json .quote {
+    padding: 16px;
+    margin: 16px 0;
+  }
+  
+  .blog-content-json .table-wrapper table {
+    font-size: 0.85rem;
+  }
+  
+  .blog-content-json .table-wrapper th,
+  .blog-content-json .table-wrapper td {
+    padding: 8px 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .blog-content-json .heading-1 {
+    font-size: 1.6rem;
+  }
+  
+  .blog-content-json .heading-2 {
+    font-size: 1.3rem;
+  }
+  
+  .blog-content-json .heading-3 {
+    font-size: 1.1rem;
+  }
+  }
+    /* ============================================================
        CSS CUSTOM PROPERTIES
     ============================================================ */
     :root {
@@ -2130,46 +2486,175 @@
       }
 
       // ============================================================
-      // OPEN BLOG FULL VIEW
-      // ============================================================
-      function openBlogsMore(id) {
-        const pub = blogs.find(post => String(post.id) === String(id));
-        const container = document.getElementById('blogs-container');
-        
-        if (!pub) {
-          container.innerHTML = `<div class="no-content"><p>Blog post not found.</p></div>`;
-          return;
-        }
-        
-        container.innerHTML = `
-          <article>
-            <div class="journal-header">
-              <h1 class="journal-title">${pub.title || 'Untitled'}</h1>
-              <div class="journal-meta">
-                <span>${pub.authors || 'Unknown Author'}</span>
-                <span>•</span>
-                <span>${pub.date || ''}</span>
-              </div>
-            </div>
-            <section class="journal-section">
-              <h2>Excerpt</h2>
-              <p>${pub.excerpt || 'No excerpt available.'}</p>
-            </section>
-            <section class="journal-section">
-              ${pub.content || '<p>No content available.</p>'}
-            </section>
-            <section class="journal-section">
-              <h2>Image</h2>
-              <img src="${pub.image || 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22800%22 height=%22400%22%3E%3Crect width=%22800%22 height=%22400%22 fill=%22%2317222B%22/%3E%3Ctext x=%22400%22 y=%22200%22 font-family=%22sans-serif%22 font-size=%2220%22 fill=%22%23666%22 text-anchor=%22middle%22%3ENo Image Available%3C/text%3E%3C/svg%3E'}" alt="Blog illustration" class="journal-image" loading="lazy" />
-              <p class="image-caption">${pub.caption || 'No caption available'}</p>
-            </section>
-            <section class="journal-references">
-              ${pub.references || ''}
-            </section>
-          </article>
-        `;
-      }
+// RENDER JSON BLOG CONTENT
+// ============================================================
+function renderJsonContent(jsonData) {
+  if (!jsonData || typeof jsonData === 'string') {
+    try {
+      jsonData = JSON.parse(jsonData);
+    } catch (e) {
+      return `<div class="no-content"><p>Unable to parse content.</p></div>`;
+    }
+  }
 
+  let html = '<div class="blog-content-json">';
+  
+  // Render sections
+  if (jsonData.sections && Array.isArray(jsonData.sections)) {
+    jsonData.sections.forEach(section => {
+      switch (section.type) {
+        case 'heading':
+          const level = section.level || 2;
+          html += `<h${level} class="heading-${level}">${escapeHtml(section.text)}</h${level}>`;
+          break;
+          
+        case 'paragraph':
+          html += `<p class="paragraph">${escapeHtml(section.text)}</p>`;
+          break;
+          
+        case 'list':
+          const listClass = section.ordered ? 'list-ol' : 'list-ul';
+          html += `<ul class="${listClass}">`;
+          if (section.items && Array.isArray(section.items)) {
+            section.items.forEach(item => {
+              html += `<li>${escapeHtml(item)}</li>`;
+            });
+          }
+          html += `</ul>`;
+          break;
+          
+        case 'note':
+          const variant = section.variant || 'info';
+          html += `<div class="note note-${variant}">`;
+          html += `<p>${escapeHtml(section.text)}</p>`;
+          html += `</div>`;
+          break;
+          
+        case 'quote':
+          html += `<blockquote class="quote">`;
+          html += `<p>${escapeHtml(section.text)}</p>`;
+          if (section.source) {
+            html += `<div class="quote-source">— ${escapeHtml(section.source)}</div>`;
+          }
+          html += `</blockquote>`;
+          break;
+          
+        case 'image':
+          html += `<div class="image-wrapper">`;
+          html += `<img src="${escapeHtml(section.src || '')}" alt="${escapeHtml(section.caption || 'Image')}" loading="lazy" />`;
+          if (section.caption) {
+            html += `<div class="image-caption">${escapeHtml(section.caption)}</div>`;
+          }
+          html += `</div>`;
+          break;
+          
+        case 'table':
+          html += `<div class="table-wrapper">`;
+          html += `<table>`;
+          if (section.headers && Array.isArray(section.headers)) {
+            html += `<thead><tr>`;
+            section.headers.forEach(header => {
+              html += `<th>${escapeHtml(header)}</th>`;
+            });
+            html += `</tr></thead>`;
+          }
+          if (section.rows && Array.isArray(section.rows)) {
+            html += `<tbody>`;
+            section.rows.forEach(row => {
+              html += `<tr>`;
+              row.forEach(cell => {
+                html += `<td>${escapeHtml(cell)}</td>`;
+              });
+              html += `</tr>`;
+            });
+            html += `</tbody>`;
+          }
+          html += `</table>`;
+          html += `</div>`;
+          break;
+          
+        case 'hr':
+          html += `<hr class="hr" />`;
+          break;
+          
+        default:
+          break;
+      }
+    });
+  }
+  
+  html += '</div>';
+  
+  // Render references
+  if (jsonData.references && Array.isArray(jsonData.references) && jsonData.references.length > 0) {
+    html += `<div class="blog-references-json">`;
+    html += `<h2 class="heading-2">References</h2>`;
+    html += `<ul>`;
+    jsonData.references.forEach(ref => {
+      let refText = '';
+      if (ref.authors) refText += ref.authors;
+      if (ref.year) refText += ` (${ref.year}).`;
+      if (ref.title) refText += ` ${ref.title}.`;
+      if (ref.source) refText += ` ${ref.source}.`;
+      if (ref.url) {
+        refText += ` <a href="${escapeHtml(ref.url)}" target="_blank" rel="noopener noreferrer">Link</a>`;
+      }
+      html += `<li class="reference-item">${escapeHtml(refText)}</li>`;
+    });
+    html += `</ul>`;
+    html += `</div>`;
+  }
+  
+  return html;
+}
+
+// Simple HTML escaping function
+function escapeHtml(text) {
+  if (!text) return '';
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
+}
+
+// ============================================================
+// OPEN BLOG FULL VIEW - Updated for JSON
+// ============================================================
+function openBlogsMore(id) {
+  const pub = blogs.find(post => String(post.id) === String(id));
+  const container = document.getElementById('blogs-container');
+  
+  if (!pub) {
+    container.innerHTML = `<div class="no-content"><p>Blog post not found.</p></div>`;
+    return;
+  }
+  
+  // Parse content as JSON
+  let contentHtml = '';
+  try {
+    const jsonData = typeof pub.content === 'string' ? JSON.parse(pub.content) : pub.content;
+    contentHtml = renderJsonContent(jsonData);
+  } catch (e) {
+    // Fallback: if content is not JSON, display as plain text
+    contentHtml = `<div class="blog-content-json"><p>${escapeHtml(pub.content || 'No content available.')}</p></div>`;
+  }
+  
+  container.innerHTML = `
+    <article class="blog-article">
+      <div class="journal-header">
+        <h1 class="journal-title">${escapeHtml(pub.title || 'Untitled')}</h1>
+        <div class="journal-meta">
+          <span>${escapeHtml(pub.authors || 'Unknown Author')}</span>
+          <span>•</span>
+          <span>${escapeHtml(pub.date || '')}</span>
+          ${pub.read ? `<span>•</span><span class="blog-read-time">${escapeHtml(pub.read)}</span>` : ''}
+        </div>
+        ${pub.cat ? `<div class="blog-category-tag" style="display:inline-block;margin-top:12px;font-size:0.75rem;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--blush);padding:4px 12px;border:1px solid var(--blush);border-radius:99px;">${escapeHtml(pub.cat)}</div>` : ''}
+      </div>
+      
+      ${contentHtml}
+    </article>
+  `;
+    }
       // ============================================================
       // FEATURED POST
       // ============================================================
