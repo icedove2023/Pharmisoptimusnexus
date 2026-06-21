@@ -973,93 +973,209 @@
     }
     .map-placeholder svg { opacity: 0.4; }
 
-    /* ============================================================
-       FOOTER
-    ============================================================ */
-    footer {
-      background: var(--dark);
-      border-top: 1px solid var(--border);
-      padding: 60px 40px 30px;
-    }
-    .footer-grid {
-      display: grid;
-      grid-template-columns: 2fr 1fr 1fr 1fr;
-      gap: 40px;
-      margin-bottom: 50px;
-    }
-    .footer-brand p {
-      font-size: 0.875rem;
-      color: var(--muted);
-      margin-top: 14px;
-      max-width: 280px;
-      line-height: 1.7;
-    }
-    
-    .footer-col h4 {
-      font-size: 0.8rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: var(--cream);
-      margin-bottom: 16px;
-    }
-    .footer-col ul li {
-      margin-bottom: 10px;
-    }
-    .footer-col ul li a, .footer-col ul li button {
-      font-size: 0.875rem;
-      color: var(--muted);
-      transition: color var(--transition);
-      background: none;
-      padding: 0;
-      text-align: left;
-    }
-    .footer-col ul li a:hover, .footer-col ul li button:hover { color: var(--blush); }
-    .newsletter-input {
-      display: flex; gap: 8px; margin-top: 8px;
-    }
-    .newsletter-input input {
-      flex: 1;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 10px 14px;
-      color: var(--text);
-      font-family: var(--font-body);
-      font-size: 0.875rem;
-      outline: none;
-    }
-    .newsletter-input input:focus {
-      border-color: var(--blush);
-    }
-    .newsletter-input button {
-      background: var(--crimson);
-      color: white;
-      padding: 10px 16px;
-      border-radius: 8px;
-      font-size: 0.85rem;
-      font-weight: 600;
-      transition: var(--transition);
-      white-space: nowrap;
-    }
-    .newsletter-input button:hover { background: var(--blush); }
-    .newsletter-success {
-      color: var(--blush);
-      font-size: 0.85rem;
-      margin-top: 8px;
-      display: none;
-    }
-    .newsletter-success.show { display: block; }
-    .footer-bottom {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding-top: 24px;
-      border-top: 1px solid var(--border);
-      font-size: 0.8rem;
-      color: var(--muted);
-    }
+  /* ============================================================
+   FOOTER - Complete with Light/Dark Mode
+   ============================================================ */
+footer {
+  background: var(--dark);
+  border-top: 1px solid var(--border);
+  padding: 60px 40px 30px;
+  transition: background var(--transition), border-color var(--transition);
+}
 
+.footer-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 40px;
+  margin-bottom: 50px;
+}
+
+.footer-brand p {
+  font-size: 0.875rem;
+  color: var(--muted);
+  margin-top: 14px;
+  max-width: 280px;
+  line-height: 1.7;
+  transition: color var(--transition);
+}
+
+.footer-col h4 {
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--cream);
+  margin-bottom: 16px;
+  transition: color var(--transition);
+}
+
+.footer-col ul li {
+  margin-bottom: 10px;
+}
+
+.footer-col ul li a,
+.footer-col ul li button {
+  font-size: 0.875rem;
+  color: var(--muted);
+  transition: color var(--transition), background var(--transition);
+  background: none;
+  padding: 0;
+  text-align: left;
+}
+
+.footer-col ul li a:hover,
+.footer-col ul li button:hover {
+  color: var(--blush);
+}
+
+/* Newsletter */
+.newsletter-input {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.newsletter-input input {
+  flex: 1;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 14px;
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  outline: none;
+  transition: border-color var(--transition), background var(--transition), color var(--transition);
+}
+
+.newsletter-input input:focus {
+  border-color: var(--blush);
+}
+
+.newsletter-input input::placeholder {
+  color: var(--muted);
+  opacity: 0.6;
+}
+
+.newsletter-input button {
+  background: var(--crimson);
+  color: white;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: var(--transition);
+  white-space: nowrap;
+}
+
+.newsletter-input button:hover {
+  background: var(--blush);
+}
+
+.newsletter-success {
+  color: var(--blush);
+  font-size: 0.85rem;
+  margin-top: 8px;
+  display: none;
+}
+
+.newsletter-success.show {
+  display: block;
+}
+
+.footer-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+  font-size: 0.8rem;
+  color: var(--muted);
+  transition: color var(--transition), border-color var(--transition);
+}
+
+/* ============================================================
+   FOOTER - LIGHT MODE OVERRIDES
+   ============================================================ */
+[data-theme="light"] footer {
+  background: var(--bg2);
+  border-top: 1px solid var(--border);
+}
+
+[data-theme="light"] .footer-brand .nav-brand-name {
+  color: var(--dark);
+}
+
+[data-theme="light"] .footer-brand .nav-brand-name small {
+  color: var(--muted);
+}
+
+[data-theme="light"] .footer-brand p,
+[data-theme="light"] .footer-col ul li a,
+[data-theme="light"] .footer-col ul li button,
+[data-theme="light"] .footer-bottom {
+  color: var(--text);
+}
+
+[data-theme="light"] .footer-col h4 {
+  color: var(--dark);
+}
+
+[data-theme="light"] .newsletter-input input {
+  color: var(--dark);
+  background: rgba(255, 255, 255, 0.8);
+  border-color: var(--border);
+}
+
+[data-theme="light"] .newsletter-input input::placeholder {
+  color: rgba(23, 34, 43, 0.5);
+}
+
+[data-theme="light"] .newsletter-input input:focus {
+  border-color: var(--blush);
+  background: white;
+}
+
+[data-theme="light"] .social-link {
+  color: var(--muted);
+  border-color: var(--border);
+}
+
+[data-theme="light"] .social-link:hover {
+  color: var(--blush);
+  border-color: rgba(241, 109, 120, 0.4);
+  background: rgba(241, 109, 120, 0.08);
+}
+
+[data-theme="light"] .footer-bottom {
+  border-top-color: var(--border);
+}
+
+/* ============================================================
+   FOOTER - RESPONSIVE
+   ============================================================ */
+@media (max-width: 1024px) {
+  .footer-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  footer {
+    padding: 40px 20px 20px;
+  }
+  
+  .footer-grid {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+  
+  .footer-bottom {
+    flex-direction: column;
+    gap: 10px;
+    text-align: center;
+  }
+}
     /* ============================================================
        PUBLICATIONS PAGE
     ============================================================ */
@@ -1854,14 +1970,9 @@
             </div>
           </div>
           <div class="social-links">
-            <a href="#" class="social-link" aria-label="LinkedIn" data-social="linkedin">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
-            </a>
-            <a href="#" class="social-link" aria-label="Twitter" data-social="twitter">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/></svg>
-            </a>
-            <a href="#" class="social-link" aria-label="Facebook" data-social="facebook">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+             <a href="#" class="social-link" aria-label="TikTok" data-social="tiktok">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/>
+            </svg>
             </a>
             <a href="#" class="social-link" aria-label="Instagram" data-social="instagram">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
@@ -2221,15 +2332,13 @@
           <div class="footer-bottom">
             <span>© 2026 Pharmis Optimus Nexus. All Rights Reserved.</span>
             <div class="social-links" style="margin-top:0">
-              <a href="#" class="social-link" style="width:32px;height:32px" aria-label="LinkedIn" data-social="linkedin">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
-              </a>
-              <a href="#" class="social-link" style="width:32px;height:32px" aria-label="Twitter" data-social="twitter">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/></svg>
-              </a>
-              <a href="#" class="social-link" style="width:32px;height:32px" aria-label="Facebook" data-social="facebook">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
-              </a>
+               <a href="#" class="social-link" aria-label="TikTok" data-social="tiktok">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/>
+            </svg>
+            </a>
+            <a href="#" class="social-link" aria-label="Instagram" data-social="instagram">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+            </a>
             </div>
           </div>
         `;
@@ -3095,8 +3204,7 @@ function openBlogsMore(id) {
             const social = this.dataset.social;
             const urls = {
               linkedin: 'https://linkedin.com',
-              twitter: 'https://twitter.com',
-              facebook: 'https://facebook.com',
+             TikTok: 'https://www.tiktok.com/@pharmis_optimus?_r=1&_t=ZS-97NS3DVS17h',
               instagram: 'https://www.instagram.com/pharmis_optimus?igsh=MXA3NXE0bG1pb3N3dQ%3D%3D&utm_source=qr'
             };
             if (urls[social]) {
