@@ -1,0 +1,400 @@
+/* ============================================================
+   PUBLICATIONS PAGE - Specific Styles
+   ============================================================ */
+
+/* Publications Grid */
+.publications-section {
+    padding: 60px 40px;
+}
+
+.pubs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 24px;
+    margin-bottom: 50px;
+}
+
+.pub-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    transition: var(--transition);
+}
+
+.pub-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow);
+    border-color: rgba(241, 109, 120, 0.25);
+}
+
+.pub-card-img {
+    height: 140px;
+    position: relative;
+    overflow: hidden;
+}
+
+.pub-card-img-inner {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    transition: transform 0.6s ease;
+}
+
+.pub-card:hover .pub-card-img-inner {
+    transform: scale(1.05);
+}
+
+.pub-card-img-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(23, 34, 43, 0.7), transparent);
+}
+
+.pub-card-badge {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: rgba(23, 34, 43, 0.85);
+    color: var(--cream);
+    font-size: 0.65rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 4px 12px;
+    border-radius: 99px;
+    backdrop-filter: blur(4px);
+    z-index: 2;
+}
+
+.pub-card-body {
+    padding: 22px;
+}
+
+.pub-tag {
+    display: inline-block;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border-radius: 99px;
+    margin-bottom: 12px;
+}
+
+.tag-pharmacology {
+    background: rgba(241, 109, 120, 0.18);
+    color: var(--blush);
+}
+
+.tag-pharmsci {
+    background: rgba(68, 51, 32, 0.5);
+    color: var(--cream);
+}
+
+.tag-biotech {
+    background: rgba(134, 55, 62, 0.3);
+    color: #f09;
+}
+
+.tag-medchem {
+    background: rgba(70, 100, 150, 0.3);
+    color: #7af;
+}
+
+.tag-patient-care {
+    background: rgba(50, 150, 100, 0.3);
+    color: #5f5;
+}
+
+.pub-card h3 {
+    font-family: var(--font-display);
+    font-size: 1.12rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+    line-height: 1.3;
+}
+
+.pub-meta {
+    font-size: 0.78rem;
+    color: var(--muted);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.pub-meta svg {
+    flex-shrink: 0;
+}
+
+.pub-abstract {
+    font-size: 0.875rem;
+    color: var(--muted);
+    line-height: 1.7;
+    margin-bottom: 18px;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.pub-card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.pub-date {
+    font-size: 0.78rem;
+    font-family: var(--font-mono);
+    color: var(--muted);
+}
+
+/* Filters Bar - Publications */
+.filters-bar {
+    padding: 28px 40px;
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+}
+
+/* Publication - Single */
+.publication-content-wrapper {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 40px 60px;
+}
+
+.publication-stats-bar {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px 24px;
+    margin: 24px 0 40px;
+}
+
+.publication-stats {
+    display: flex;
+    gap: 32px;
+    flex-wrap: wrap;
+}
+
+.publication-stats .stat-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.95rem;
+    color: var(--muted);
+}
+
+.publication-stats .stat-item .icon {
+    font-size: 1.1rem;
+}
+
+.publication-stats .stat-item .count {
+    font-weight: 600;
+    color: var(--text);
+}
+
+.publication-stats .stat-item .label {
+    color: var(--muted);
+    font-size: 0.8rem;
+}
+
+.publication-stats .like-container .icon {
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.publication-stats .like-container .icon:hover {
+    transform: scale(1.2);
+}
+
+.publication-stats .like-container .icon.liked {
+    color: var(--blush);
+}
+
+.publication-content {
+    margin: 32px 0;
+}
+
+.publication-heading-2 {
+    font-family: var(--font-display);
+    font-size: 1.8rem;
+    font-weight: 600;
+    margin-top: 40px;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid var(--border);
+    color: var(--text);
+}
+
+.publication-heading-3 {
+    font-family: var(--font-display);
+    font-size: 1.4rem;
+    font-weight: 600;
+    margin-top: 32px;
+    margin-bottom: 12px;
+    color: var(--text);
+}
+
+.publication-paragraph {
+    font-size: 1.05rem;
+    line-height: 1.9;
+    margin-bottom: 20px;
+    color: var(--muted);
+}
+
+.publication-list-ul {
+    padding-left: 24px;
+    margin: 20px 0 24px;
+}
+
+.publication-list-ul li {
+    font-size: 1.05rem;
+    line-height: 1.8;
+    margin-bottom: 8px;
+    color: var(--muted);
+    list-style-type: none;
+    position: relative;
+}
+
+.publication-list-ul li::before {
+    content: "▸";
+    color: var(--blush);
+    font-weight: bold;
+    display: inline-block;
+    width: 20px;
+    margin-left: -20px;
+}
+
+.publication-note {
+    padding: 16px 20px;
+    margin: 24px 0;
+    border-radius: 0 8px 8px 0;
+    border-left: 4px solid var(--blush);
+    background: var(--surface);
+}
+
+.publication-note p {
+    margin-bottom: 0;
+    color: var(--text);
+    font-size: 1rem;
+}
+
+.publication-note.note-info {
+    border-left-color: #2d6a2d;
+}
+
+.publication-note.note-warning {
+    border-left-color: #d4a017;
+}
+
+.publication-note.note-danger {
+    border-left-color: #c0392b;
+}
+
+/* Publication References */
+.publication-references {
+    margin-top: 48px;
+    padding-top: 32px;
+    border-top: 2px solid var(--border);
+}
+
+.publication-references h2 {
+    font-family: var(--font-display);
+    font-size: 1.8rem;
+    font-weight: 600;
+    margin-bottom: 20px;
+    color: var(--text);
+}
+
+.publication-references ul {
+    list-style: none;
+    padding: 0;
+}
+
+.publication-references li {
+    display: flex;
+    gap: 12px;
+    font-size: 0.92rem;
+    line-height: 1.7;
+    padding: 8px 0;
+    color: var(--muted);
+    border-bottom: 1px solid var(--border);
+}
+
+.publication-references li:last-child {
+    border-bottom: none;
+}
+
+.ref-number {
+    color: var(--blush);
+    font-weight: 500;
+    min-width: 28px;
+    flex-shrink: 0;
+}
+
+.publication-references li a {
+    color: var(--blush);
+    text-decoration: none;
+}
+
+.publication-references li a:hover {
+    text-decoration: underline;
+}
+
+/* Responsive - Publications */
+@media (max-width: 768px) {
+    .publications-section {
+        padding: 40px 20px;
+    }
+
+    .filters-bar {
+        padding: 16px 20px;
+    }
+
+    .pubs-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .publication-content-wrapper {
+        padding: 0 20px 40px;
+    }
+
+    .publication-stats {
+        gap: 16px;
+    }
+
+    .publication-stats .stat-item .label {
+        display: none;
+    }
+
+    .publication-heading-2 {
+        font-size: 1.4rem;
+    }
+
+    .publication-paragraph {
+        font-size: 0.95rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .pub-card-img {
+        height: 120px;
+    }
+
+    .publication-stats {
+        gap: 12px;
+    }
+
+    .publication-stats .stat-item {
+        font-size: 0.85rem;
+    }
+}

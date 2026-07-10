@@ -1,0 +1,137 @@
+<!-- src/views/pages/blog.ejs -->
+<%- include('../partials/hero-mini', { 
+    title: 'Blog',
+    category: 'Blog',
+    subtitle: 'Insights, perspectives, and commentary from leaders in pharmaceutical research and innovation.'
+}) %>
+
+<!-- Filters -->
+<div class="filters-bar">
+    <div class="search-input-wrap">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8"/>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+        <input type="text" id="blogSearch" placeholder="Search blog posts..." aria-label="Search blog posts" />
+    </div>
+    <select class="filter-select" id="blogCategoryFilter">
+        <option value="">All Categories</option>
+        <option value="Public Health Awareness">Public Health Awareness</option>
+        <option value="Mental Health">Mental Health</option>
+        <option value="Lifestyle & Wellness">Lifestyle & Wellness</option>
+        <option value="Community Health">Community Health</option>
+        <option value="Health News & Updates">Health News & Updates</option>
+    </select>
+</div>
+
+<div class="blog-layout">
+    <!-- Main Content -->
+    <div>
+        <!-- Featured Post -->
+        <% if (featured) { %>
+            <div id="featuredPost" class="featured-post reveal">
+                <div class="featured-img">
+                    <div class="featured-img-inner" style="background: linear-gradient(135deg, var(--dark) 0%, var(--crimson) 100%);">
+                        <svg width="360" height="320" viewBox="0 0 360 320" xmlns="http://www.w3.org/2000/svg" opacity="0.5">
+                            <defs>
+                                <radialGradient id="fg1" cx="50%" cy="50%" r="60%">
+                                    <stop offset="0%" stop-color="#F16D78" stop-opacity="0.6"/>
+                                    <stop offset="100%" stop-color="#17222B" stop-opacity="0"/>
+                                </radialGradient>
+                            </defs>
+                            <rect width="360" height="320" fill="#17222B"/>
+                            <rect width="360" height="320" fill="url(#fg1)"/>
+                            <circle cx="180" cy="160" r="80" stroke="#EFD9C7" stroke-width="1" fill="none" opacity="0.3"/>
+                            <circle cx="180" cy="160" r="40" stroke="#F16D78" stroke-width="1.5" fill="none" opacity="0.5"/>
+                            <circle cx="180" cy="160" r="12" fill="#F16D78" opacity="0.8"/>
+                        </svg>
+                    </div>
+                    <div class="featured-badge">Featured</div>
+                </div>
+                <div class="featured-body">
+                    <div class="featured-cat"><%= featured.category %></div>
+                    <h2><%= featured.title %></h2>
+                    <p><%= featured.excerpt || '' %></p>
+                    <div class="post-meta">
+                        <span><%= featured.published_date %></span>
+                        <div class="post-meta-dot"></div>
+                        <span><%= featured.read_time || 'no read time' %></span>
+                    </div>
+                    <a href="/blog/<%= featured.slug %>" class="btn-sm">Read More</a>
+                </div>
+            </div>
+        <% } %>
+
+        <!-- Blog Grid -->
+        <h3 style="font-family:var(--font-display);font-size:1.5rem;margin-bottom:24px">Latest Posts</h3>
+        <div class="blog-grid" id="blogGrid">
+            <% if (posts && posts.length) { %>
+                <% posts.forEach((post, index) => { %>
+                    <article class="blog-card reveal" role="article">
+                        <div class="blog-card-img">
+                            <div class="blog-card-img-inner" style="background: <%= ['linear-gradient(135deg, #1a2a3a, #2a4a6a)', 'linear-gradient(135deg, #1a1a2a, #3a2060)', 'linear-gradient(135deg, #2a1a18, #6a3020)', 'linear-gradient(135deg, #1a2218, #204a20)'][index % 4] %>"></div>
+                        </div>
+                        <div class="blog-card-body">
+                            <div class="blog-card-cat"><%= post.category || '' %></div>
+                            <h3><%= post.title %></h3>
+                            <p><%= post.excerpt || '' %></p>
+                            <div class="blog-card-footer">
+                                <div class="post-meta" style="margin:0">
+                                    <span><%= post.published_date %></span>
+                                    <div class="post-meta-dot"></div>
+                                    <span class="blog-read-time"><%= post.read_time || 'no read time' %></span>
+                                </div>
+                                <a href="/blog/<%= post.slug %>" class="btn-sm">Read More</a>
+                            </div>
+                        </div>
+                    </article>
+                <% }) %>
+            <% } else { %>
+                <p style="grid-column:1/-1;text-align:center;color:var(--muted);padding:40px;">No blog posts found.</p>
+            <% } %>
+        </div>
+
+        <!-- Pagination -->
+        <%- include('../partials/pagination', { 
+            pagination: pagination,
+            baseUrl: '/blog?'
+        }) %>
+    </div>
+
+    <!-- Sidebar -->
+    <%- include('../partials/sidebar', { 
+        categories: categories,
+        tags: tags,
+        popularPosts: popularPosts || []
+    }) %>
+</div>
+
+<script>
+    // Category filter
+    document.getElementById('blogCategoryFilter')?.addEventListener('change', function() {
+        const category = this.value;
+        const url = new URL(window.location.href);
+        if (category) {
+            url.searchParams.set('category', category);
+        } else {
+            url.searchParams.delete('category');
+        }
+        window.location.href = url.toString();
+    });
+    
+    // Search
+    let searchTimeout;
+    document.getElementById('blogSearch')?.addEventListener('input', function() {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(() => {
+            const query = this.value.trim();
+            const url = new URL(window.location.href);
+            if (query) {
+                url.searchParams.set('search', query);
+            } else {
+                url.searchParams.delete('search');
+            }
+            window.location.href = url.toString();
+        }, 500);
+    });
+</script>

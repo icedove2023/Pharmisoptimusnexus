@@ -1,0 +1,515 @@
+<!-- src/views/components/comments.ejs -->
+<section class="comments-section" id="commentsSection">
+    <!-- Comments Header -->
+    <div class="comments-header">
+        <h3 class="comments-title">
+            💬 Comments
+            <span class="comment-count-badge" id="commentCount">
+                <%= comments ? comments.length : 0 %>
+            </span>
+        </h3>
+        <div class="comments-sort">
+            <select id="commentSort" class="sort-select">
+                <option value="newest">Newest First</option>
+                <option value="oldest">Oldest First</option>
+                <option value="popular">Most Liked</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Comment Form - Compact & Clean -->
+    <div class="comment-form-wrapper" id="commentFormWrapper">
+        <form id="commentForm" data-post-id="<%= postId %>" class="comment-form">
+            <div class="comment-form-main">
+                <div class="comment-avatar">
+                    <div class="avatar-placeholder">
+                        <span>👤</span>
+                    </div>
+                </div>
+                <div class="comment-input-area">
+                    <div class="comment-input-row">
+                        <input type="text" id="commentAuthor" name="author" 
+                               placeholder="Your name" class="comment-input" required />
+                        <input type="email" id="commentEmail" name="email" 
+                               placeholder="Email (optional)" class="comment-input" />
+                    </div>
+                    <div class="comment-textarea-wrapper">
+                        <textarea id="commentContent" name="content" 
+                                  rows="1" 
+                                  placeholder="Write a comment..." 
+                                  class="comment-textarea" 
+                                  required></textarea>
+                        <div class="comment-actions-bar">
+                            <div class="comment-tools">
+                                <button type="button" class="tool-btn" title="Bold">
+                                    <strong>B</strong>
+                                </button>
+                                <button type="button" class="tool-btn" title="Italic">
+                                    <em>I</em>
+                                </button>
+                                <button type="button" class="tool-btn" title="Link">
+                                    🔗
+                                </button>
+                                <button type="button" class="tool-btn" title="Quote">
+                                    ❝
+                                </button>
+                            </div>
+                            <div class="comment-submit-area">
+                                <span class="comment-character-count" id="charCount">0</span>
+                                <button type="submit" class="comment-submit-btn">
+                                    <span class="btn-text">Post</span>
+                                    <span class="btn-loading" style="display:none;">⏳</span>
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <line x1="22" y1="2" x2="11" y2="13"/>
+                                        <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <input type="hidden" name="parentId" id="commentParentId" value="" />
+            
+            <!-- Reply indicator -->
+            <div class="reply-indicator" id="replyIndicator" style="display:none;">
+                <span>Replying to: <strong id="replyToName"></strong></span>
+                <button type="button" class="cancel-reply" id="cancelReply">✕</button>
+            </div>
+        </form>
+        
+        <!-- Success/Error Messages -->
+        <div id="commentSuccess" class="comment-message success" style="display:none;">
+            <span class="icon">✅</span>
+            <span>Comment posted successfully!</span>
+        </div>
+        <div id="commentError" class="comment-message error" style="display:none;">
+            <span class="icon">❌</span>
+            <span>Failed to post comment. Please try again.</span>
+        </div>
+    </div>
+
+    <!-- Comments List -->
+    <div id="commentsContainer" class="comments-list">
+        <% if (comments && comments.length) { %>
+            <% comments.forEach(comment => { %>
+                <div class="comment-item" data-comment-id="<%= comment.id %>" data-parent-id="null">
+                    <div class="comment-avatar">
+                        <div class="avatar-circle" data-name="<%= comment.author %>">
+                            <%= comment.author.charAt(0).toUpperCase() %>
+                        </div>
+                    </div>
+                    <div class="comment-body">
+                        <div class="comment-header">
+                            <div class="comment-author">
+                                <strong><%= comment.author %></strong>
+                                <span class="comment-badge">Verified</span>
+                            </div>
+                            <span class="comment-date">
+                                <%= new Date(comment.created_at).toLocaleDateString('en-US', { 
+                                    year: 'numeric', 
+                                    month: 'short', 
+                                    day: 'numeric' 
+                                }) %>
+                            </span>
+                        </div>
+                        <div class="comment-content"><%= comment.content %></div>
+                        <div class="comment-actions">
+                            <button class="comment-action-btn like-comment" data-comment-id="<%= comment.id %>">
+                                <span class="like-icon">❤️</span>
+                                <span class="like-count">0</span>
+                            </button>
+                            <button class="comment-action-btn reply-btn" data-comment-id="<%= comment.id %>" data-author="<%= comment.author %>">
+                                <span class="reply-icon">↩️</span>
+                                Reply
+                            </button>
+                            <button class="comment-action-btn share-comment" data-comment-id="<%= comment.id %>">
+                                <span class="share-icon">🔗</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Replies -->
+                <% if (comment.replies && comment.replies.length) { %>
+                    <div class="replies-container">
+                        <% comment.replies.forEach(reply => { %>
+                            <div class="comment-item reply" data-comment-id="<%= reply.id %>" data-parent-id="<%= comment.id %>">
+                                <div class="comment-avatar">
+                                    <div class="avatar-circle" data-name="<%= reply.author %>">
+                                        <%= reply.author.charAt(0).toUpperCase() %>
+                                    </div>
+                                </div>
+                                <div class="comment-body">
+                                    <div class="comment-header">
+                                        <div class="comment-author">
+                                            <strong><%= reply.author %></strong>
+                                            <span class="comment-badge">Verified</span>
+                                        </div>
+                                        <span class="comment-date">
+                                            <%= new Date(reply.created_at).toLocaleDateString('en-US', { 
+                                                year: 'numeric', 
+                                                month: 'short', 
+                                                day: 'numeric' 
+                                            }) %>
+                                        </span>
+                                    </div>
+                                    <div class="comment-content"><%= reply.content %></div>
+                                    <div class="comment-actions">
+                                        <button class="comment-action-btn like-comment" data-comment-id="<%= reply.id %>">
+                                            <span class="like-icon">❤️</span>
+                                            <span class="like-count">0</span>
+                                        </button>
+                                        <button class="comment-action-btn reply-btn" data-comment-id="<%= reply.id %>" data-author="<%= reply.author %>">
+                                            <span class="reply-icon">↩️</span>
+                                            Reply
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        <% }) %>
+                    </div>
+                <% } %>
+            <% }) %>
+        <% } else { %>
+            <div class="no-comments">
+                <div class="no-comments-icon">💬</div>
+                <p>No comments yet. Be the first to share your thoughts!</p>
+            </div>
+        <% } %>
+    </div>
+
+    <!-- Load More Comments -->
+    <div id="loadMoreComments" style="text-align:center;margin-top:20px;">
+        <button class="load-more-btn" id="loadMoreBtn" data-post-id="<%= postId %>" style="display:none;">
+            <span class="btn-text">Load More Comments</span>
+            <span class="btn-loading" style="display:none;">Loading...</span>
+        </button>
+    </div>
+</section>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // ============================================================
+    // COMMENT FORM AUTO-EXPAND
+    // ============================================================
+    const textarea = document.getElementById('commentContent');
+    if (textarea) {
+        textarea.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = Math.min(this.scrollHeight, 150) + 'px';
+            
+            const charCount = document.getElementById('charCount');
+            if (charCount) {
+                charCount.textContent = this.value.length;
+                if (this.value.length > 500) {
+                    charCount.style.color = 'var(--blush)';
+                } else {
+                    charCount.style.color = 'var(--muted)';
+                }
+            }
+        });
+        
+        textarea.addEventListener('focus', function() {
+            this.parentElement.parentElement.classList.add('focused');
+        });
+        
+        textarea.addEventListener('blur', function() {
+            if (!this.value.trim()) {
+                this.parentElement.parentElement.classList.remove('focused');
+            }
+        });
+    }
+
+    // ============================================================
+    // AVATAR COLORS - CSS Only
+    // ============================================================
+    // This function applies colors to avatars using CSS
+    function applyAvatarColors() {
+        document.querySelectorAll('.avatar-circle').forEach(el => {
+            const name = el.dataset.name || '';
+            const colors = [
+                '#F16D78', '#86373E', '#2d6a2d', '#2d3a7a', 
+                '#5a2060', '#5a5010', '#1a2a3a', '#2a4a6a',
+                '#6a3020', '#204a20', '#3a2060', '#1a2218'
+            ];
+            let hash = 0;
+            for (let i = 0; i < name.length; i++) {
+                hash = name.charCodeAt(i) + ((hash << 5) - hash);
+            }
+            const color = colors[Math.abs(hash) % colors.length];
+            el.style.background = color;
+        });
+    }
+    
+    // Apply avatar colors on load
+    applyAvatarColors();
+
+    // ============================================================
+    // COMMENT FORM SUBMISSION
+    // ============================================================
+    const commentForm = document.getElementById('commentForm');
+    if (commentForm) {
+        const postId = commentForm.dataset.postId;
+        
+        commentForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const author = document.getElementById('commentAuthor').value.trim();
+            const email = document.getElementById('commentEmail').value.trim();
+            const content = document.getElementById('commentContent').value.trim();
+            const parentId = document.getElementById('commentParentId').value || null;
+            
+            if (!author || author.length < 2) {
+                showCommentError('Please enter your name (minimum 2 characters)');
+                return;
+            }
+            if (!content || content.length < 2) {
+                showCommentError('Please enter a comment (minimum 2 characters)');
+                return;
+            }
+            
+            const submitBtn = this.querySelector('.comment-submit-btn');
+            const btnText = submitBtn.querySelector('.btn-text');
+            const btnLoading = submitBtn.querySelector('.btn-loading');
+            btnText.style.display = 'none';
+            btnLoading.style.display = 'inline';
+            submitBtn.disabled = true;
+            
+            document.getElementById('commentSuccess').style.display = 'none';
+            document.getElementById('commentError').style.display = 'none';
+            
+            try {
+                const response = await fetch(`/api/comments/${postId}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ author, email, content, parentId })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    addCommentToUI(result.comment);
+                    this.reset();
+                    document.getElementById('commentContent').style.height = 'auto';
+                    document.getElementById('charCount').textContent = '0';
+                    document.getElementById('commentSuccess').style.display = 'flex';
+                    
+                    const countEl = document.getElementById('commentCount');
+                    if (countEl) {
+                        countEl.textContent = parseInt(countEl.textContent) + 1;
+                    }
+                    
+                    const noComments = document.querySelector('.no-comments');
+                    if (noComments) noComments.remove();
+                    
+                    document.getElementById('commentParentId').value = '';
+                    document.getElementById('replyIndicator').style.display = 'none';
+                    
+                    setTimeout(() => {
+                        const newComment = document.querySelector('.comment-item:first-child');
+                        if (newComment) {
+                            newComment.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                            newComment.style.borderColor = 'var(--blush)';
+                            setTimeout(() => {
+                                newComment.style.borderColor = 'var(--border)';
+                            }, 2000);
+                        }
+                    }, 100);
+                    
+                    setTimeout(() => {
+                        document.getElementById('commentSuccess').style.display = 'none';
+                    }, 3000);
+                } else {
+                    showCommentError(result.error || 'Failed to post comment');
+                }
+            } catch (error) {
+                console.error('Error posting comment:', error);
+                showCommentError('Network error. Please try again.');
+            } finally {
+                btnText.style.display = 'inline';
+                btnLoading.style.display = 'none';
+                submitBtn.disabled = false;
+            }
+        });
+    }
+
+    // ============================================================
+    // REPLY FUNCTIONALITY
+    // ============================================================
+    document.querySelectorAll('.reply-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const parentId = this.dataset.commentId;
+            const author = this.dataset.author;
+            
+            document.getElementById('commentParentId').value = parentId;
+            document.getElementById('replyIndicator').style.display = 'flex';
+            document.getElementById('replyToName').textContent = author;
+            
+            const textarea = document.getElementById('commentContent');
+            textarea.focus();
+            textarea.placeholder = `Reply to ${author}...`;
+            
+            document.querySelectorAll('.comment-item').forEach(el => {
+                el.style.borderLeft = 'none';
+            });
+            const parentComment = document.querySelector(`.comment-item[data-comment-id="${parentId}"]`);
+            if (parentComment) {
+                parentComment.style.borderLeft = '3px solid var(--blush)';
+            }
+        });
+    });
+
+    // ============================================================
+    // CANCEL REPLY
+    // ============================================================
+    document.getElementById('cancelReply')?.addEventListener('click', function() {
+        document.getElementById('commentParentId').value = '';
+        document.getElementById('replyIndicator').style.display = 'none';
+        document.getElementById('commentContent').placeholder = 'Write a comment...';
+        document.querySelectorAll('.comment-item').forEach(el => {
+            el.style.borderLeft = 'none';
+        });
+    });
+
+    // ============================================================
+    // LOAD MORE COMMENTS
+    // ============================================================
+    const loadMoreBtn = document.getElementById('loadMoreBtn');
+    let commentPage = 1;
+    
+    if (loadMoreBtn) {
+        loadMoreBtn.addEventListener('click', async function() {
+            const postId = this.dataset.postId;
+            commentPage++;
+            
+            this.querySelector('.btn-text').style.display = 'none';
+            this.querySelector('.btn-loading').style.display = 'inline';
+            this.disabled = true;
+            
+            try {
+                const response = await fetch(`/api/comments/${postId}?page=${commentPage}`);
+                const data = await response.json();
+                
+                if (data.success && data.comments && data.comments.length > 0) {
+                    data.comments.forEach(comment => {
+                        addCommentToUI(comment);
+                    });
+                    // Re-apply avatar colors for new comments
+                    applyAvatarColors();
+                }
+                
+                if (!data.comments || data.comments.length === 0 || data.totalPages === commentPage) {
+                    this.style.display = 'none';
+                }
+            } catch (error) {
+                console.error('Error loading more comments:', error);
+            } finally {
+                this.querySelector('.btn-text').style.display = 'inline';
+                this.querySelector('.btn-loading').style.display = 'none';
+                this.disabled = false;
+            }
+        });
+    }
+
+    // ============================================================
+    // HELPER FUNCTIONS
+    // ============================================================
+    function showCommentError(message) {
+        const errorEl = document.getElementById('commentError');
+        errorEl.querySelector('span:last-child').textContent = message;
+        errorEl.style.display = 'flex';
+        setTimeout(() => errorEl.style.display = 'none', 5000);
+    }
+    
+    function addCommentToUI(comment, prepend = false) {
+        const container = document.getElementById('commentsContainer');
+        if (!container) return;
+        
+        const date = new Date(comment.created_at).toLocaleDateString('en-US', {
+            year: 'numeric', 
+            month: 'short', 
+            day: 'numeric' 
+        });
+        
+        const initial = comment.author.charAt(0).toUpperCase();
+        
+        const commentHtml = `
+            <div class="comment-item" data-comment-id="${comment.id}" data-parent-id="${comment.parent_id || 'null'}">
+                <div class="comment-avatar">
+                    <div class="avatar-circle" data-name="${escapeHtml(comment.author)}">
+                        ${initial}
+                    </div>
+                </div>
+                <div class="comment-body">
+                    <div class="comment-header">
+                        <div class="comment-author">
+                            <strong>${escapeHtml(comment.author)}</strong>
+                            <span class="comment-badge">Verified</span>
+                        </div>
+                        <span class="comment-date">${date}</span>
+                    </div>
+                    <div class="comment-content">${escapeHtml(comment.content)}</div>
+                    <div class="comment-actions">
+                        <button class="comment-action-btn like-comment" data-comment-id="${comment.id}">
+                            <span class="like-icon">❤️</span>
+                            <span class="like-count">0</span>
+                        </button>
+                        <button class="comment-action-btn reply-btn" data-comment-id="${comment.id}" data-author="${escapeHtml(comment.author)}">
+                            <span class="reply-icon">↩️</span>
+                            Reply
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = commentHtml;
+        const commentElement = tempDiv.firstElementChild;
+        
+        commentElement.querySelector('.reply-btn')?.addEventListener('click', function() {
+            const parentId = this.dataset.commentId;
+            const author = this.dataset.author;
+            
+            document.getElementById('commentParentId').value = parentId;
+            document.getElementById('replyIndicator').style.display = 'flex';
+            document.getElementById('replyToName').textContent = author;
+            document.getElementById('commentContent').focus();
+            document.getElementById('commentContent').placeholder = `Reply to ${author}...`;
+        });
+        
+        if (prepend) {
+            container.prepend(commentElement);
+        } else {
+            container.appendChild(commentElement);
+        }
+        
+        // Apply avatar color to the new comment
+        const avatar = commentElement.querySelector('.avatar-circle');
+        if (avatar) {
+            const name = avatar.dataset.name || '';
+            const colors = [
+                '#F16D78', '#86373E', '#2d6a2d', '#2d3a7a', 
+                '#5a2060', '#5a5010', '#1a2a3a', '#2a4a6a',
+                '#6a3020', '#204a20', '#3a2060', '#1a2218'
+            ];
+            let hash = 0;
+            for (let i = 0; i < name.length; i++) {
+                hash = name.charCodeAt(i) + ((hash << 5) - hash);
+            }
+            avatar.style.background = colors[Math.abs(hash) % colors.length];
+        }
+        
+        const noComments = document.querySelector('.no-comments');
+        if (noComments) noComments.remove();
+    }
+
+    function escapeHtml(text) {
+        if (!text) return '';
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+});
+</script>

@@ -1,0 +1,68 @@
+<!-- src/views/partials/sidebar.ejs -->
+<aside class="sidebar" role="complementary">
+    <!-- Categories Widget -->
+    <div class="sidebar-widget">
+        <h3>Categories</h3>
+        <ul class="category-list">
+            <li data-cat="all">
+                <span>All Categories</span>
+                <span class="cat-count"><%= categories ? categories.reduce((sum, c) => sum + c.count, 0) : 0 %></span>
+            </li>
+            <% if (categories) { %>
+                <% categories.forEach(cat => { %>
+                    <li data-cat="<%= cat.name %>">
+                        <span><%= cat.name %></span>
+                        <span class="cat-count"><%= cat.count %></span>
+                    </li>
+                <% }) %>
+            <% } %>
+        </ul>
+    </div>
+
+    <!-- Tags Widget -->
+    <div class="sidebar-widget">
+        <h3>Tags</h3>
+        <div class="tags-cloud">
+            <% if (tags && tags.length) { %>
+                <% tags.slice(0, 15).forEach(tag => { %>
+                    <span class="tag-chip" data-tag="<%= tag %>"><%= tag %></span>
+                <% }) %>
+            <% } else { %>
+                <span style="color:var(--muted);font-size:0.85rem;">No tags yet</span>
+            <% } %>
+        </div>
+    </div>
+
+    <!-- Popular Posts Widget -->
+    <div class="sidebar-widget">
+        <h3>Popular Posts</h3>
+        <% if (popularPosts && popularPosts.length) { %>
+            <ul style="list-style:none;padding:0;">
+                <% popularPosts.slice(0, 5).forEach(post => { %>
+                    <li style="margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid var(--border);">
+                        <a href="/blog/<%= post.slug %>" style="font-size:0.9rem;color:var(--text);display:block;line-height:1.4;">
+                            <%= post.title %>
+                        </a>
+                        <span style="font-size:0.75rem;color:var(--muted);">
+                            👁️ <%= post.views || 0 %> views
+                        </span>
+                    </li>
+                <% }) %>
+            </ul>
+        <% } else { %>
+            <p style="color:var(--muted);font-size:0.85rem;">No popular posts yet</p>
+        <% } %>
+    </div>
+
+    <!-- Subscribe Widget -->
+    <div class="sidebar-widget">
+        <h3>Subscribe</h3>
+        <p style="font-size:0.84rem;color:var(--muted);margin-bottom:14px">Get the latest posts delivered to your inbox.</p>
+        <div style="display:flex;flex-direction:column;gap:10px">
+            <input type="email" id="blogSubscribeEmail" placeholder="Your email address"
+                style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px 14px;color:var(--text);font-family:var(--font-body);font-size:0.875rem;outline:none;width:100%" />
+            <button class="btn btn-primary" id="blogSubscribeBtn" style="justify-content:center;width:100%">Subscribe</button>
+            <div id="blogSubscribeSuccess" style="display:none;color:var(--blush);font-size:0.85rem;">✓ Subscribed successfully!</div>
+        </div>
+    </div>
+</aside>

@@ -1,0 +1,95 @@
+<!-- src/views/layouts/main.ejs -->
+<!DOCTYPE html>
+<html lang="en" data-theme="<%= theme || 'dark' %>">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <!-- Dynamic Meta Tags -->
+    <meta name="description" content="<%= metaDescription || 'Pharmis Optimus Nexus – Advancing Pharmaceutical Knowledge, Research, and Innovation' %>" />
+    <meta name="keywords" content="<%= metaKeywords || 'pharmaceutical, research, innovation, health, pharmacy' %>" />
+    <meta name="robots" content="<%= metaRobots || 'index, follow' %>" />
+    
+    <!-- Dynamic Title -->
+    <title><%= title ? `${title} | Pharmis Optimus Nexus` : 'Pharmis Optimus Nexus' %></title>
+    
+    <!-- Open Graph / Social Sharing -->
+    <meta property="og:title" content="<%= ogTitle || title || 'Pharmis Optimus Nexus' %>" />
+    <meta property="og:description" content="<%= ogDescription || metaDescription || 'Advancing Pharmaceutical Knowledge, Research, and Innovation' %>" />
+    <meta property="og:url" content="<%= ogUrl || '' %>" />
+    <meta property="og:type" content="<%= ogType || 'website' %>" />
+    <meta property="og:image" content="<%= ogImage || '/images/og-image.jpg' %>" />
+    <meta property="og:site_name" content="Pharmis Optimus Nexus" />
+    <meta property="og:locale" content="en_US" />
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="<%= twitterCard || 'summary_large_image' %>" />
+    <meta name="twitter:title" content="<%= ogTitle || title || 'Pharmis Optimus Nexus' %>" />
+    <meta name="twitter:description" content="<%= ogDescription || metaDescription || 'Advancing Pharmaceutical Knowledge' %>" />
+    <meta name="twitter:image" content="<%= ogImage || '/images/og-image.jpg' %>" />
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="<%= canonicalUrl || '' %>" />
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="/images/classlogo2.png" />
+    <link rel="apple-touch-icon" href="/images/classlogo2.png" />
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="/css/main.css" />
+    <% if (pageStyles) { %>
+        <link rel="stylesheet" href="/css/<%= pageStyles %>.css" />
+    <% } %>
+    
+    <!-- Structured Data (JSON-LD) -->
+    <% if (structuredData) { %>
+        <script type="application/ld+json">
+            <%- JSON.stringify(structuredData) %>
+        </script>
+    <% } %>
+    
+    <!-- Scripts (deferred) -->
+    <script defer src="/js/main.js"></script>
+    <% if (pageScripts) { %>
+        <script defer src="/js/<%= pageScripts %>.js"></script>
+    <% } %>
+</head>
+<body>
+    <!-- Loader -->
+    <div id="loader" role="status" aria-label="Loading">
+        <div class="loader-logo">
+            <img src="/images/Classlogo.png" width="120" height="120" alt="Pharmis Optimus Nexus Logo" />
+        </div>
+        <div class="loader-bar"><div class="loader-fill"></div></div>
+    </div>
+
+    <!-- Header -->
+    <%- include('../partials/header', { currentPage: currentPage || 'home' }) %>
+
+    <!-- Main Content -->
+    <main role="main">
+        <%- body %>
+    </main>
+
+    <!-- Footer -->
+    <%- include('../partials/footer') %>
+
+    <!-- Flash Messages -->
+    <% if (flash && flash.messages && flash.messages.length) { %>
+        <div class="flash-messages" id="flashMessages">
+            <% flash.messages.forEach(msg => { %>
+                <div class="flash-message flash-<%= msg.type %>">
+                    <span class="flash-icon"><%= msg.type === 'success' ? '✓' : '✕' %></span>
+                    <span class="flash-text"><%= msg.text %></span>
+                    <button class="flash-close" onclick="this.parentElement.remove()">×</button>
+                </div>
+            <% }) %>
+        </div>
+    <% } %>
+</body>
+</html>

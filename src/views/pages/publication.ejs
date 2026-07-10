@@ -1,0 +1,357 @@
+<!-- src/views/pages/publication.ejs -->
+<% pageStyles = 'publication'; %>
+
+<!-- Then include the hero-mini partial -->
+<%- include('../partials/hero-mini', { 
+    title: publication.title,
+    category: publication.category || 'Publication',
+    subtitle: null,
+    date: publication.published_date,
+    authors: publication.authors,
+    readTime: publication.read_time
+}) %>
+
+<div class="publication-content-wrapper">
+    <article class="publication-article" data-track-view data-post-id="<%= publication.id %>">
+        <!-- Publication Stats -->
+        <div class="publication-stats-bar">
+            <div class="publication-stats">
+                <span class="stat-item">
+                    <span class="icon">👁️</span>
+                    <span class="count" id="viewCount"><%= publication.views || 0 %></span>
+                    <span class="label">Views</span>
+                </span>
+                <span class="stat-item like-container" data-post-id="<%= publication.id %>">
+                    <span class="icon" id="likeIcon">❤️</span>
+                    <span class="count" id="likeCount"><%= publication.likes || 0 %></span>
+                    <span class="label">Likes</span>
+                </span>
+                <span class="stat-item">
+                    <span class="icon">📄</span>
+                    <span class="count"><%= publication.read_time || '5 min' %></span>
+                    <span class="label">Read Time</span>
+                </span>
+            </div>
+        </div>
+
+        <!-- Abstract -->
+        <section class="journal-section">
+            <h2>Abstract</h2>
+            <p><%= publication.excerpt || 'No abstract available.' %></p>
+        </section>
+
+        <!-- Content -->
+        <% if (publication.content && publication.content.sections) { %>
+            <div class="publication-content">
+                <% publication.content.sections.forEach(section => { %>
+                    <% if (section.type === 'heading') { %>
+                        <h<%= section.level || 2 %> class="publication-heading-<%= section.level || 2 %>">
+                            <%= section.text %>
+                        </h<%= section.level || 2 %>>
+                    <% } else if (section.type === 'paragraph') { %>
+                        <p class="publication-paragraph"><%= section.text %></p>
+                    <% } else if (section.type === 'list') { %>
+                        <ul class="publication-list-ul">
+                            <% section.items.forEach(item => { %>
+                                <li><%= item %></li>
+                            <% }) %>
+                        </ul>
+                    <% } else if (section.type === 'image') { %>
+                        <div class="image-wrapper">
+                            <img src="<%= section.src || '/images/placeholder.jpg' %>" 
+                                 alt="<%= section.caption || 'Image' %>" 
+                                 loading="lazy" />
+                            <% if (section.caption) { %>
+                                <p class="image-caption"><%= section.caption %></p>
+                            <% } %>
+                        </div>
+                    <% } else if (section.type === 'table') { %>
+                        <div class="table-wrapper">
+                            <table>
+                                <% if (section.headers) { %>
+                                    <thead>
+                                        <tr><% section.headers.forEach(header => { %>
+                                            <th><%= header %></th>
+                                        <% }) %></tr>
+                                    </thead>
+                                <% } %>
+                                <% if (section.rows) { %>
+                                    <tbody>
+                                        <% section.rows.forEach(row => { %>
+                                            <tr><% row.forEach(cell => { %>
+                                                <td><%= cell %></td>
+                                            <% }) %></tr>
+                                        <% }) %>
+                                    </tbody>
+                                <% } %>
+                            </table>
+                        </div>
+                    <% } else if (section.type === 'note') { %>
+                        <div class="publication-note note-<%= section.variant || 'info' %>">
+                            <p><%= section.text %></p>
+                        </div>
+                    <% } %>
+                <% }) %>
+            </div>
+        <% } %>
+
+        <!-- References -->
+        <% if (publication.content && publication.content.references && publication.content.references.length) { %>
+            <section class="publication-references">
+                <h2>References</h2>
+                <ul>
+                    <% publication.content.references.forEach((ref, index) => { %>
+                        <li>
+                            <span class="ref-number"><%= index + 1 %>.</span>
+                            <span class="ref-text">
+                                <%= ref.authors || '' %> 
+                                <% if (ref.year) { %>(<%= ref.year %>).<% } %>
+                                <%= ref.title ? ref.title + '.' : '' %>
+                                <%= ref.source || '' %>
+                                <% if (ref.url) { %>
+                                    <a href="<%= ref.url %>" target="_blank" rel="noopener noreferrer">[Link]</a>
+                                <% } %>
+                            </span>
+                        </li>
+                    <% }) %>
+                </ul>
+            </section>
+        <% } %>
+
+        <!-- Social Share -->
+        <%- include('../components/social-share', { 
+            url: canonicalUrl || '',
+            title: publication.title
+        }) %>
+
+        <!-- Related Publications -->
+        <%- include('../components/related-posts', { 
+            posts: relatedPublications || [],
+            type: 'publications'
+        }) %>
+
+        <!-- Comments -->
+        <%- include('../components/comments', { 
+            postId: publication.id,
+            comments: comments || []
+        }) %>
+    </article>
+</div>
+
+<style>
+    .publication-content-wrapper {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 0 40px 60px;
+    }
+    .publication-stats-bar {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 16px 24px;
+        margin: 24px 0 40px;
+    }
+    .publication-stats {
+        display: flex;
+        gap: 32px;
+        flex-wrap: wrap;
+    }
+    .publication-stats .stat-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.95rem;
+        color: var(--muted);
+    }
+    .publication-stats .stat-item .icon {
+        font-size: 1.1rem;
+    }
+    .publication-stats .stat-item .count {
+        font-weight: 600;
+        color: var(--text);
+    }
+    .publication-stats .stat-item .label {
+        color: var(--muted);
+        font-size: 0.8rem;
+    }
+    .publication-stats .like-container .icon {
+        cursor: pointer;
+        transition: transform 0.2s;
+    }
+    .publication-stats .like-container .icon:hover {
+        transform: scale(1.2);
+    }
+    .publication-stats .like-container .icon.liked {
+        color: var(--blush);
+    }
+    
+    .publication-content {
+        margin: 32px 0;
+    }
+    .publication-heading-2 {
+        font-family: var(--font-display);
+        font-size: 1.8rem;
+        font-weight: 600;
+        margin-top: 40px;
+        margin-bottom: 16px;
+        padding-bottom: 12px;
+        border-bottom: 2px solid var(--border);
+        color: var(--text);
+    }
+    .publication-heading-3 {
+        font-family: var(--font-display);
+        font-size: 1.4rem;
+        font-weight: 600;
+        margin-top: 32px;
+        margin-bottom: 12px;
+        color: var(--text);
+    }
+    .publication-paragraph {
+        font-size: 1.05rem;
+        line-height: 1.9;
+        margin-bottom: 20px;
+        color: var(--muted);
+    }
+    .publication-list-ul {
+        padding-left: 24px;
+        margin: 20px 0 24px;
+    }
+    .publication-list-ul li {
+        font-size: 1.05rem;
+        line-height: 1.8;
+        margin-bottom: 8px;
+        color: var(--muted);
+        list-style-type: none;
+        position: relative;
+    }
+    .publication-list-ul li::before {
+        content: "▸";
+        color: var(--blush);
+        font-weight: bold;
+        display: inline-block;
+        width: 20px;
+        margin-left: -20px;
+    }
+    .publication-note {
+        padding: 16px 20px;
+        margin: 24px 0;
+        border-radius: 0 8px 8px 0;
+        border-left: 4px solid var(--blush);
+        background: var(--surface);
+    }
+    .publication-note p {
+        margin-bottom: 0;
+        color: var(--text);
+        font-size: 1rem;
+    }
+    .publication-note.note-info {
+        border-left-color: #2d6a2d;
+    }
+    .publication-note.note-warning {
+        border-left-color: #d4a017;
+    }
+    .publication-note.note-danger {
+        border-left-color: #c0392b;
+    }
+    
+    .publication-references {
+        margin-top: 48px;
+        padding-top: 32px;
+        border-top: 2px solid var(--border);
+    }
+    .publication-references h2 {
+        font-family: var(--font-display);
+        font-size: 1.8rem;
+        font-weight: 600;
+        margin-bottom: 20px;
+        color: var(--text);
+    }
+    .publication-references ul {
+        list-style: none;
+        padding: 0;
+    }
+    .publication-references li {
+        display: flex;
+        gap: 12px;
+        font-size: 0.92rem;
+        line-height: 1.7;
+        padding: 8px 0;
+        color: var(--muted);
+        border-bottom: 1px solid var(--border);
+    }
+    .publication-references li:last-child {
+        border-bottom: none;
+    }
+    .ref-number {
+        color: var(--blush);
+        font-weight: 500;
+        min-width: 28px;
+        flex-shrink: 0;
+    }
+    .publication-references li a {
+        color: var(--blush);
+        text-decoration: none;
+    }
+    .publication-references li a:hover {
+        text-decoration: underline;
+    }
+    
+    @media (max-width: 768px) {
+        .publication-content-wrapper {
+            padding: 0 20px 40px;
+        }
+        .publication-stats {
+            gap: 16px;
+        }
+        .publication-stats .stat-item .label {
+            display: none;
+        }
+        .publication-heading-2 {
+            font-size: 1.4rem;
+        }
+        .publication-paragraph {
+            font-size: 0.95rem;
+        }
+    }
+</style>
+
+<!-- Likes JavaScript -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const likeContainer = document.querySelector('.publication-stats .like-container');
+        if (!likeContainer) return;
+        
+        const postId = likeContainer.dataset.postId;
+        const likeIcon = document.getElementById('likeIcon');
+        const likeCount = document.getElementById('likeCount');
+        
+        if (!likeIcon || !likeCount) return;
+        
+        const liked = sessionStorage.getItem(`liked_${postId}`) === 'true';
+        if (liked) {
+            likeIcon.classList.add('liked');
+        }
+        
+        likeIcon.addEventListener('click', async function() {
+            try {
+                const response = await fetch(`/api/likes/${postId}`, {
+                    method: 'POST'
+                });
+                const data = await response.json();
+                
+                if (data.success) {
+                    likeCount.textContent = data.likes;
+                    if (data.liked) {
+                        this.classList.add('liked');
+                        sessionStorage.setItem(`liked_${postId}`, 'true');
+                    } else {
+                        this.classList.remove('liked');
+                        sessionStorage.removeItem(`liked_${postId}`);
+                    }
+                }
+            } catch (error) {
+                console.error('Error toggling like:', error);
+            }
+        });
+    });
+</script>

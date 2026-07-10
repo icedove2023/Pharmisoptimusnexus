@@ -1,0 +1,38 @@
+<!-- src/views/partials/header.ejs -->
+<nav class="navbar" role="navigation" aria-label="Main navigation">
+    <div class="nav-brand" onclick="navigateTo('home')">
+        <div class="nav-brand-icon">
+            <img src="/images/Classlogo.png" alt="Pharmis Optimus Nexus Logo" />
+        </div>
+        <div class="nav-brand-name">
+            Pharmis Optimus Nexus
+            <small>Research & Innovation</small>
+        </div>
+    </div>
+
+    <div class="nav-links">
+        <a href="/" data-page="home" class="<%= currentPage === 'home' ? 'active' : '' %>">Home</a>
+        <a href="/publications" data-page="publications" class="<%= currentPage === 'publications' ? 'active' : '' %>">Publications</a>
+        <a href="/blog" data-page="blog" class="<%= currentPage === 'blog' ? 'active' : '' %>">Blog</a>
+        <a href="/about" data-page="about" class="<%= currentPage === 'about' ? 'active' : '' %>">About Us</a>
+        <a href="/contact" data-page="contact" class="<%= currentPage === 'contact' ? 'active' : '' %>">Contact Us</a>
+    </div>
+
+    <div class="nav-actions">
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark/light mode"></button>
+        <button class="hamburger" id="hamburgerBtn" aria-label="Open menu">
+            <span></span><span></span><span></span>
+        </button>
+    </div>
+</nav>
+
+<!-- Mobile Navigation -->
+<div class="mobile-nav" id="mobileNav" role="dialog" aria-label="Mobile navigation">
+    <div class="mobile-nav-panel" onclick="event.stopPropagation()">
+        <a href="/" data-page="home" class="<%= currentPage === 'home' ? 'active' : '' %>">Home</a>
+        <a href="/publications" data-page="publications" class="<%= currentPage === 'publications' ? 'active' : '' %>">Publications</a>
+        <a href="/blog" data-page="blog" class="<%= currentPage === 'blog' ? 'active' : '' %>">Blog</a>
+        <a href="/about" data-page="about" class="<%= currentPage === 'about' ? 'active' : '' %>">About Us</a>
+        <a href="/contact" data-page="contact" class="<%= currentPage === 'contact' ? 'active' : '' %>">Contact Us</a>
+    </div>
+</div>

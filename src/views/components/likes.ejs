@@ -1,0 +1,172 @@
+<!-- src/views/components/likes.ejs -->
+<div class="likes-container" data-post-id="<%= postId %>">
+    <button class="like-btn <%= liked ? 'liked' : '' %>" 
+            id="likeBtn" 
+            aria-label="<%= liked ? 'Unlike this post' : 'Like this post' %>">
+        <span class="like-icon">
+            <% if (liked) { %>
+                ❤️
+            <% } else { %>
+                🤍
+            <% } %>
+        </span>
+        <span class="like-count" id="likeCount"><%= likeCount || 0 %></span>
+        <span class="like-label"><%= likeCount === 1 ? 'Like' : 'Likes' %></span>
+    </button>
+    
+    <div class="like-tooltip" id="likeTooltip">
+        <% if (liked) { %>
+            You liked this post
+        <% } else { %>
+            Click to like this post
+        <% } %>
+    </div>
+</div>
+
+<style>
+    .likes-container {
+        display: inline-flex;
+        align-items: center;
+        position: relative;
+    }
+    .like-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 16px;
+        border-radius: 99px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        color: var(--text);
+        font-size: 0.9rem;
+        transition: var(--transition);
+        cursor: pointer;
+    }
+    .like-btn:hover {
+        background: var(--surface);
+        border-color: var(--blush);
+        transform: scale(1.02);
+    }
+    .like-btn .like-icon {
+        font-size: 1.2rem;
+        transition: transform 0.2s;
+    }
+    .like-btn:hover .like-icon {
+        transform: scale(1.2);
+    }
+    .like-btn.liked {
+        border-color: var(--blush);
+        background: rgba(241, 109, 120, 0.1);
+    }
+    .like-btn.liked .like-icon {
+        animation: likeAnimation 0.4s ease;
+    }
+    .like-btn .like-count {
+        font-weight: 600;
+        min-width: 20px;
+    }
+    .like-btn .like-label {
+        color: var(--muted);
+        font-weight: 400;
+    }
+    .like-btn.liked .like-label {
+        color: var(--blush);
+    }
+    
+    @keyframes likeAnimation {
+        0% { transform: scale(1); }
+        25% { transform: scale(1.3); }
+        50% { transform: scale(0.9); }
+        75% { transform: scale(1.1); }
+        100% { transform: scale(1); }
+    }
+    
+    .like-tooltip {
+        position: absolute;
+        bottom: calc(100% + 10px);
+        left: 50%;
+        transform: translateX(-50%);
+        background: var(--bg2);
+        color: var(--text);
+        padding: 6px 12px;
+        border-radius: 6px;
+        font-size: 0.8rem;
+        white-space: nowrap;
+        opacity: 0;
+        visibility: hidden;
+        transition: var(--transition);
+        border: 1px solid var(--border);
+    }
+    .like-tooltip::after {
+        content: '';
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+        border: 6px solid transparent;
+        border-top-color: var(--bg2);
+    }
+    .likes-container:hover .like-tooltip {
+        opacity: 1;
+        visibility: visible;
+    }
+    
+    @media (max-width: 768px) {
+        .like-btn {
+            padding: 6px 12px;
+            font-size: 0.8rem;
+        }
+        .like-btn .like-label {
+            display: none;
+        }
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const container = document.querySelector('.likes-container');
+        if (!container) return;
+        
+        const postId = container.dataset.postId;
+        const likeBtn = document.getElementById('likeBtn');
+        const likeCount = document.getElementById('likeCount');
+        const likeIcon = likeBtn?.querySelector('.like-icon');
+        
+        if (!likeBtn) return;
+        
+        likeBtn.addEventListener('click', async function() {
+            try {
+                const response = await fetch(`/api/likes/${postId}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                const data = await response.json();
+                
+                if (data.success) {
+                    // Update count
+                    likeCount.textContent = data.likes;
+                    
+                    // Toggle liked state
+                    this.classList.toggle('liked');
+                    
+                    // Update icon
+                    if (data.liked) {
+                        likeIcon.textContent = '❤️';
+                        sessionStorage.setItem(`liked_${postId}`, 'true');
+                    } else {
+                        likeIcon.textContent = '🤍';
+                        sessionStorage.removeItem(`liked_${postId}`);
+                    }
+                    
+                    // Update label
+                    const label = this.querySelector('.like-label');
+                    if (label) {
+                        label.textContent = data.likes === 1 ? 'Like' : 'Likes';
+                    }
+                }
+            } catch (error) {
+                console.error('Error toggling like:', error);
+            }
+        });
+    });
+</script>

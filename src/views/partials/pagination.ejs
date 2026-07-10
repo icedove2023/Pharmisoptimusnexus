@@ -1,0 +1,46 @@
+<!-- src/views/partials/pagination.ejs -->
+<% if (pagination && pagination.totalPages > 1) { %>
+    <div class="pagination">
+        <% if (pagination.hasPrev) { %>
+            <a href="<%= pagination.baseUrl || '?' %>page=<%= pagination.currentPage - 1 %>" 
+               class="page-btn" aria-label="Previous page">
+                ‹
+            </a>
+        <% } %>
+        
+        <% 
+            let startPage = Math.max(1, pagination.currentPage - 2);
+            let endPage = Math.min(pagination.totalPages, pagination.currentPage + 2);
+            
+            if (startPage > 1) { %>
+                <a href="<%= pagination.baseUrl || '?' %>page=1" class="page-btn">1</a>
+                <% if (startPage > 2) { %>
+                    <span class="page-btn disabled">…</span>
+                <% } %>
+            <% } 
+            
+            for (let i = startPage; i <= endPage; i++) { %>
+                <a href="<%= pagination.baseUrl || '?' %>page=<%= i %>" 
+                   class="page-btn <%= i === pagination.currentPage ? 'active' : '' %>">
+                    <%= i %>
+                </a>
+            <% } 
+            
+            if (endPage < pagination.totalPages) { %>
+                <% if (endPage < pagination.totalPages - 1) { %>
+                    <span class="page-btn disabled">…</span>
+                <% } %>
+                <a href="<%= pagination.baseUrl || '?' %>page=<%= pagination.totalPages %>" class="page-btn">
+                    <%= pagination.totalPages %>
+                </a>
+            <% } 
+        %>
+        
+        <% if (pagination.hasNext) { %>
+            <a href="<%= pagination.baseUrl || '?' %>page=<%= pagination.currentPage + 1 %>" 
+               class="page-btn" aria-label="Next page">
+                ›
+            </a>
+        <% } %>
+    </div>
+<% } %>

@@ -1,0 +1,158 @@
+<!-- src/views/pages/publications.ejs -->
+<%- include('../partials/hero-mini', { 
+    title: 'Publications',
+    category: 'Publications',
+    subtitle: 'Browse peer-reviewed research, clinical studies, and review articles from our global network of researchers.'
+}) %>
+
+<!-- Filters -->
+<div class="filters-bar">
+    <div class="search-input-wrap">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8"/>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+        <input type="text" id="pubSearch" placeholder="Search publications..." aria-label="Search publications" />
+    </div>
+    <select class="filter-select" id="pubCategoryFilter">
+        <option value="">All Categories</option>
+        <option value="Review Articles">Review Articles</option>
+        <option value="AI & Biotechnology">AI & Biotechnology</option>
+        <option value="Research Articles">Research Articles</option>
+        <option value="Others">Others</option>
+    </select>
+    <select class="filter-select" id="pubYearFilter">
+        <option value="">All Years</option>
+        <% for (let year = 2029; year >= 2024; year--) { %>
+            <option value="<%= year %>"><%= year %></option>
+        <% } %>
+    </select>
+</div>
+
+<div class="publications-section">
+    <!-- Publications Grid -->
+    <div class="pubs-grid" id="pubsGrid">
+        <% if (publications && publications.length) { %>
+            <% publications.forEach((pub, index) => { %>
+                <article class="pub-card reveal" role="article">
+                    <div class="pub-card-img">
+                        <div class="pub-card-img-inner" style="background: <%= ['linear-gradient(135deg, #1a2a1a, #2d6a2d)', 'linear-gradient(135deg, #1a1a2a, #2d3a7a)', 'linear-gradient(135deg, #1a1218, #5a2060)', 'linear-gradient(135deg, #1a1a18, #5a5010)'][index % 4] %>"></div>
+                        <div class="pub-card-img-overlay"></div>
+                        <% if (pub.category) { %>
+                            <span class="pub-card-badge"><%= pub.category %></span>
+                        <% } %>
+                    </div>
+                    <div class="pub-card-body">
+                        <span class="pub-tag <%= pub.cat || 'tag-pharmacology' %>">
+                            <%= pub.category || 'Publication' %>
+                        </span>
+                        <h3><%= pub.title %></h3>
+                        <div class="pub-meta">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                                <circle cx="12" cy="7" r="4"/>
+                            </svg>
+                            <%= pub.authors ? pub.authors.join(', ') : 'Unknown Author' %>
+                        </div>
+                        <p class="pub-abstract">
+                            <%= pub.excerpt || 'No abstract available.' %>
+                        </p>
+                        <div class="pub-card-footer">
+                            <span class="pub-date">
+                                📅 <%= pub.published_date %>
+                            </span>
+                            <!-- Make sure slug exists -->
+<% if (pub.slug) { %>
+    <a href="/publications/<%= pub.slug %>" class="btn-sm">Read More →</a>
+<% } else { %>
+    <a href="/publications/<%= pub.id %>" class="btn-sm">Read More →</a>
+<% } %>
+                        </div>
+                    </div>
+                </article>
+            <% }) %>
+        <% } else { %>
+            <p style="grid-column:1/-1;text-align:center;color:var(--muted);padding:40px;">No publications found.</p>
+        <% } %>
+    </div>
+
+    <!-- Pagination -->
+    <%- include('../partials/pagination', { 
+        pagination: pagination,
+        baseUrl: '/publications?'
+    }) %>
+</div>
+
+<style>
+    .pub-card-badge {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        background: rgba(23, 34, 43, 0.85);
+        color: var(--cream);
+        font-size: 0.65rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        padding: 4px 12px;
+        border-radius: 99px;
+        backdrop-filter: blur(4px);
+        z-index: 2;
+    }
+    .pub-card .pub-meta {
+        font-size: 0.78rem;
+        color: var(--muted);
+        margin-bottom: 12px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+    .pub-card .pub-meta svg {
+        flex-shrink: 0;
+    }
+</style>
+
+<script>
+    // Search filter
+    document.getElementById('pubSearch')?.addEventListener('input', function() {
+        const searchTimeout = this.dataset.timeout;
+        clearTimeout(searchTimeout);
+        
+        const newTimeout = setTimeout(() => {
+            const query = this.value.trim();
+            const url = new URL(window.location.href);
+            if (query) {
+                url.searchParams.set('search', query);
+            } else {
+                url.searchParams.delete('search');
+            }
+            window.location.href = url.toString();
+        }, 500);
+        
+        this.dataset.timeout = newTimeout;
+    });
+    
+    // Category filter
+    document.getElementById('pubCategoryFilter')?.addEventListener('change', function() {
+        const category = this.value;
+        const url = new URL(window.location.href);
+        if (category) {
+            url.searchParams.set('category', category);
+        } else {
+            url.searchParams.delete('category');
+        }
+        window.location.href = url.toString();
+    });
+    
+    // Year filter
+    document.getElementById('pubYearFilter')?.addEventListener('change', function() {
+        const year = this.value;
+        const url = new URL(window.location.href);
+        if (year) {
+            url.searchParams.set('year', year);
+        } else {
+            url.searchParams.delete('year');
+        }
+        window.location.href = url.toString();
+    });
+</script>

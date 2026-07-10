@@ -1,0 +1,21 @@
+<!-- src/views/partials/hero-mini.ejs -->
+<div class="page-hero">
+    <div class="page-hero-eyebrow">
+        <span>Home</span> › <span><%= locals.category || 'Page' %></span>
+    </div>
+    <h1><%= locals.title || 'Page' %></h1>
+    <% if (locals.subtitle) { %>
+        <p style="margin-top:14px;color:var(--muted);max-width:500px"><%= locals.subtitle %></p>
+    <% } %>
+    <% if (locals.date && locals.authors) { %>
+        <div class="post-meta" style="margin-top:16px;">
+            <span><%= Array.isArray(locals.authors) ? locals.authors.join(', ') : locals.authors %></span>
+            <span class="post-meta-dot"></span>
+            <span><%= locals.date %></span>
+            <% if (locals.readTime) { %>
+                <span class="post-meta-dot"></span>
+                <span>📖 <%= locals.readTime %></span>
+            <% } %>
+        </div>
+    <% } %>
+</div>

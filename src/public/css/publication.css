@@ -1,0 +1,341 @@
+/* ============================================================
+   PUBLICATION - Academic Journal Style
+   ============================================================ */
+
+/* ============================================================
+   PUBLICATION CONTENT WRAPPER (matches .publication-content-wrapper)
+   ============================================================ */
+.publication-content-wrapper {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 40px 60px;
+}
+
+/* ============================================================
+   PUBLICATION STATS BAR (matches .publication-stats-bar)
+   ============================================================ */
+.publication-stats-bar {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px 24px;
+    margin: 24px 0 40px;
+}
+
+.publication-stats {
+    display: flex;
+    gap: 32px;
+    flex-wrap: wrap;
+}
+
+.publication-stats .stat-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.95rem;
+    color: var(--muted);
+}
+
+.publication-stats .stat-item .icon {
+    font-size: 1.1rem;
+}
+
+.publication-stats .stat-item .count {
+    font-weight: 600;
+    color: var(--text);
+}
+
+.publication-stats .stat-item .label {
+    color: var(--muted);
+    font-size: 0.8rem;
+}
+
+.publication-stats .like-container .icon {
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.publication-stats .like-container .icon:hover {
+    transform: scale(1.2);
+}
+
+.publication-stats .like-container .icon.liked {
+    color: var(--blush);
+}
+
+/* ============================================================
+   JOURNAL SECTION (matches .journal-section)
+   ============================================================ */
+.journal-section {
+    margin-bottom: 40px;
+    padding: 0;
+    text-align: justify;
+    letter-spacing: 0.5px;
+}
+
+.journal-section h2 {
+    font-size: 1.5rem;
+    margin-bottom: 18px;
+    color: var(--text);
+    font-family: var(--font-display);
+    font-weight: 600;
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--border);
+}
+
+.journal-section p {
+    color: var(--muted);
+    line-height: 1.9;
+    font-size: 1rem;
+}
+
+/* ============================================================
+   PUBLICATION CONTENT (matches .publication-content)
+   ============================================================ */
+.publication-content {
+    margin: 32px 0;
+}
+
+.publication-heading-2 {
+    font-family: var(--font-display);
+    font-size: 1.8rem;
+    font-weight: 600;
+    margin-top: 40px;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid var(--border);
+    color: var(--text);
+}
+
+.publication-heading-3 {
+    font-family: var(--font-display);
+    font-size: 1.4rem;
+    font-weight: 600;
+    margin-top: 32px;
+    margin-bottom: 12px;
+    color: var(--text);
+}
+
+.publication-paragraph {
+    font-size: 1.05rem;
+    line-height: 1.9;
+    margin-bottom: 20px;
+    color: var(--muted);
+}
+
+.publication-list-ul {
+    padding-left: 24px;
+    margin: 20px 0 24px;
+}
+
+.publication-list-ul li {
+    font-size: 1.05rem;
+    line-height: 1.8;
+    margin-bottom: 8px;
+    color: var(--muted);
+    list-style-type: none;
+    position: relative;
+}
+
+.publication-list-ul li::before {
+    content: "▸";
+    color: var(--blush);
+    font-weight: bold;
+    display: inline-block;
+    width: 20px;
+    margin-left: -20px;
+}
+
+.publication-note {
+    padding: 16px 20px;
+    margin: 24px 0;
+    border-radius: 0 8px 8px 0;
+    border-left: 4px solid var(--blush);
+    background: var(--surface);
+}
+
+.publication-note p {
+    margin-bottom: 0;
+    color: var(--text);
+    font-size: 1rem;
+}
+
+.publication-note.note-info {
+    border-left-color: #2d6a2d;
+}
+
+.publication-note.note-warning {
+    border-left-color: #d4a017;
+}
+
+.publication-note.note-danger {
+    border-left-color: #c0392b;
+}
+
+/* ============================================================
+   PUBLICATION REFERENCES (matches .publication-references)
+   ============================================================ */
+.publication-references {
+    margin-top: 48px;
+    padding-top: 32px;
+    border-top: 2px solid var(--border);
+}
+
+.publication-references h2 {
+    font-family: var(--font-display);
+    font-size: 1.8rem;
+    font-weight: 600;
+    margin-bottom: 20px;
+    color: var(--text);
+}
+
+.publication-references ul {
+    list-style: none;
+    padding: 0;
+}
+
+.publication-references li {
+    display: flex;
+    gap: 12px;
+    font-size: 0.92rem;
+    line-height: 1.7;
+    padding: 8px 0;
+    color: var(--muted);
+    border-bottom: 1px solid var(--border);
+}
+
+.publication-references li:last-child {
+    border-bottom: none;
+}
+
+.ref-number {
+    color: var(--blush);
+    font-weight: 500;
+    min-width: 28px;
+    flex-shrink: 0;
+}
+
+.publication-references li a {
+    color: var(--blush);
+    text-decoration: none;
+}
+
+.publication-references li a:hover {
+    text-decoration: underline;
+}
+
+/* ============================================================
+   SHARE BUTTONS (matches .share-buttons)
+   ============================================================ */
+.share-buttons {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin: 24px 0;
+    padding: 16px 0;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+}
+
+.share-buttons .share-label {
+    font-size: 0.85rem;
+    color: var(--muted);
+    margin-right: 8px;
+}
+
+.share-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    transition: var(--transition);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+    text-decoration: none;
+}
+
+.share-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-sm);
+}
+
+.share-btn.twitter:hover {
+    background: #1DA1F2;
+    color: white;
+    border-color: #1DA1F2;
+}
+
+.share-btn.linkedin:hover {
+    background: #0A66C2;
+    color: white;
+    border-color: #0A66C2;
+}
+
+.share-btn.facebook:hover {
+    background: #1877F2;
+    color: white;
+    border-color: #1877F2;
+}
+
+.share-btn.email:hover {
+    background: #EA4335;
+    color: white;
+    border-color: #EA4335;
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 768px) {
+    .publication-content-wrapper {
+        padding: 0 20px 40px;
+    }
+
+    .publication-stats {
+        gap: 16px;
+    }
+
+    .publication-stats .stat-item .label {
+        display: none;
+    }
+
+    .publication-heading-2 {
+        font-size: 1.4rem;
+    }
+
+    .publication-paragraph {
+        font-size: 0.95rem;
+    }
+
+    .journal-section h2 {
+        font-size: 1.2rem;
+    }
+
+    .journal-section p {
+        font-size: 0.95rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .publication-content-wrapper {
+        padding: 0 16px 40px;
+    }
+
+    .publication-heading-2 {
+        font-size: 1.2rem;
+    }
+
+    .publication-references li {
+        font-size: 0.8rem;
+        flex-wrap: wrap;
+    }
+
+    .publication-stats {
+        gap: 12px;
+    }
+}
