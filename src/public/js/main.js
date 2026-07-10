@@ -103,21 +103,21 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const fallbackSlides = [
         {
-            headline: 'Advancing Pharmaceutical Knowledge',
-            subtitle: 'Research, innovation, and trusted insights for the next generation of healthcare leaders.',
-            label: 'Research Hub',
+            headline: '',
+            subtitle: '',
+            label: '',
             image: '/images/aa.jpg'
         },
         {
-            headline: 'Bridging Science and Communities',
-            subtitle: 'Evidence-based knowledge that connects pharmaceutical research to real-world impact.',
-            label: 'Global Collaboration',
+            headline: '',
+            subtitle: '',
+            label: '',
             image: '/images/bb.jpg'
         },
         {
-            headline: 'Shaping Tomorrow’s Health Leaders',
-            subtitle: 'Education, discovery, and public health advocacy in one dynamic platform.',
-            label: 'Innovation',
+            headline: '',
+            subtitle: '',
+            label: '',
             image: '/images/mental.png'
         }
     ];
