@@ -1,7 +1,11 @@
 /* ============================================================
    BLOG PAGE - Specific Styles
    ============================================================ */
-
+ 
+   .page-hero {
+    padding-top: 100px;
+    padding-left: 10px;
+ }
 /* Blog Layout */
 .blog-layout {
     padding: 60px 40px;

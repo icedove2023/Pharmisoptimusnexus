@@ -1,7 +1,10 @@
 /* ============================================================
    PUBLICATIONS PAGE - Specific Styles
    ============================================================ */
-
+.page-hero {
+    padding-top: 100px;
+    padding-left: 10px;
+ }
 /* Publications Grid */
 .publications-section {
     padding: 60px 40px;

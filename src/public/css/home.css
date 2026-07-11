@@ -248,6 +248,7 @@
     grid-template-columns: 1fr 1fr;
     gap: 60px;
     align-items: center;
+    margin: 10px;
 }
 
 .about-text p {
@@ -305,6 +306,7 @@
 
 #contact {
     background: var(--bg2);
+    padding: 10px;
 }
 
 .contact-grid {
