@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title><%= locals.title ? title + ' | ' : '' %>Pharmis Admin</title>
+    <link rel="icon" type="image/png" href="/images/classlogo2.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/css/admin.css" />
+</head>
+<body class="admin-body">
+<% if (!locals.bare && locals.admin) { %>
+    <div class="admin-shell">
+        <aside class="admin-sidebar" aria-label="Admin navigation">
+            <div class="admin-brand">
+                <img src="/images/classlogo2.png" alt="" width="32" height="32" />
+                <span>Pharmis Admin</span>
+            </div>
+            <nav class="admin-nav">
+                <a class="nav-item<%= section === 'overview' ? ' is-active' : '' %>" href="<%= adminPath %>"><%- icon('grid') %> Overview</a>
+                <a class="nav-item<%= section === 'blog' ? ' is-active' : '' %>" href="<%= adminPath %>/posts?kind=blog"><%- icon('file-text') %> Blog posts</a>
+                <a class="nav-item nav-item-sub" href="<%= adminPath %>/posts/new"><%- icon('plus') %> New post</a>
+                <a class="nav-item<%= section === 'publications' ? ' is-active' : '' %>" href="<%= adminPath %>/posts?kind=publication"><%- icon('book-open') %> Publications</a>
+                <a class="nav-item nav-item-sub" href="<%= adminPath %>/publications/new"><%- icon('plus') %> New publication</a>
+                <% if (admin.role === 'admin') { %>
+                    <a class="nav-item<%= section === 'messages' ? ' is-active' : '' %>" href="<%= adminPath %>/messages"><%- icon('mail') %> Messages</a>
+                    <span class="nav-heading">Site content</span>
+                    <a class="nav-item<%= section === 'slides' ? ' is-active' : '' %>" href="<%= adminPath %>/slides"><%- icon('image') %> Slideshow</a>
+                    <a class="nav-item<%= section === 'team' ? ' is-active' : '' %>" href="<%= adminPath %>/team"><%- icon('users') %> About and team</a>
+                <% } %>
+            </nav>
+            <form class="admin-signout" method="post" action="<%= adminPath %>/logout">
+                <button type="submit" class="btn btn-ghost"><%- icon('log-out') %> Sign out</button>
+            </form>
+        </aside>
+        <main class="admin-main">
+            <header class="admin-topbar">
+                <h1><%= title %></h1>
+                <div class="admin-user">
+                    <span><%= admin.email %></span>
+                    <span class="badge badge-role"><%= admin.role %></span>
+                </div>
+            </header>
+            <div class="admin-content">
+                <%- body %>
+            </div>
+        </main>
+    </div>
+<% } else { %>
+    <main class="admin-bare">
+        <%- body %>
+    </main>
+<% } %>
+    <script src="/js/admin.js" defer></script>
+</body>
+</html>

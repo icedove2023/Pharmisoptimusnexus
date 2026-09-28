@@ -1,147 +1,77 @@
 // src/middleware/auth.js
-/**
- * Authentication Middleware
- * Protects routes that require authentication
- */
+// Authentication and role checks for admin routes.
+//
+// Admin accounts are created manually in the Supabase dashboard. A user's role
+// is read from app_metadata.role, which can only be changed from the dashboard
+// or with the service role key. Never read the role from user_metadata: users
+// can edit that themselves.
+//
+// The access token is sent as an "Authorization: Bearer <token>" header. The
+// admin login screen (Phase 1) will obtain it from Supabase Auth.
 
-/**
- * Check if user is authenticated
- */
-const isAuthenticated = (req, res, next) => {
-    // Check if user is logged in (session-based)
-    if (req.session && req.session.user) {
-        return next();
-    }
-    
-    // Check if there's a token (JWT)
-    const token = req.headers.authorization?.split(' ')[1];
-    if (token) {
-        try {
-            // Verify JWT token
-            const decoded = verifyToken(token);
-            if (decoded) {
-                req.user = decoded;
-                return next();
-            }
-        } catch (error) {
-            // Token invalid
-        }
-    }
-    
-    // Not authenticated
-    if (req.xhr || req.headers.accept?.includes('application/json')) {
-        return res.status(401).json({ 
-            error: 'Unauthorized', 
-            message: 'Please log in to access this resource' 
-        });
-    }
-    
-    req.flash('error', 'Please log in to access this page');
-    res.redirect('/login');
-};
+const { supabaseAdmin } = require('../config/supabase');
 
-/**
- * Check if user is admin
- */
-const isAdmin = (req, res, next) => {
-    if (req.session && req.session.user && req.session.user.role === 'admin') {
-        return next();
-    }
-    
-    if (req.xhr || req.headers.accept?.includes('application/json')) {
-        return res.status(403).json({ 
-            error: 'Forbidden', 
-            message: 'Admin access required' 
-        });
-    }
-    
-    req.flash('error', 'Admin access required');
-    res.redirect('/');
-};
+const ADMIN_ROLES = ['admin'];
+const EDITOR_ROLES = ['admin', 'editor'];
 
-/**
- * Optional authentication - continues even if not authenticated
- */
-const optionalAuth = (req, res, next) => {
-    // Check if user is logged in
-    if (req.session && req.session.user) {
-        req.user = req.session.user;
-    }
-    next();
-};
-
-/**
- * Check if user is a contributor (can create/edit posts)
- */
-const isContributor = (req, res, next) => {
-    if (req.session && req.session.user) {
-        const user = req.session.user;
-        if (user.role === 'admin' || user.role === 'contributor' || user.role === 'editor') {
-            return next();
-        }
-    }
-    
-    if (req.xhr || req.headers.accept?.includes('application/json')) {
-        return res.status(403).json({ 
-            error: 'Forbidden', 
-            message: 'Contributor access required' 
-        });
-    }
-    
-    req.flash('error', 'You do not have permission to perform this action');
-    res.redirect('/');
-};
-
-/**
- * Verify JWT token (simplified)
- */
-function verifyToken(token) {
-    // In production, use a proper JWT library
-    // For now, just return a mock user
-    // const jwt = require('jsonwebtoken');
-    // return jwt.verify(token, process.env.JWT_SECRET);
-    return { id: 'mock-user-id', role: 'user' };
+function extractToken(req) {
+    const header = req.get('authorization') || '';
+    const match = header.match(/^Bearer\s+(.+)$/i);
+    return match ? match[1].trim() : null;
 }
 
 /**
- * Rate limit for authentication attempts
+ * Validate an access token with Supabase Auth.
+ * Returns { user } on success or { status, error } on failure.
  */
-const authRateLimiter = (req, res, next) => {
-    const key = `auth_attempts_${req.ip}`;
-    const attempts = req.session.authAttempts || 0;
-    
-    if (attempts >= 5) {
-        const waitTime = 15 * 60 * 1000; // 15 minutes
-        const lastAttempt = req.session.lastAuthAttempt || Date.now();
-        
-        if (Date.now() - lastAttempt < waitTime) {
-            return res.status(429).json({
-                error: 'Too many login attempts',
-                message: 'Please wait 15 minutes before trying again'
-            });
-        } else {
-            req.session.authAttempts = 0;
-            req.session.lastAuthAttempt = null;
-        }
+async function resolveUserFromToken(token) {
+    if (!token) {
+        return { status: 401, error: 'Authentication required' };
     }
-    
-    next();
-};
+
+    try {
+        const { data, error } = await supabaseAdmin.auth.getUser(token);
+        if (error || !data || !data.user) {
+            return { status: 401, error: 'Invalid or expired token' };
+        }
+        return { user: data.user };
+    } catch (err) {
+        console.error('Auth lookup failed:', err.message);
+        return { status: 503, error: 'Authentication service unavailable' };
+    }
+}
+
+function roleOf(user) {
+    return (user && user.app_metadata && user.app_metadata.role) || null;
+}
 
 /**
- * Track failed login attempts
+ * Express middleware factory: allow only users whose app_metadata.role
+ * is one of the given roles.
  */
-const trackFailedLogin = (req, res, next) => {
-    req.session.authAttempts = (req.session.authAttempts || 0) + 1;
-    req.session.lastAuthAttempt = Date.now();
-    next();
-};
+function requireRole(...roles) {
+    return async function (req, res, next) {
+        const result = await resolveUserFromToken(extractToken(req));
+        if (result.error) {
+            return res.status(result.status).json({ success: false, error: result.error });
+        }
+
+        const role = roleOf(result.user);
+        if (!roles.includes(role)) {
+            return res.status(403).json({ success: false, error: 'Insufficient permissions' });
+        }
+
+        req.user = { id: result.user.id, email: result.user.email, role };
+        return next();
+    };
+}
 
 module.exports = {
-    isAuthenticated,
-    isAdmin,
-    isContributor,
-    optionalAuth,
-    authRateLimiter,
-    trackFailedLogin
+    resolveUserFromToken,
+    roleOf,
+    ADMIN_ROLES,
+    EDITOR_ROLES,
+    requireRole,
+    requireAdmin: requireRole(...ADMIN_ROLES),
+    requireEditor: requireRole(...EDITOR_ROLES)
 };

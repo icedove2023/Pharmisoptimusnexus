@@ -7,7 +7,12 @@ const config = require('../config');
  */
 exports.generateSitemap = async (req, res) => {
     try {
-        const { posts } = await Post.findAll({ limit: 1000 });
+        const [blogResult, pubResult] = await Promise.all([
+            Post.findAll({ kind: 'blog', limit: 1000 }),
+            Post.findAll({ kind: 'publication', limit: 1000 })
+        ]);
+        const blogPosts = blogResult.posts;
+        const pubPosts = pubResult.posts;
         
         const baseUrl = config.baseUrl;
         const now = new Date().toISOString();
@@ -19,6 +24,9 @@ exports.generateSitemap = async (req, res) => {
         const staticPages = [
             { url: '/', priority: '1.0', changefreq: 'daily' },
             { url: '/about', priority: '0.8', changefreq: 'monthly' },
+            { url: '/teams/health-and-wellness', priority: '0.5', changefreq: 'monthly' },
+            { url: '/teams/media-and-publications', priority: '0.5', changefreq: 'monthly' },
+            { url: '/teams/community-outreach', priority: '0.5', changefreq: 'monthly' },
             { url: '/contact', priority: '0.8', changefreq: 'monthly' },
             { url: '/blog', priority: '0.9', changefreq: 'daily' },
             { url: '/publications', priority: '0.9', changefreq: 'daily' }
@@ -34,8 +42,6 @@ exports.generateSitemap = async (req, res) => {
         });
         
         // Blog posts
-        const publicationCategories = ['Review Articles', 'AI & Biotechnology', 'Research Articles', 'Others'];
-        const blogPosts = posts.filter(p => p.category && !publicationCategories.includes(p.category));
         blogPosts.forEach(post => {
             xml += `  <url>\n`;
             xml += `    <loc>${baseUrl}/blog/${post.slug}</loc>\n`;
@@ -46,7 +52,6 @@ exports.generateSitemap = async (req, res) => {
         });
         
         // Publications
-        const pubPosts = posts.filter(p => p.category && publicationCategories.includes(p.category));
         pubPosts.forEach(post => {
             xml += `  <url>\n`;
             xml += `    <loc>${baseUrl}/publications/${post.slug}</loc>\n`;

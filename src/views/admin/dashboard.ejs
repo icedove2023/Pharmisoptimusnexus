@@ -1,0 +1,69 @@
+<% const n = (v) => Number(v || 0).toLocaleString('en-US'); %>
+<% const day = (d) => d ? new Date(d).toISOString().slice(0, 10) : ''; %>
+
+<section class="stat-grid" aria-label="Site totals">
+    <div class="stat-card"><span class="stat-label">Published blog posts</span><span class="stat-value"><%= n(stats.blogs) %></span></div>
+    <div class="stat-card"><span class="stat-label">Published publications</span><span class="stat-value"><%= n(stats.publications) %></span></div>
+    <div class="stat-card"><span class="stat-label">Drafts</span><span class="stat-value"><%= n(stats.drafts) %></span></div>
+    <div class="stat-card"><span class="stat-label">Total views</span><span class="stat-value"><%= n(stats.views) %></span></div>
+    <div class="stat-card"><span class="stat-label">Total likes</span><span class="stat-value"><%= n(stats.likes) %></span></div>
+    <div class="stat-card"><span class="stat-label">Comments</span><span class="stat-value"><%= n(stats.comments) %></span></div>
+    <% if (admin.role === 'admin') { %>
+        <div class="stat-card"><span class="stat-label">New messages</span><span class="stat-value"><%= n(stats.newMessages) %></span></div>
+    <% } %>
+</section>
+
+<section class="panel">
+    <div class="panel-head">
+        <h2>Recently updated</h2>
+        <a class="link" href="<%= adminPath %>/posts">All posts</a>
+    </div>
+    <% if (recentPosts.length) { %>
+        <div class="table-wrap">
+            <table class="table">
+                <thead><tr><th>Title</th><th>Type</th><th>Status</th><th>Updated</th></tr></thead>
+                <tbody>
+                    <% recentPosts.forEach((p) => { %>
+                        <tr>
+                            <td>
+                                <%= p.title %>
+                                <% if (p.kind === 'blog') { %>
+                                    <a class="link edit-link" href="<%= adminPath %>/posts/<%= p.id %>/edit">Edit</a>
+                                <% } else { %>
+                                    <a class="link edit-link" href="<%= adminPath %>/publications/<%= p.id %>/edit">Edit</a>
+                                <% } %>
+                            </td>
+                            <td><span class="badge badge-kind"><%= p.kind %></span></td>
+                            <td><span class="badge badge-<%= p.status %>"><%= p.status %></span></td>
+                            <td><%= day(p.updated_at) %></td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </div>
+    <% } else { %>
+        <p class="empty">No posts yet.</p>
+    <% } %>
+</section>
+
+<% if (admin.role === 'admin') { %>
+    <section class="panel">
+        <div class="panel-head">
+            <h2>New messages</h2>
+            <a class="link" href="<%= adminPath %>/messages">Inbox</a>
+        </div>
+        <% if (recentMessages.length) { %>
+            <ul class="plain-list">
+                <% recentMessages.forEach((m) => { %>
+                    <li>
+                        <strong><%= m.name %></strong>
+                        <span class="muted"><%= m.subject || 'No subject' %></span>
+                        <span class="muted"><%= day(m.created_at) %></span>
+                    </li>
+                <% }) %>
+            </ul>
+        <% } else { %>
+            <p class="empty">No new messages.</p>
+        <% } %>
+    </section>
+<% } %>

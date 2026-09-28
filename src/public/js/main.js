@@ -159,15 +159,32 @@ document.addEventListener('DOMContentLoaded', function() {
         slides.forEach((slide, index) => {
             const slideEl = document.createElement('article');
             slideEl.className = `hero-slide${index === currentIndex ? ' active' : ''}`;
-            slideEl.innerHTML = `
-                <img class="hero-slide-media" src="${slide.image}" alt="" />
-                <div class="hero-slide-bg" style="background: linear-gradient(135deg, rgba(10,16,26,0.8), rgba(134,55,62,0.45));"></div>
-                <div class="hero-slide-overlay">
-                    <span class="hero-slide-label">${slide.label}</span>
-                    <h2>${slide.headline}</h2>
-                    <p>${slide.subtitle}</p>
-                </div>
-            `;
+
+            const img = document.createElement('img');
+            img.className = 'hero-slide-media';
+            img.src = slide.image; // property assignment, not string-interpolated markup
+            img.alt = '';
+            slideEl.appendChild(img);
+
+            const bg = document.createElement('div');
+            bg.className = 'hero-slide-bg';
+            bg.style.background = 'linear-gradient(135deg, rgba(10,16,26,0.8), rgba(134,55,62,0.45))';
+            slideEl.appendChild(bg);
+
+            const overlay = document.createElement('div');
+            overlay.className = 'hero-slide-overlay';
+            const label = document.createElement('span');
+            label.className = 'hero-slide-label';
+            label.textContent = slide.label; // textContent, never innerHTML, for admin-entered text
+            const heading = document.createElement('h2');
+            heading.textContent = slide.headline;
+            const subtitle = document.createElement('p');
+            subtitle.textContent = slide.subtitle;
+            overlay.appendChild(label);
+            overlay.appendChild(heading);
+            overlay.appendChild(subtitle);
+            slideEl.appendChild(overlay);
+
             heroSlides.appendChild(slideEl);
 
             const dot = document.createElement('button');
@@ -248,20 +265,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     });
-});
-
-// ============================================================
-// VIEW TRACKING
-// ============================================================
-document.addEventListener('DOMContentLoaded', function() {
-    const viewTracker = document.querySelector('[data-track-view]');
-    if (viewTracker) {
-        const postId = viewTracker.dataset.postId;
-        fetch(`/api/views/${postId}`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' }
-        }).catch(err => console.error('Failed to track view:', err));
-    }
 });
 
 // ============================================================

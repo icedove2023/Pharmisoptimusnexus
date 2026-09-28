@@ -28,14 +28,14 @@ async function runMigrations() {
                     process.exit(1);
                 }
             }
-            console.log(`✅ Migration ${file} complete`);
+            console.log(`Migration ${file} complete`);
         } catch (error) {
-            console.error(`❌ Migration failed: ${file}`, error);
+            console.error(`Migration failed: ${file}`, error);
             process.exit(1);
         }
     }
     
-    console.log('✅ All migrations complete');
+    console.log('All migrations complete');
 }
 
 // Run migrations

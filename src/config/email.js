@@ -49,7 +49,7 @@ const validateEmailConfig = () => {
     const config = getConfig();
     if (process.env.NODE_ENV === 'production') {
         if (!config.auth.user || !config.auth.pass) {
-            console.warn('⚠️ Email credentials not configured for production!');
+            console.warn('Email credentials not configured for production!');
             return false;
         }
     }

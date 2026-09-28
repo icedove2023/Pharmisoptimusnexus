@@ -11,6 +11,10 @@
         <div class="contact-form-section">
             <h2 class="contact-form-title">Send Us a Message</h2>
             <form id="contactForm" class="contact-form" novalidate>
+                <div class="hp-field" aria-hidden="true">
+                    <label for="website">Leave this field empty</label>
+                    <input type="text" id="website" name="website" tabindex="-1" autocomplete="off" />
+                </div>
                 <div class="contact-form-row">
                     <div class="contact-form-group">
                         <label for="name">Full Name *</label>
@@ -41,11 +45,11 @@
                     </svg>
                 </button>
                 <div id="form-success" style="display:none;" class="form-success">
-                    <span class="success-icon">✓</span>
+                    <span class="success-icon"><%- icon('check') %></span>
                     <span>Message sent successfully! We'll get back to you soon.</span>
                 </div>
                 <div id="form-error" style="display:none;" class="form-error-msg">
-                    <span class="error-icon">✕</span>
+                    <span class="error-icon"><%- icon('x') %></span>
                     <span>Failed to send message. Please try again.</span>
                 </div>
             </form>

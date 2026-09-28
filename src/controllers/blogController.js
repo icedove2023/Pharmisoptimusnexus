@@ -1,6 +1,7 @@
 // src/controllers/blogController.js
-const { Post, Comment } = require('../models');
+const { Post, Comment, Engagement } = require('../models');
 const { formatDate, truncate, generateMetaDescription, buildUrl, toJSON } = require('../utils/helpers');
+const { normalizeContent } = require('../utils/contentBlocks');
 const config = require('../config');
 
 /**
@@ -16,6 +17,7 @@ exports.getBlog = async (req, res) => {
         
         // Fetch posts
         const result = await Post.findAll({
+            kind: 'blog',
             page,
             limit,
             category,
@@ -24,16 +26,16 @@ exports.getBlog = async (req, res) => {
         });
         
         // Get featured post
-        const featured = await Post.findFeatured();
+        const featured = await Post.findFeatured({ kind: 'blog' });
         
         // Get categories with counts
-        const categories = await Post.getCategories();
+        const categories = await Post.getCategories({ kind: 'blog' });
         
         // Get all tags
-        const tags = await Post.getTags();
+        const tags = await Post.getTags({ kind: 'blog' });
         
         // Get popular posts
-        const popularPosts = await Post.getPopular(5);
+        const popularPosts = await Post.getPopular(5, { kind: 'blog' });
         
         // Format pagination
         const pagination = {
@@ -99,13 +101,10 @@ exports.getBlogPost = async (req, res) => {
     try {
         const { slug } = req.params;
         
-        console.log(`🔍 Looking for blog post with slug: ${slug}`);
-        
         // Find post
         const post = await Post.findBySlug(slug);
         
         if (!post) {
-            console.log(`❌ Blog post not found: ${slug}`);
             return res.status(404).render('pages/error', {
                 title: '404 - Post Not Found',
                 currentPage: 'error',
@@ -116,30 +115,30 @@ exports.getBlogPost = async (req, res) => {
             });
         }
         
-        console.log(`✅ Found blog post: ${post.title}`);
-        
-        // Check if it's a blog post (not publication)
-        const publicationCategories = ['Review Articles', 'AI & Biotechnology', 'Research Articles', 'Others'];
-        const isBlog = post.category && !publicationCategories.includes(post.category);
-        
-        if (!isBlog) {
-            console.log(`🔄 Redirecting to publications: ${slug}`);
+        // Publications live under /publications
+        if (post.kind !== 'blog') {
             return res.redirect(`/publications/${slug}`);
         }
-        
-        // Increment view count
-        await Post.incrementViews(post.id);
-        
+
+        // Views are counted by the browser (public/js/engagement.js), not here,
+        // so refreshes and crawlers do not inflate the number.
+        const liked = await Engagement.hasLiked(post.id, req.visitorHash);
+
+        // Re-validate and sanitize the stored content on every render. This
+        // also upgrades older posts (plain `text` fields, no `html`) into the
+        // same shape new posts are saved in, so both render identically.
+        post.content = normalizeContent(post.content).content;
+
         // Get comments
         const commentResult = await Comment.getByPost(post.id, 1, 10);
         
         // Get related posts
-        const relatedPosts = await Post.getRelated(post.id, post.category, 3);
+        const relatedPosts = await Post.getRelated(post.id, post.category, 3, 'blog');
         
         // Get categories and tags for sidebar
-        const categories = await Post.getCategories();
-        const tags = await Post.getTags();
-        const popularPosts = await Post.getPopular(5);
+        const categories = await Post.getCategories({ kind: 'blog' });
+        const tags = await Post.getTags({ kind: 'blog' });
+        const popularPosts = await Post.getPopular(5, { kind: 'blog' });
         
         // Parse content if it's JSON
         let content = post.content;
@@ -147,7 +146,6 @@ exports.getBlogPost = async (req, res) => {
             try {
                 content = JSON.parse(content);
             } catch (e) {
-                console.log('⚠️ Content is not valid JSON, keeping as string');
             }
         }
         
@@ -160,19 +158,18 @@ exports.getBlogPost = async (req, res) => {
         
         const postUrl = buildUrl(`/blog/${slug}`);
         
-        console.log(`✅ Rendering blog post: ${post.title}`);
-        
         res.render('pages/blog-post', {
             title: post.title,
+            liked,
             pageStyles: 'blog-post',
             currentPage: 'blog',
             metaDescription: generateMetaDescription(post),
-            // ✅ These are the variables that hero-mini needs
+            // These are the variables that hero-mini needs
             subtitle: null, // No subtitle for blog posts
             date: postData.published_date,
             authors: post.authors || ['Pharmis Optimus Nexus'],
             readTime: post.read_time || '5 min',
-            // ✅ Post data
+            // Post data
             post: postData,
             comments: commentResult.comments || [],
             relatedPosts: relatedPosts || [],
@@ -211,7 +208,7 @@ exports.getBlogPost = async (req, res) => {
             }
         });
     } catch (error) {
-        console.error('❌ Error in getBlogPost:', error);
+        console.error('Error in getBlogPost:', error);
         console.error('Stack:', error.stack);
         res.status(500).render('pages/error', {
             title: 'Error',

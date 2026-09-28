@@ -4,19 +4,23 @@ const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
 const compression = require('compression');
-const session = require('express-session');
 const path = require('path');
 const ejs = require('ejs');
 const config = require('./src/config');
+const { icon } = require('./src/utils/icons');
+const { visitor } = require('./src/middleware/visitor');
 
 const app = express();
+
+// Behind Vercel's proxy: use the real client IP for rate limiting and secure cookies.
+app.set('trust proxy', 1);
 const PORT = process.env.PORT || 3000;
 
 // ============================================================
 // PRODUCTION CHECKS
 // ============================================================
 const isProduction = process.env.NODE_ENV === 'production';
-console.log(`🚀 Running in ${isProduction ? 'PRODUCTION' : 'DEVELOPMENT'} mode`);
+console.log(`Running in ${isProduction ? 'PRODUCTION' : 'DEVELOPMENT'} mode`);
 
 // ============================================================
 // MIDDLEWARE
@@ -100,29 +104,14 @@ app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // ============================================================
-// SESSION CONFIGURATION
+// SECRET CHECK
 // ============================================================
-const sessionConfig = {
-    secret: process.env.SESSION_SECRET || config.session.secret || 'default-secret-change-me',
-    name: 'pharmis.sid',
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-        secure: isProduction,
-        httpOnly: true,
-        maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-        sameSite: 'lax'
-    }
-};
-
-// Production session settings
-if (isProduction) {
-    sessionConfig.cookie.secure = true;
-    sessionConfig.cookie.domain = process.env.COOKIE_DOMAIN || undefined;
-    sessionConfig.proxy = true;
+// SESSION_SECRET keys the hashes used for anonymous visitor and IP identifiers.
+// There is no server-side session store: admin sign-in uses Supabase Auth
+// tokens in httpOnly cookies (see src/middleware/adminSession.js).
+if (isProduction && !process.env.SESSION_SECRET) {
+    throw new Error('SESSION_SECRET must be set in production');
 }
-
-app.use(session(sessionConfig));
 
 // ============================================================
 // STATIC FILES - With caching for production
@@ -154,6 +143,10 @@ app.use(express.static(path.join(__dirname, 'src/public')));
 // Favicon
 app.use('/favicon.ico', express.static(path.join(__dirname, 'src/public/images/favicon.ico')));
 
+// Anonymous visitor id (first-party cookie) used to de-duplicate views and likes.
+// Not applied to the admin area.
+app.use(visitor({ isProduction, skipPrefix: config.adminPath }));
+
 // ============================================================
 // VIEW ENGINE
 // ============================================================
@@ -162,8 +155,9 @@ app.set('views', path.join(__dirname, 'src/views'));
 
 // Make theme and user available to all views
 app.use((req, res, next) => {
-    res.locals.theme = req.session?.theme || 'dark';
-    res.locals.user = req.session?.user || null;
+    res.locals.theme = 'dark';
+    res.locals.icon = icon;
+    res.locals.user = null;
     res.locals.isProduction = isProduction;
     res.locals.baseUrl = process.env.BASE_URL || config.baseUrl || '';
     next();
@@ -184,7 +178,7 @@ app.use((req, res, next) => {
 
         // Merge options with defaults
         const pageLocals = {
-            theme: req.session?.theme || 'dark',
+            theme: 'dark',
             title: '',
             metaDescription: 'Pharmis Optimus Nexus – Advancing Pharmaceutical Knowledge, Research, and Innovation',
             metaKeywords: 'pharmaceutical, research, innovation, health, pharmacy',
@@ -206,7 +200,9 @@ app.use((req, res, next) => {
         };
 
         const viewPath = path.join(app.get('views'), view.endsWith('.ejs') ? view : `${view}.ejs`);
-        const layoutPath = path.join(app.get('views'), 'layouts/main.ejs');
+        // Public pages use layouts/main. The admin area sets res.locals.layout.
+        const layoutName = pageLocals.layout || 'layouts/main';
+        const layoutPath = path.join(app.get('views'), `${layoutName}.ejs`);
 
         // Render the page content
         ejs.renderFile(viewPath, pageLocals, (err, html) => {
@@ -265,6 +261,9 @@ app.use((req, res, next) => {
 // ROUTES
 // ============================================================
 
+// Admin area (not linked from the public site)
+app.use(config.adminPath, require('./src/routes/admin'));
+
 // Web routes
 const webRoutes = require('./src/routes/web');
 app.use('/', webRoutes);
@@ -291,7 +290,7 @@ app.get('/health', (req, res) => {
 app.use((req, res) => {
     res.status(404).render('pages/error', {
         title: '404 - Page Not Found',
-        theme: req.session?.theme || 'dark',
+        theme: 'dark',
         error: {
             message: 'The page you are looking for does not exist.',
             status: 404
@@ -301,7 +300,7 @@ app.use((req, res) => {
 
 // Global error handler
 app.use((err, req, res, next) => {
-    console.error('❌ Error:', err);
+    console.error('Error:', err);
     console.error('   Stack:', err.stack);
     console.error('   Request:', req.method, req.url);
     console.error('   IP:', req.ip || req.connection?.remoteAddress);
@@ -323,7 +322,7 @@ app.use((err, req, res, next) => {
 
     res.status(status).render('pages/error', {
         title: status === 404 ? '404 - Page Not Found' : 'Error',
-        theme: req.session?.theme || 'dark',
+        theme: 'dark',
         error: {
             message: message,
             status: status,
@@ -333,32 +332,10 @@ app.use((err, req, res, next) => {
 });
 
 // ============================================================
-// START AUTO-SYNC (if enabled)
-// ============================================================
-try {
-    const { googleSheetsService } = require('./src/services');
-    
-    if (process.env.ENABLE_AUTO_SYNC !== 'false') {
-        const syncInterval = parseInt(process.env.SYNC_INTERVAL) || 3600000;
-        googleSheetsService.startAutoSync(syncInterval);
-        console.log(`🔄 Auto-sync enabled (interval: ${syncInterval / 1000}s)`);
-    }
-} catch (error) {
-    console.warn('⚠️ Google Sheets service not available:', error.message);
-}
-
-// ============================================================
 // GRACEFUL SHUTDOWN
 // ============================================================
 const shutdown = () => {
-    console.log('🛑 Shutting down gracefully...');
-    
-    try {
-        const { googleSheetsService } = require('./src/services');
-        googleSheetsService.stopAutoSync();
-    } catch (error) {
-        // Ignore if service not available
-    }
+    console.log('Shutting down gracefully...');
     
     process.exit(0);
 };
@@ -368,7 +345,7 @@ process.on('SIGINT', shutdown);
 
 // Handle uncaught exceptions
 process.on('uncaughtException', (error) => {
-    console.error('💥 Uncaught Exception:', error);
+    console.error('Uncaught Exception:', error);
     // Don't exit in production, just log
     if (!isProduction) {
         process.exit(1);
@@ -376,8 +353,8 @@ process.on('uncaughtException', (error) => {
 });
 
 process.on('unhandledRejection', (reason, promise) => {
-    console.error('💥 Unhandled Rejection at:', promise);
-    console.error('💥 Reason:', reason);
+    console.error('Unhandled Rejection at:', promise);
+    console.error('Reason:', reason);
     // Don't exit in production, just log
     if (!isProduction) {
         process.exit(1);
@@ -388,10 +365,10 @@ process.on('unhandledRejection', (reason, promise) => {
 // START SERVER
 // ============================================================
 app.listen(PORT, () => {
-    console.log(`🚀 Server running on http://localhost:${PORT}`);
-    console.log(`📚 Environment: ${process.env.NODE_ENV || 'development'}`);
-    console.log(`🔗 Base URL: ${process.env.BASE_URL || `http://localhost:${PORT}`}`);
-    console.log(`📊 Health check: http://localhost:${PORT}/health`);
+    console.log(`Server running on http://localhost:${PORT}`);
+    console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
+    console.log(`Base URL: ${process.env.BASE_URL || `http://localhost:${PORT}`}`);
+    console.log(`Health check: http://localhost:${PORT}/health`);
 });
 
 module.exports = app;

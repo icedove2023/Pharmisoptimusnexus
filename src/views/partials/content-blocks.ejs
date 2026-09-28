@@ -1,0 +1,85 @@
+<%
+/*
+ * Shared renderer for post.content.sections, used by both the blog post
+ * page and the publication page. Pass `sections` (an already-normalized
+ * array from utils/contentBlocks.js).
+ *
+ * This only emits the inner block markup (headings, paragraphs, images...).
+ * Each page wraps the include in its own outer class (.blog-content-json or
+ * .publication-content) and styles these same inner class names to match
+ * its own design - a blog look on one page, a journal look on the other,
+ * from one rendering source.
+ */
+%>
+<% (sections || []).forEach(section => { %>
+    <% if (section.type === 'heading') { %>
+        <h<%= section.level || 2 %> class="heading-<%= section.level || 2 %>">
+            <%= section.text %>
+        </h<%= section.level || 2 %>>
+    <% } else if (section.type === 'paragraph') { %>
+        <p class="paragraph"><%- section.html %></p>
+    <% } else if (section.type === 'list') { %>
+        <% const listTag = section.style === 'number' ? 'ol' : 'ul'; %>
+        <<%= listTag %> class="list-<%= section.style === 'number' ? 'ol' : 'ul' %>">
+            <% section.items.forEach(item => { %>
+                <li><%- item %></li>
+            <% }) %>
+        </<%= listTag %>>
+    <% } else if (section.type === 'note') { %>
+        <div class="note note-<%= section.variant || 'info' %>">
+            <p><%- section.html %></p>
+        </div>
+    <% } else if (section.type === 'quote') { %>
+        <blockquote class="quote">
+            <p><%= section.text %></p>
+            <% if (section.source) { %>
+                <div class="quote-source">— <%= section.source %></div>
+            <% } %>
+        </blockquote>
+    <% } else if (section.type === 'image') { %>
+        <div class="image-wrapper image-<%= section.size || 'wide' %> image-align-<%= section.align || 'center' %>">
+            <img src="<%= section.src || '/images/placeholder.jpg' %>"
+                 alt="<%= section.alt || section.caption || 'Image' %>"
+                 loading="lazy" />
+            <% if (section.caption) { %>
+                <div class="image-caption"><%= section.caption %></div>
+            <% } %>
+        </div>
+    <% } else if (section.type === 'gallery') { %>
+        <div class="gallery-grid">
+            <% section.images.forEach(img => { %>
+                <figure class="gallery-item">
+                    <img src="<%= img.src %>" alt="<%= img.alt || img.caption || 'Image' %>" loading="lazy" />
+                    <% if (img.caption) { %>
+                        <figcaption><%= img.caption %></figcaption>
+                    <% } %>
+                </figure>
+            <% }) %>
+        </div>
+    <% } else if (section.type === 'code') { %>
+        <pre class="code-block" data-language="<%= section.language %>"><code><%= section.code %></code></pre>
+    <% } else if (section.type === 'divider') { %>
+        <hr class="content-divider" />
+    <% } else if (section.type === 'table') { %>
+        <div class="table-wrapper">
+            <table>
+                <% if (section.headers && section.headers.length) { %>
+                    <thead>
+                        <tr><% section.headers.forEach(header => { %>
+                            <th><%= header %></th>
+                        <% }) %></tr>
+                    </thead>
+                <% } %>
+                <% if (section.rows && section.rows.length) { %>
+                    <tbody>
+                        <% section.rows.forEach(row => { %>
+                            <tr><% row.forEach(cell => { %>
+                                <td><%= cell %></td>
+                            <% }) %></tr>
+                        <% }) %>
+                    </tbody>
+                <% } %>
+            </table>
+        </div>
+    <% } %>
+<% }) %>

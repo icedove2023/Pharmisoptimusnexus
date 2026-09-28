@@ -1,0 +1,12 @@
+<% if (pager.totalPages > 1) { %>
+    <nav class="pager" aria-label="Pages">
+        <% const join = pager.baseQuery ? pager.baseQuery + '&' : ''; %>
+        <% if (pager.page > 1) { %>
+            <a class="btn btn-ghost" href="<%= pager.path %>?<%= join %>page=<%= pager.page - 1 %>">Previous</a>
+        <% } %>
+        <span class="pager-info">Page <%= pager.page %> of <%= pager.totalPages %></span>
+        <% if (pager.page < pager.totalPages) { %>
+            <a class="btn btn-ghost" href="<%= pager.path %>?<%= join %>page=<%= pager.page + 1 %>">Next</a>
+        <% } %>
+    </nav>
+<% } %>

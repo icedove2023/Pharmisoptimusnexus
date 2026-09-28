@@ -1,0 +1,39 @@
+<% const stamp = (d) => d ? new Date(d).toISOString().slice(0, 16).replace('T', ' ') + ' UTC' : ''; %>
+
+<nav class="tabs" aria-label="Filter messages">
+    <a class="tab<%= !filters.status ? ' is-active' : '' %>" href="<%= adminPath %>/messages">All</a>
+    <a class="tab<%= filters.status === 'new' ? ' is-active' : '' %>" href="<%= adminPath %>/messages?status=new">New</a>
+    <a class="tab<%= filters.status === 'read' ? ' is-active' : '' %>" href="<%= adminPath %>/messages?status=read">Read</a>
+    <a class="tab<%= filters.status === 'archived' ? ' is-active' : '' %>" href="<%= adminPath %>/messages?status=archived">Archived</a>
+</nav>
+
+<% if (result.messages.length) { %>
+    <div class="message-list">
+        <% result.messages.forEach((m) => { %>
+            <details class="message" <%= m.status === 'new' ? 'open' : '' %>>
+                <summary>
+                    <span class="message-from"><%= m.name %></span>
+                    <span class="message-subject"><%= m.subject || 'No subject' %></span>
+                    <span class="badge badge-<%= m.status %>"><%= m.status %></span>
+                    <span class="muted"><%= stamp(m.created_at) %></span>
+                </summary>
+                <div class="message-body">
+                    <p class="muted"><%- icon('mail') %> <a class="link" href="mailto:<%= m.email %>"><%= m.email %></a></p>
+                    <p class="message-text"><%= m.message %></p>
+                    <div class="message-actions">
+                        <% ['new', 'read', 'archived'].filter((s) => s !== m.status).forEach((s) => { %>
+                            <form method="post" action="<%= adminPath %>/messages/<%= m.id %>/status" class="inline-form">
+                                <input type="hidden" name="returnTo" value="<%= returnTo %>" />
+                                <input type="hidden" name="status" value="<%= s %>" />
+                                <button type="submit" class="btn btn-ghost">Mark <%= s %></button>
+                            </form>
+                        <% }) %>
+                    </div>
+                </div>
+            </details>
+        <% }) %>
+    </div>
+    <%- include('_pager', { pager: { page: result.page, totalPages: result.totalPages, baseQuery: baseQuery, path: adminPath + '/messages' } }) %>
+<% } else { %>
+    <p class="empty">No messages here.</p>
+<% } %>

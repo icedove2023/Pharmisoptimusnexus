@@ -3,7 +3,7 @@
     <!-- Comments Header -->
     <div class="comments-header">
         <h3 class="comments-title">
-            💬 Comments
+            <%- icon('message-circle') %> Comments
             <span class="comment-count-badge" id="commentCount">
                 <%= comments ? comments.length : 0 %>
             </span>
@@ -23,7 +23,7 @@
             <div class="comment-form-main">
                 <div class="comment-avatar">
                     <div class="avatar-placeholder">
-                        <span>👤</span>
+                        <span><%- icon('user') %></span>
                     </div>
                 </div>
                 <div class="comment-input-area">
@@ -48,17 +48,17 @@
                                     <em>I</em>
                                 </button>
                                 <button type="button" class="tool-btn" title="Link">
-                                    🔗
+                                    <%- icon('link') %>
                                 </button>
                                 <button type="button" class="tool-btn" title="Quote">
-                                    ❝
+                                    <%- icon('quote') %>
                                 </button>
                             </div>
                             <div class="comment-submit-area">
                                 <span class="comment-character-count" id="charCount">0</span>
                                 <button type="submit" class="comment-submit-btn">
                                     <span class="btn-text">Post</span>
-                                    <span class="btn-loading" style="display:none;">⏳</span>
+                                    <span class="btn-loading" style="display:none;"><%- icon('loader') %></span>
                                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                         <line x1="22" y1="2" x2="11" y2="13"/>
                                         <polygon points="22 2 15 22 11 13 2 9 22 2"/>
@@ -74,17 +74,17 @@
             <!-- Reply indicator -->
             <div class="reply-indicator" id="replyIndicator" style="display:none;">
                 <span>Replying to: <strong id="replyToName"></strong></span>
-                <button type="button" class="cancel-reply" id="cancelReply">✕</button>
+                <button type="button" class="cancel-reply" id="cancelReply" aria-label="Cancel reply"><%- icon('x') %></button>
             </div>
         </form>
         
         <!-- Success/Error Messages -->
         <div id="commentSuccess" class="comment-message success" style="display:none;">
-            <span class="icon">✅</span>
+            <span class="icon"><%- icon('check-circle') %></span>
             <span>Comment posted successfully!</span>
         </div>
         <div id="commentError" class="comment-message error" style="display:none;">
-            <span class="icon">❌</span>
+            <span class="icon"><%- icon('x-circle') %></span>
             <span>Failed to post comment. Please try again.</span>
         </div>
     </div>
@@ -116,15 +116,15 @@
                         <div class="comment-content"><%= comment.content %></div>
                         <div class="comment-actions">
                             <button class="comment-action-btn like-comment" data-comment-id="<%= comment.id %>">
-                                <span class="like-icon">❤️</span>
+                                <span class="like-icon"><%- icon('heart') %></span>
                                 <span class="like-count">0</span>
                             </button>
                             <button class="comment-action-btn reply-btn" data-comment-id="<%= comment.id %>" data-author="<%= comment.author %>">
-                                <span class="reply-icon">↩️</span>
+                                <span class="reply-icon"><%- icon('corner-up-left') %></span>
                                 Reply
                             </button>
                             <button class="comment-action-btn share-comment" data-comment-id="<%= comment.id %>">
-                                <span class="share-icon">🔗</span>
+                                <span class="share-icon"><%- icon('link') %></span>
                             </button>
                         </div>
                     </div>
@@ -157,11 +157,11 @@
                                     <div class="comment-content"><%= reply.content %></div>
                                     <div class="comment-actions">
                                         <button class="comment-action-btn like-comment" data-comment-id="<%= reply.id %>">
-                                            <span class="like-icon">❤️</span>
+                                            <span class="like-icon"><%- icon('heart') %></span>
                                             <span class="like-count">0</span>
                                         </button>
                                         <button class="comment-action-btn reply-btn" data-comment-id="<%= reply.id %>" data-author="<%= reply.author %>">
-                                            <span class="reply-icon">↩️</span>
+                                            <span class="reply-icon"><%- icon('corner-up-left') %></span>
                                             Reply
                                         </button>
                                     </div>
@@ -173,7 +173,7 @@
             <% }) %>
         <% } else { %>
             <div class="no-comments">
-                <div class="no-comments-icon">💬</div>
+                <div class="no-comments-icon"><%- icon('message-circle') %></div>
                 <p>No comments yet. Be the first to share your thoughts!</p>
             </div>
         <% } %>
@@ -189,6 +189,11 @@
 </section>
 
 <script>
+    const ICONS = {
+        heart: <%- JSON.stringify(icon('heart')) %>,
+        reply: <%- JSON.stringify(icon('corner-up-left')) %>
+    };
+
 document.addEventListener('DOMContentLoaded', function() {
     // ============================================================
     // COMMENT FORM AUTO-EXPAND
@@ -452,11 +457,11 @@ document.addEventListener('DOMContentLoaded', function() {
                     <div class="comment-content">${escapeHtml(comment.content)}</div>
                     <div class="comment-actions">
                         <button class="comment-action-btn like-comment" data-comment-id="${comment.id}">
-                            <span class="like-icon">❤️</span>
+                            <span class="like-icon">${ICONS.heart}</span>
                             <span class="like-count">0</span>
                         </button>
                         <button class="comment-action-btn reply-btn" data-comment-id="${comment.id}" data-author="${escapeHtml(comment.author)}">
-                            <span class="reply-icon">↩️</span>
+                            <span class="reply-icon">${ICONS.reply}</span>
                             Reply
                         </button>
                     </div>

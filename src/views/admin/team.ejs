@@ -1,0 +1,104 @@
+<% const v = values || { name: '', role: '', team_group: '', bio: '', photo_url: '', is_active: true, is_leader: false }; %>
+<% const TEAM_GROUPS = ['CEC', 'Health and Wellness', 'Media and Publications', 'Community Outreach']; %>
+
+<% if (errors && errors.length) { %>
+    <div class="alert alert-error" role="alert">
+        <ul class="alert-list">
+            <% errors.forEach((e) => { %><li><%= e %></li><% }) %>
+        </ul>
+    </div>
+<% } %>
+
+<div class="panel">
+    <div class="panel-head"><h2><%= editing ? 'Edit team member' : 'Add a team member' %></h2></div>
+    <form method="post" action="<%= editing ? adminPath + '/team/' + editing.id : adminPath + '/team' %>" class="editor-form">
+        <div class="detail-grid">
+            <label class="block-field">
+                <span>Photo</span>
+                <input id="memberPhotoUrl" name="photo_url" type="hidden" value="<%= v.photo_url || '' %>" />
+                <div id="memberPhotoField"></div>
+            </label>
+            <div>
+                <label class="block-field">
+                    <span>Name</span>
+                    <input name="name" type="text" value="<%= v.name %>" maxlength="150" required />
+                </label>
+                <label class="block-field">
+                    <span>Role / title</span>
+                    <input name="role" type="text" value="<%= v.role || '' %>" maxlength="150" />
+                </label>
+            </div>
+        </div>
+        <label class="block-field">
+            <span>Group</span>
+            <select name="team_group">
+                <% TEAM_GROUPS.forEach((g) => { %>
+                    <option value="<%= g %>"<%= (v.team_group || 'CEC') === g ? ' selected' : '' %>><%= g %></option>
+                <% }) %>
+            </select>
+        </label>
+        <label class="block-field">
+            <span>Bio</span>
+            <textarea name="bio" rows="3" maxlength="1000"><%= v.bio || '' %></textarea>
+        </label>
+        <label class="block-field checkbox-field">
+            <input name="is_leader" type="checkbox" <%= v.is_leader ? 'checked' : '' %> />
+            <span>Team lead for this group (shown on the About page)</span>
+        </label>
+        <label class="block-field checkbox-field">
+            <input name="is_active" type="checkbox" <%= v.is_active !== false ? 'checked' : '' %> />
+            <span>Show on the site</span>
+        </label>
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary"><%= editing ? 'Save changes' : 'Add person' %></button>
+            <% if (editing) { %><a class="btn btn-ghost" href="<%= adminPath %>/team">Cancel</a><% } %>
+        </div>
+    </form>
+</div>
+
+<% TEAM_GROUPS.forEach((group) => { %>
+    <% const groupMembers = members.filter((m) => m.team_group === group); %>
+    <div class="panel">
+        <div class="panel-head"><h2><%= group %></h2></div>
+        <% if (groupMembers.length) { %>
+            <ul class="record-list">
+                <% groupMembers.forEach((member, i) => { %>
+                    <li class="record-row">
+                        <% if (member.photo_url) { %>
+                            <img class="record-thumb record-thumb-round" src="<%= member.photo_url %>" alt="" />
+                        <% } else { %>
+                            <span class="record-thumb record-thumb-round record-thumb-empty"><%- icon('user') %></span>
+                        <% } %>
+                        <div class="record-main">
+                            <strong><%= member.name %><% if (member.is_leader) { %> <span class="badge badge-role">Lead</span><% } %></strong>
+                            <span class="muted"><%= member.role || '' %><% if (!member.is_active) { %> &middot; Hidden<% } %></span>
+                        </div>
+                        <div class="record-actions">
+                            <form method="post" action="<%= adminPath %>/team/<%= member.id %>/move" class="inline-form">
+                                <input type="hidden" name="direction" value="up" />
+                                <button type="submit" class="btn btn-ghost btn-small" <%= i === 0 ? 'disabled' : '' %>><%- icon('arrow-up') %></button>
+                            </form>
+                            <form method="post" action="<%= adminPath %>/team/<%= member.id %>/move" class="inline-form">
+                                <input type="hidden" name="direction" value="down" />
+                                <button type="submit" class="btn btn-ghost btn-small" <%= i === groupMembers.length - 1 ? 'disabled' : '' %>><%- icon('arrow-down') %></button>
+                            </form>
+                            <a class="btn btn-ghost btn-small" href="<%= adminPath %>/team?edit=<%= member.id %>">Edit</a>
+                            <form method="post" action="<%= adminPath %>/team/<%= member.id %>/delete" class="inline-form" data-confirm="Remove this person?">
+                                <button type="submit" class="btn btn-ghost btn-small"><%- icon('x') %></button>
+                            </form>
+                        </div>
+                    </li>
+                <% }) %>
+            </ul>
+        <% } else { %>
+            <p class="empty">No one in this group yet.</p>
+        <% } %>
+    </div>
+<% }) %>
+
+<script>
+    window.PON_ICONS = { up: <%- JSON.stringify(icon('arrow-up')) %>, down: <%- JSON.stringify(icon('arrow-down')) %>, remove: <%- JSON.stringify(icon('x')) %> };
+    window.PON_ADMIN_PATH = <%- JSON.stringify(adminPath) %>;
+</script>
+<script src="/js/imageCrop.js" defer></script>
+<script src="/js/site-content-editor.js" defer></script>

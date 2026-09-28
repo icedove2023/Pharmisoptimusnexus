@@ -10,11 +10,7 @@ const generalLimiter = rateLimit({
         message: 'Please try again after 15 minutes'
     },
     standardHeaders: true,
-    legacyHeaders: false,
-    skip: (req) => {
-        // Skip rate limiting for admin users (optional)
-        return req.session && req.session.user && req.session.user.role === 'admin';
-    }
+    legacyHeaders: false
 });
 
 // Stricter rate limiter for authentication

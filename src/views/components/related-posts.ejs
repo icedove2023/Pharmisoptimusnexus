@@ -3,7 +3,7 @@
     <section class="related-posts-section">
         <div class="related-posts-header">
             <h3 class="related-posts-title">
-                <span class="title-icon">📚</span>
+                <span class="title-icon"><%- icon('book-open') %></span>
                 You Might Also Like
             </h3>
             <a href="/blog" class="view-all-link">View All →</a>
@@ -27,7 +27,7 @@
                             <h4 class="related-post-title"><%= post.title %></h4>
                             <div class="related-post-meta">
                                 <span class="related-post-date"><%= post.published_date %></span>
-                                <span class="related-post-read-time">📖 <%= post.read_time || '5 min' %></span>
+                                <span class="related-post-read-time"><%- icon('book-open') %> <%= post.read_time || '5 min' %></span>
                             </div>
                         </div>
                     </a>

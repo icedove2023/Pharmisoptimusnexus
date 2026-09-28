@@ -1,0 +1,9 @@
+<section class="notice-card">
+    <h2><%= locals.heading || 'Something went wrong' %></h2>
+    <p><%= locals.message || 'Please try again.' %></p>
+    <% if (locals.admin) { %>
+        <p><a class="btn btn-ghost" href="<%= adminPath %>">Back to overview</a></p>
+    <% } else { %>
+        <p><a class="btn btn-ghost" href="<%= adminPath %>/login">Sign in</a></p>
+    <% } %>
+</section>

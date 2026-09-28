@@ -1,0 +1,86 @@
+<% const v = values || { image_url: '', headline: '', subtitle: '', label: '', link_url: '', is_active: true }; %>
+
+<% if (errors && errors.length) { %>
+    <div class="alert alert-error" role="alert">
+        <ul class="alert-list">
+            <% errors.forEach((e) => { %><li><%= e %></li><% }) %>
+        </ul>
+    </div>
+<% } %>
+
+<div class="panel">
+    <div class="panel-head"><h2><%= editing ? 'Edit slide' : 'Add a slide' %></h2></div>
+    <form method="post" action="<%= editing ? adminPath + '/slides/' + editing.id : adminPath + '/slides' %>" class="editor-form">
+        <div class="detail-grid">
+            <label class="block-field">
+                <span>Image</span>
+                <input id="slideImageUrl" name="image_url" type="hidden" value="<%= v.image_url %>" />
+                <div id="slideImageField"></div>
+            </label>
+            <label class="block-field">
+                <span>Label</span>
+                <input name="label" type="text" value="<%= v.label %>" placeholder="Featured" />
+            </label>
+        </div>
+        <label class="block-field">
+            <span>Headline</span>
+            <input name="headline" type="text" value="<%= v.headline %>" maxlength="150" />
+        </label>
+        <label class="block-field">
+            <span>Subtitle</span>
+            <textarea name="subtitle" rows="2" maxlength="300"><%= v.subtitle %></textarea>
+        </label>
+        <label class="block-field">
+            <span>Link (optional - where the slide sends visitors when clicked)</span>
+            <input name="link_url" type="text" value="<%= v.link_url || '' %>" placeholder="/publications" />
+        </label>
+        <label class="block-field checkbox-field">
+            <input name="is_active" type="checkbox" <%= v.is_active !== false ? 'checked' : '' %> />
+            <span>Show this slide on the site</span>
+        </label>
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary"><%= editing ? 'Save changes' : 'Add slide' %></button>
+            <% if (editing) { %><a class="btn btn-ghost" href="<%= adminPath %>/slides">Cancel</a><% } %>
+        </div>
+    </form>
+</div>
+
+<div class="panel">
+    <div class="panel-head"><h2>Current slides</h2></div>
+    <% if (slides.length) { %>
+        <ul class="record-list">
+            <% slides.forEach((slide, i) => { %>
+                <li class="record-row">
+                    <img class="record-thumb" src="<%= slide.image_url %>" alt="" />
+                    <div class="record-main">
+                        <strong><%= slide.headline || '(no headline)' %></strong>
+                        <span class="muted"><%= slide.label %><% if (!slide.is_active) { %> &middot; Hidden<% } %></span>
+                    </div>
+                    <div class="record-actions">
+                        <form method="post" action="<%= adminPath %>/slides/<%= slide.id %>/move" class="inline-form">
+                            <input type="hidden" name="direction" value="up" />
+                            <button type="submit" class="btn btn-ghost btn-small" <%= i === 0 ? 'disabled' : '' %>><%- icon('arrow-up') %></button>
+                        </form>
+                        <form method="post" action="<%= adminPath %>/slides/<%= slide.id %>/move" class="inline-form">
+                            <input type="hidden" name="direction" value="down" />
+                            <button type="submit" class="btn btn-ghost btn-small" <%= i === slides.length - 1 ? 'disabled' : '' %>><%- icon('arrow-down') %></button>
+                        </form>
+                        <a class="btn btn-ghost btn-small" href="<%= adminPath %>/slides?edit=<%= slide.id %>">Edit</a>
+                        <form method="post" action="<%= adminPath %>/slides/<%= slide.id %>/delete" class="inline-form" data-confirm="Remove this slide?">
+                            <button type="submit" class="btn btn-ghost btn-small"><%- icon('x') %></button>
+                        </form>
+                    </div>
+                </li>
+            <% }) %>
+        </ul>
+    <% } else { %>
+        <p class="empty">No slides yet. The home page shows its three built-in slides until you add one.</p>
+    <% } %>
+</div>
+
+<script>
+    window.PON_ICONS = { up: <%- JSON.stringify(icon('arrow-up')) %>, down: <%- JSON.stringify(icon('arrow-down')) %>, remove: <%- JSON.stringify(icon('x')) %> };
+    window.PON_ADMIN_PATH = <%- JSON.stringify(adminPath) %>;
+</script>
+<script src="/js/imageCrop.js" defer></script>
+<script src="/js/site-content-editor.js" defer></script>

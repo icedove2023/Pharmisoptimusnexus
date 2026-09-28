@@ -1,0 +1,152 @@
+<% const v = values; %>
+
+<% if (errors && errors.length) { %>
+    <div class="alert alert-error" role="alert">
+        <ul class="alert-list">
+            <% errors.forEach((e) => { %><li><%= e %></li><% }) %>
+        </ul>
+    </div>
+<% } %>
+<% if (locals.saved) { %>
+    <div class="alert alert-success" role="status"><%- icon('check-circle') %> Saved.</div>
+<% } %>
+<% if (locals.viewingRevision) { %>
+    <div class="alert alert-info" role="status">Viewing a saved revision from <%= new Date(viewingRevision).toLocaleString() %>. Nothing has changed yet &mdash; click Save to make this the current version.</div>
+<% } %>
+<% if (locals.autosaveAvailable && !locals.viewingRevision) { %>
+    <div class="alert alert-info" role="status">
+        There's an autosaved draft from <%= new Date(autosaveAvailable).toLocaleString() %> that was never saved.
+        <a class="link" href="?restoreAutosave=1">Restore it</a> or
+        <form method="post" action="<%= adminPath %>/posts/<%= post.id %>/autosave/discard" class="inline-form">
+            <button type="submit" class="link-button">discard it</button>
+        </form>.
+    </div>
+<% } %>
+
+<form id="postEditorForm" class="editor-form" method="post" action="<%= post ? adminPath + '/posts/' + post.id : adminPath + '/posts' %>" <% if (post) { %>data-post-id="<%= post.id %>"<% } %> novalidate>
+    <div class="editor-layout">
+        <div class="editor-main">
+            <label class="block-field">
+                <span>Title</span>
+                <input id="title" name="title" type="text" value="<%= v.title %>" maxlength="300" required autofocus />
+            </label>
+
+            <label class="block-field">
+                <span>Excerpt (shown in listings)</span>
+                <textarea name="excerpt" rows="2" maxlength="500"><%= v.excerpt %></textarea>
+            </label>
+
+            <div class="panel editor-content-panel">
+                <div class="panel-head">
+                    <h2>Content</h2>
+                </div>
+                <div id="blocksList" class="blocks-list"></div>
+                <div id="blockToolbar" class="block-toolbar">
+                    <span class="muted">Add block:</span>
+                    <button type="button" class="btn btn-ghost btn-small" data-add-block="heading"><%- icon('plus') %> Heading</button>
+                    <button type="button" class="btn btn-ghost btn-small" data-add-block="paragraph"><%- icon('plus') %> Paragraph</button>
+                    <button type="button" class="btn btn-ghost btn-small" data-add-block="image"><%- icon('plus') %> Image</button>
+                    <button type="button" class="btn btn-ghost btn-small" data-add-block="gallery"><%- icon('plus') %> Gallery</button>
+                    <button type="button" class="btn btn-ghost btn-small" data-add-block="list"><%- icon('plus') %> List</button>
+                    <button type="button" class="btn btn-ghost btn-small" data-add-block="quote"><%- icon('plus') %> Quote</button>
+                    <button type="button" class="btn btn-ghost btn-small" data-add-block="note"><%- icon('plus') %> Callout</button>
+                    <button type="button" class="btn btn-ghost btn-small" data-add-block="table"><%- icon('plus') %> Table</button>
+                    <button type="button" class="btn btn-ghost btn-small" data-add-block="code"><%- icon('plus') %> Code</button>
+                    <button type="button" class="btn btn-ghost btn-small" data-add-block="divider"><%- icon('plus') %> Divider</button>
+                </div>
+            </div>
+        </div>
+
+        <aside class="editor-sidebar">
+            <div class="panel">
+                <div class="panel-head"><h2>Publish</h2></div>
+                <label class="block-field">
+                    <span>Status</span>
+                    <select id="status" name="status">
+                        <% statuses.forEach((s) => { %>
+                            <option value="<%= s %>"<%= v.status === s ? ' selected' : '' %>><%= s %></option>
+                        <% }) %>
+                    </select>
+                </label>
+                <div id="scheduledField" class="block-field" style="display:none">
+                    <label>
+                        <span>Scheduled for</span>
+                        <input name="scheduled_for" type="datetime-local" value="<%= v.scheduled_for %>" />
+                    </label>
+                </div>
+                <label class="block-field">
+                    <span>Published date</span>
+                    <input name="published_date" type="date" value="<%= v.published_date %>" />
+                </label>
+                <label class="block-field">
+                    <span>Slug</span>
+                    <input id="slug" name="slug" type="text" value="<%= v.slug %>" placeholder="auto-generated from title" />
+                </label>
+                <button type="submit" class="btn btn-primary editor-save">Save</button>
+                <% if (post) { %><span id="autosaveStatus" class="autosave-status"></span><% } %>
+            </div>
+
+            <% if (post && locals.revisions && revisions.length) { %>
+                <div class="panel">
+                    <div class="panel-head"><h2>History</h2></div>
+                    <ul class="revision-list">
+                        <% revisions.forEach((rev) => { %>
+                            <li>
+                                <span class="revision-date"><%= new Date(rev.created_at).toLocaleString() %></span>
+                                <a class="link" href="<%= adminPath %>/posts/<%= post.id %>/revisions/<%= rev.id %>/diff">Compare</a> &middot;
+                                <a class="link" href="?restoreRevision=<%= rev.id %>">Restore</a>
+                            </li>
+                        <% }) %>
+                    </ul>
+                </div>
+            <% } %>
+
+            <div class="panel">
+                <div class="panel-head"><h2>Cover image</h2></div>
+                <input id="image_url" name="image_url" type="hidden" value="<%= v.image_url %>" />
+                <div id="coverField"></div>
+                <label class="block-field">
+                    <span>Cover caption</span>
+                    <input name="caption" type="text" value="<%= v.caption %>" />
+                </label>
+            </div>
+
+            <div class="panel">
+                <div class="panel-head"><h2>Details</h2></div>
+                <label class="block-field">
+                    <span>Category</span>
+                    <input name="category" type="text" value="<%= v.category %>" list="categoryOptions" />
+                    <datalist id="categoryOptions">
+                        <% (locals.categories || []).forEach((c) => { %><option value="<%= c.name %>"></option><% }) %>
+                    </datalist>
+                </label>
+                <label class="block-field">
+                    <span>Tags (comma separated)</span>
+                    <input name="tags" type="text" value="<%= v.tags %>" />
+                </label>
+                <label class="block-field">
+                    <span>Authors (comma separated)</span>
+                    <input name="authors" type="text" value="<%= v.authors %>" />
+                </label>
+                <label class="block-field">
+                    <span>Read time</span>
+                    <input name="read_time" type="text" value="<%= v.read_time %>" placeholder="auto if left blank" />
+                </label>
+            </div>
+        </aside>
+    </div>
+
+    <input type="hidden" id="contentField" name="content" value="" />
+</form>
+
+<script id="initialContent" type="application/json"><%- contentJson.replace(/</g, '\\u003c') %></script>
+<script>
+    window.PON_ICONS = {
+        up: <%- JSON.stringify(icon('arrow-up')) %>,
+        down: <%- JSON.stringify(icon('arrow-down')) %>,
+        remove: <%- JSON.stringify(icon('x')) %>
+    };
+    window.PON_ADMIN_PATH = <%- JSON.stringify(adminPath) %>;
+</script>
+<script src="/js/imageCrop.js" defer></script>
+<script src="/js/post-editor.js" defer></script>

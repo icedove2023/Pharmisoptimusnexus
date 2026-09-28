@@ -119,6 +119,26 @@
     color: var(--muted);
 }
 
+.blog-content-json .paragraph a,
+.blog-content-json .list-ul a,
+.blog-content-json .list-ol a,
+.blog-content-json .note a {
+    color: var(--blush);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+
+.blog-content-json .paragraph code,
+.blog-content-json .list-ul code,
+.blog-content-json .list-ol code,
+.blog-content-json .note code {
+    font-family: var(--font-mono);
+    background: var(--surface);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.9em;
+}
+
 .blog-content-json .list-ul {
     padding-left: 24px;
     margin: 20px 0 24px 0;
@@ -199,6 +219,96 @@
     color: var(--muted);
     margin-top: 8px;
     font-style: italic;
+}
+
+/* Size variants: inline sits within the text column, wide breaks out
+   slightly, full breaks out to the edge of the article on wide screens. */
+.image-wrapper.image-inline { max-width: 420px; }
+.image-wrapper.image-inline.image-align-left { float: left; margin-right: 24px; }
+.image-wrapper.image-inline.image-align-right { float: right; margin-left: 24px; }
+.image-wrapper.image-align-center { margin-left: auto; margin-right: auto; }
+
+@media (min-width: 1100px) {
+    .image-wrapper.image-full {
+        max-width: none;
+        width: calc(100% + 160px);
+        margin-left: -80px;
+        margin-right: -80px;
+    }
+}
+
+/* ============================================================
+   GALLERY GRID
+   ============================================================ */
+.gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 14px;
+    margin: 28px 0;
+}
+
+.gallery-item {
+    margin: 0;
+}
+
+.gallery-item img {
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+    border-radius: 10px;
+    box-shadow: var(--shadow-sm);
+}
+
+.gallery-item figcaption {
+    margin-top: 6px;
+    font-size: 0.85rem;
+    color: var(--muted);
+    text-align: center;
+    font-style: italic;
+}
+
+/* ============================================================
+   CODE BLOCK
+   ============================================================ */
+.code-block {
+    margin: 24px 0;
+    padding: 18px 20px;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow-x: auto;
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: var(--text);
+}
+
+.code-block code {
+    font-family: inherit;
+    white-space: pre;
+}
+
+/* ============================================================
+   DIVIDER
+   ============================================================ */
+.content-divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 40px auto;
+    width: 60%;
+}
+
+/* ============================================================
+   ORDERED LIST (matches .list-ol, alongside the existing .list-ul)
+   ============================================================ */
+.blog-content-json .list-ol {
+    margin: 20px 0;
+    padding-left: 1.4em;
+}
+
+.blog-content-json .list-ol li {
+    margin-bottom: 10px;
+    line-height: 1.7;
 }
 
 /* ============================================================

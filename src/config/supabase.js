@@ -4,7 +4,7 @@ const config = require('./index');
 
 // Validate Supabase configuration
 if (!config.supabase.url || !config.supabase.anonKey) {
-    console.warn('⚠️ Supabase credentials not configured. Please set SUPABASE_URL and SUPABASE_ANON_KEY in .env');
+    console.warn('Supabase credentials not configured. Please set SUPABASE_URL and SUPABASE_ANON_KEY in .env');
 }
 
 // Public client (for frontend/API - uses anon key)
@@ -34,25 +34,25 @@ const supabaseAdmin = createClient(
     }
 );
 
-// Real-time client
-const supabaseRealtime = createClient(
-    config.supabase.url || '',
-    config.supabase.anonKey || '',
-    {
-        auth: {
-            autoRefreshToken: true,
-            persistSession: true
-        },
-        realtime: {
-            params: {
-                eventsPerSecond: 10
+// Throwaway client for signing an admin in or refreshing their session.
+// A new instance every time, so one person's session can never leak into
+// another request or into the shared clients above.
+function createAuthClient() {
+    return createClient(
+        config.supabase.url || '',
+        config.supabase.anonKey || '',
+        {
+            auth: {
+                autoRefreshToken: false,
+                persistSession: false,
+                detectSessionInUrl: false
             }
         }
-    }
-);
+    );
+}
 
 module.exports = {
     supabase,
     supabaseAdmin,
-    supabaseRealtime
+    createAuthClient
 };

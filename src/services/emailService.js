@@ -17,13 +17,13 @@ class EmailService {
     initialize() {
         try {
             if (!this.enabled) {
-                console.log('📧 Email service disabled (test mode)');
+                console.log('Email service disabled (test mode)');
                 return;
             }
 
             // Check if credentials are configured
             if (!process.env.SMTP_USER || !process.env.SMTP_PASS) {
-                console.warn('⚠️ Email credentials not configured. Email sending will be disabled.');
+                console.warn('Email credentials not configured. Email sending will be disabled.');
                 this.enabled = false;
                 return;
             }
@@ -52,9 +52,9 @@ class EmailService {
             // Verify connection (don't await here, do it async)
             this.verifyConnection();
 
-            console.log(`📧 Email service initialized with ${process.env.SMTP_HOST}`);
+            console.log(`Email service initialized with ${process.env.SMTP_HOST}`);
         } catch (error) {
-            console.error('❌ Email service initialization failed:', error);
+            console.error('Email service initialization failed:', error);
             this.enabled = false;
         }
     }
@@ -66,10 +66,10 @@ class EmailService {
         try {
             if (this.transporter) {
                 await this.transporter.verify();
-                console.log('✅ Email connection verified');
+                console.log('Email connection verified');
             }
         } catch (error) {
-            console.error('❌ Email connection verification failed:', error);
+            console.error('Email connection verification failed:', error);
             this.enabled = false;
         }
     }
@@ -91,7 +91,7 @@ class EmailService {
     }) {
         // Check if email service is enabled
         if (!this.enabled) {
-            console.log('📧 Email disabled, would have sent:', { to, subject });
+            console.log('Email disabled, would have sent:', { to, subject });
             return { 
                 success: true, 
                 message: 'Email service disabled (test mode)',
@@ -102,7 +102,7 @@ class EmailService {
 
         // Validate transporter
         if (!this.transporter) {
-            console.error('❌ Email transporter not initialized');
+            console.error('Email transporter not initialized');
             return { 
                 success: false, 
                 error: 'Email service not initialized' 
@@ -118,8 +118,8 @@ class EmailService {
         }
 
         // Log email attempt (but mask sensitive info)
-        console.log(`📧 Sending email to: ${this.maskEmail(to)}`);
-        console.log(`📧 Subject: ${subject}`);
+        console.log(`Sending email to: ${this.maskEmail(to)}`);
+        console.log(`Subject: ${subject}`);
 
         try {
             // Prepare email options
@@ -144,7 +144,7 @@ class EmailService {
             // Send email
             const info = await this.transporter.sendMail(mailOptions);
 
-            console.log(`✅ Email sent to ${this.maskEmail(to)}: ${info.messageId}`);
+            console.log(`Email sent to ${this.maskEmail(to)}: ${info.messageId}`);
             return {
                 success: true,
                 messageId: info.messageId,
@@ -153,7 +153,7 @@ class EmailService {
                 response: info.response || 'Message sent'
             };
         } catch (error) {
-            console.error('❌ Email sending failed:', error);
+            console.error('Email sending failed:', error);
             return {
                 success: false,
                 error: error.message,
@@ -221,26 +221,26 @@ class EmailService {
             </head>
             <body>
                 <div class="header">
-                    <h2 style="margin: 0;">📩 New Contact Form Submission</h2>
+                    <h2 style="margin: 0;">New Contact Form Submission</h2>
                     <p style="margin: 5px 0 0; opacity: 0.8;">Pharmis Optimus Nexus</p>
                 </div>
                 <div class="content">
                     <div class="field">
-                        <div class="field-label">👤 Name</div>
+                        <div class="field-label">Name</div>
                         <div class="field-value">${this.escapeHtml(name)}</div>
                     </div>
                     <div class="field">
-                        <div class="field-label">📧 Email</div>
+                        <div class="field-label">Email</div>
                         <div class="field-value"><a href="mailto:${this.escapeHtml(email)}">${this.escapeHtml(email)}</a></div>
                     </div>
                     ${subject ? `
                     <div class="field">
-                        <div class="field-label">📝 Subject</div>
+                        <div class="field-label">Subject</div>
                         <div class="field-value">${this.escapeHtml(subject)}</div>
                     </div>
                     ` : ''}
                     <div class="field">
-                        <div class="field-label">💬 Message</div>
+                        <div class="field-label">Message</div>
                         <div class="field-value" style="white-space: pre-wrap;">${this.escapeHtml(message)}</div>
                     </div>
                     <hr style="margin: 20px 0; border: none; border-top: 1px solid #eee;">
@@ -271,7 +271,7 @@ class EmailService {
 
         return this.sendEmail({
             to: process.env.CONTACT_EMAIL || 'pharmisoptimusofficials@gmail.com',
-            subject: `📩 Contact Form: ${subject || 'New Message'} from ${name}`,
+            subject: `Contact Form: ${subject || 'New Message'} from ${name}`,
             html,
             text,
             replyTo: email,
@@ -301,7 +301,7 @@ class EmailService {
             </head>
             <body>
                 <div class="header">
-                    <h2 style="margin: 0;">💬 New Comment</h2>
+                    <h2 style="margin: 0;">New Comment</h2>
                     <p style="margin: 5px 0 0; opacity: 0.8;">${this.escapeHtml(postTitle)}</p>
                 </div>
                 <div class="content">
@@ -331,7 +331,7 @@ class EmailService {
 
         return this.sendEmail({
             to: process.env.NOTIFICATION_EMAIL || 'pharmisoptimusofficials@gmail.com',
-            subject: `💬 New Comment: ${postTitle}`,
+            subject: `New Comment: ${postTitle}`,
             html,
             text
         });
@@ -364,7 +364,7 @@ class EmailService {
                     <h1 style="margin: 10px 0 0;">Welcome to Pharmis Optimus Nexus!</h1>
                 </div>
                 <div class="content">
-                    <h2>Hello ${this.escapeHtml(name || 'there')}! 👋</h2>
+                    <h2>Hello ${this.escapeHtml(name || 'there')}! </h2>
                     
                     <p>Thank you for subscribing to Pharmis Optimus Nexus. We're thrilled to have you as part of our community!</p>
                     
@@ -372,19 +372,19 @@ class EmailService {
                     
                     <div class="feature-grid">
                         <div class="feature-item">
-                            <strong>📚 Latest Research</strong>
+                            <strong>Latest Research</strong>
                             <p style="font-size: 14px; margin: 5px 0 0;">Stay updated with the latest pharmaceutical research</p>
                         </div>
                         <div class="feature-item">
-                            <strong>💡 Health Insights</strong>
+                            <strong>Health Insights</strong>
                             <p style="font-size: 14px; margin: 5px 0 0;">Evidence-based health information and tips</p>
                         </div>
                         <div class="feature-item">
-                            <strong>🤝 Community</strong>
+                            <strong>Community</strong>
                             <p style="font-size: 14px; margin: 5px 0 0;">Connect with like-minded health enthusiasts</p>
                         </div>
                         <div class="feature-item">
-                            <strong>🎯 Innovation</strong>
+                            <strong>Innovation</strong>
                             <p style="font-size: 14px; margin: 5px 0 0;">Explore cutting-edge pharmaceutical innovations</p>
                         </div>
                     </div>
@@ -427,7 +427,7 @@ class EmailService {
 
         return this.sendEmail({
             to: email,
-            subject: 'Welcome to Pharmis Optimus Nexus! 🎉',
+            subject: 'Welcome to Pharmis Optimus Nexus! ',
             html,
             text
         });

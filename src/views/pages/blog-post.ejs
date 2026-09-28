@@ -19,15 +19,15 @@
                 <div class="post-meta-bar">
                     <div class="post-stats">
                         <span class="stat-item">
-                            <span class="icon">👁️</span>
+                            <span class="icon"><%- icon('eye') %></span>
                             <span class="count" id="viewCount"><%= post.views || 0 %></span>
                         </span>
-                        <span class="stat-item like-container" data-post-id="<%= post.id %>">
-                            <span class="icon" id="likeIcon">❤️</span>
-                            <span class="count" id="likeCount"><%= post.likes || 0 %></span>
-                        </span>
+                        <button type="button" class="stat-item like-container like-button" data-like-button data-post-id="<%= post.id %>" aria-pressed="<%= locals.liked ? 'true' : 'false' %>" aria-label="Like this post">
+                            <span class="icon<%= locals.liked ? ' liked' : '' %>" id="likeIcon"><%- icon('heart') %></span>
+                            <span class="count" id="likeCount" data-like-count><%= post.likes || 0 %></span>
+                        </button>
                         <span class="stat-item">
-                            <span class="icon">💬</span>
+                            <span class="icon"><%- icon('message-circle') %></span>
                             <span class="count"><%= comments ? comments.length : 0 %></span>
                         </span>
                     </div>
@@ -36,65 +36,9 @@
 
             <!-- Blog Content -->
             <div class="blog-content-json">
-                <% if (post.content && post.content.sections) { %>
-                    <% post.content.sections.forEach(section => { %>
-                        <% if (section.type === 'heading') { %>
-                            <h<%= section.level || 2 %> class="heading-<%= section.level || 2 %>">
-                                <%= section.text %>
-                            </h<%= section.level || 2 %>>
-                        <% } else if (section.type === 'paragraph') { %>
-                            <p class="paragraph"><%= section.text %></p>
-                        <% } else if (section.type === 'list') { %>
-                            <ul class="list-ul">
-                                <% section.items.forEach(item => { %>
-                                    <li><%= item %></li>
-                                <% }) %>
-                            </ul>
-                        <% } else if (section.type === 'note') { %>
-                            <div class="note note-<%= section.variant || 'info' %>">
-                                <p><%= section.text %></p>
-                            </div>
-                        <% } else if (section.type === 'quote') { %>
-                            <blockquote class="quote">
-                                <p><%= section.text %></p>
-                                <% if (section.source) { %>
-                                    <div class="quote-source">— <%= section.source %></div>
-                                <% } %>
-                            </blockquote>
-                        <% } else if (section.type === 'image') { %>
-                            <div class="image-wrapper">
-                                <img src="<%= section.src || '/images/placeholder.jpg' %>" 
-                                     alt="<%= section.caption || 'Image' %>" 
-                                     loading="lazy" />
-                                <% if (section.caption) { %>
-                                    <div class="image-caption"><%= section.caption %></div>
-                                <% } %>
-                            </div>
-                        <% } else if (section.type === 'table') { %>
-                            <div class="table-wrapper">
-                                <table>
-                                    <% if (section.headers) { %>
-                                        <thead>
-                                            <tr><% section.headers.forEach(header => { %>
-                                                <th><%= header %></th>
-                                            <% }) %></tr>
-                                        </thead>
-                                    <% } %>
-                                    <% if (section.rows) { %>
-                                        <tbody>
-                                            <% section.rows.forEach(row => { %>
-                                                <tr><% row.forEach(cell => { %>
-                                                    <td><%= cell %></td>
-                                                <% }) %></tr>
-                                            <% }) %>
-                                        </tbody>
-                                    <% } %>
-                                </table>
-                            </div>
-                        <% } %>
-                    <% }) %>
-                <% } %>
+                <%- include('../partials/content-blocks', { sections: post.content && post.content.sections }) %>
             </div>
+
 
             <!-- Tags -->
             <% if (post.tags && post.tags.length) { %>
@@ -275,44 +219,4 @@
     }
 </style>
 
-<!-- Likes JavaScript -->
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const likeContainer = document.querySelector('.like-container');
-        if (!likeContainer) return;
-        
-        const postId = likeContainer.dataset.postId;
-        const likeIcon = document.getElementById('likeIcon');
-        const likeCount = document.getElementById('likeCount');
-        
-        if (!likeIcon || !likeCount) return;
-        
-        // Check if already liked this session
-        const liked = sessionStorage.getItem(`liked_${postId}`) === 'true';
-        if (liked) {
-            likeIcon.classList.add('liked');
-        }
-        
-        likeIcon.addEventListener('click', async function() {
-            try {
-                const response = await fetch(`/api/likes/${postId}`, {
-                    method: 'POST'
-                });
-                const data = await response.json();
-                
-                if (data.success) {
-                    likeCount.textContent = data.likes;
-                    if (data.liked) {
-                        this.classList.add('liked');
-                        sessionStorage.setItem(`liked_${postId}`, 'true');
-                    } else {
-                        this.classList.remove('liked');
-                        sessionStorage.removeItem(`liked_${postId}`);
-                    }
-                }
-            } catch (error) {
-                console.error('Error toggling like:', error);
-            }
-        });
-    });
-</script>
+<script src="/js/engagement.js" defer></script>

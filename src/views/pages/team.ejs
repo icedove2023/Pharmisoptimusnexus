@@ -1,0 +1,39 @@
+<!-- src/views/pages/team.ejs -->
+<div class="about-page">
+    <section class="about-section about-section-header">
+        <div class="section-label">Our People</div>
+        <h1 class="section-title"><%= teamName %></h1>
+        <div class="divider"></div>
+        <p>Everyone currently active on the <%= teamName %> team at Pharmis Optimus Nexus.</p>
+    </section>
+
+    <section class="about-section">
+        <% if (members && members.length) { %>
+            <div class="team-grid">
+                <% members.forEach((member) => { %>
+                    <div class="team-card">
+                        <% if (member.photo_url) { %>
+                            <img class="team-avatar team-avatar-photo" src="<%= member.photo_url %>" alt="<%= member.name %>" loading="lazy" />
+                        <% } else { %>
+                            <div class="team-avatar">
+                                <span><%= member.name.split(/\s+/).map((p) => p[0]).slice(0, 2).join('').toUpperCase() %></span>
+                            </div>
+                        <% } %>
+                        <h4><%= member.name %></h4>
+                        <% if (member.role) { %><p class="team-role"><%= member.role %><% if (member.is_leader) { %> &middot; Team Lead<% } %></p>
+                        <% } else if (member.is_leader) { %><p class="team-role">Team Lead</p><% } %>
+                        <% if (member.bio) { %><p class="team-bio"><%= member.bio %></p><% } %>
+                    </div>
+                <% }) %>
+            </div>
+        <% } else { %>
+            <p class="team-empty">Members for this team are being added soon.</p>
+        <% } %>
+    </section>
+
+    <section class="about-section cta-section">
+        <div class="cta-content">
+            <p><a class="btn-outline" href="/about">&larr; Back to About Us</a></p>
+        </div>
+    </section>
+</div>

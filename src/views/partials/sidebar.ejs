@@ -44,7 +44,7 @@
                             <%= post.title %>
                         </a>
                         <span style="font-size:0.75rem;color:var(--muted);">
-                            👁️ <%= post.views || 0 %> views
+                            <%- icon('eye') %> <%= post.views || 0 %> views
                         </span>
                     </li>
                 <% }) %>
@@ -62,7 +62,7 @@
             <input type="email" id="blogSubscribeEmail" placeholder="Your email address"
                 style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px 14px;color:var(--text);font-family:var(--font-body);font-size:0.875rem;outline:none;width:100%" />
             <button class="btn btn-primary" id="blogSubscribeBtn" style="justify-content:center;width:100%">Subscribe</button>
-            <div id="blogSubscribeSuccess" style="display:none;color:var(--blush);font-size:0.85rem;">✓ Subscribed successfully!</div>
+            <div id="blogSubscribeSuccess" style="display:none;color:var(--blush);font-size:0.85rem;"><%- icon('check') %> Subscribed successfully!</div>
         </div>
     </div>
 </aside>

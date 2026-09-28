@@ -1,0 +1,75 @@
+<% const day = (d) => d ? String(d).slice(0, 10) : ''; %>
+<% const n = (v) => Number(v || 0).toLocaleString('en-US'); %>
+
+<form class="filter-bar" method="get" action="<%= adminPath %>/posts">
+    <label class="sr-only" for="fkind">Type</label>
+    <select id="fkind" name="kind">
+        <option value="">All types</option>
+        <option value="blog"<%= filters.kind === 'blog' ? ' selected' : '' %>>Blog</option>
+        <option value="publication"<%= filters.kind === 'publication' ? ' selected' : '' %>>Publication</option>
+    </select>
+
+    <label class="sr-only" for="fstatus">Status</label>
+    <select id="fstatus" name="status">
+        <option value="">All statuses</option>
+        <% statuses.forEach((s) => { %>
+            <option value="<%= s %>"<%= filters.status === s ? ' selected' : '' %>><%= s %></option>
+        <% }) %>
+    </select>
+
+    <label class="sr-only" for="fsearch">Search titles</label>
+    <input id="fsearch" name="search" type="search" placeholder="Search titles" value="<%= filters.search %>" />
+    <button type="submit" class="btn btn-primary">Filter</button>
+    <a class="btn btn-ghost" href="<%= adminPath %>/posts/new"><%- icon('plus') %> New post</a>
+    <a class="btn btn-ghost" href="<%= adminPath %>/publications/new"><%- icon('plus') %> New publication</a>
+</form>
+
+<p class="muted"><%= n(result.total) %> <%= result.total === 1 ? 'post' : 'posts' %>.</p>
+
+<% if (result.posts.length) { %>
+    <div class="table-wrap">
+        <table class="table">
+            <thead>
+                <tr><th>Title</th><th>Type</th><th>Category</th><th>Status</th><th>Date</th><th>Views</th><th>Likes</th></tr>
+            </thead>
+            <tbody>
+                <% result.posts.forEach((p) => { %>
+                    <tr>
+                        <td>
+                            <% if (p.status === 'published') { %>
+                                <a class="link" href="/<%= p.kind === 'publication' ? 'publications' : 'blog' %>/<%= p.slug %>" target="_blank" rel="noopener"><%= p.title %></a>
+                            <% } else { %>
+                                <%= p.title %>
+                            <% } %>
+                            <% if (p.kind === 'blog') { %>
+                                <a class="link edit-link" href="<%= adminPath %>/posts/<%= p.id %>/edit">Edit</a>
+                            <% } else { %>
+                                <a class="link edit-link" href="<%= adminPath %>/publications/<%= p.id %>/edit">Edit</a>
+                            <% } %>
+                        </td>
+                        <td><span class="badge badge-kind"><%= p.kind %></span></td>
+                        <td><%= p.category || '' %></td>
+                        <td>
+                            <form method="post" action="<%= adminPath %>/posts/<%= p.id %>/status" class="inline-form">
+                                <input type="hidden" name="returnTo" value="<%= returnTo %>" />
+                                <label class="sr-only" for="status-<%= p.id %>">Status for <%= p.title %></label>
+                                <select id="status-<%= p.id %>" name="status" class="select-<%= p.status %>" data-autosubmit>
+                                    <% statuses.forEach((s) => { %>
+                                        <option value="<%= s %>"<%= p.status === s ? ' selected' : '' %>><%= s %></option>
+                                    <% }) %>
+                                </select>
+                                <noscript><button type="submit" class="btn btn-ghost">Save</button></noscript>
+                            </form>
+                        </td>
+                        <td><%= day(p.published_date) %></td>
+                        <td><%= n(p.views) %></td>
+                        <td><%= n(p.likes) %></td>
+                    </tr>
+                <% }) %>
+            </tbody>
+        </table>
+    </div>
+    <%- include('_pager', { pager: { page: result.page, totalPages: result.totalPages, baseQuery: baseQuery, path: adminPath + '/posts' } }) %>
+<% } else { %>
+    <p class="empty">No posts match these filters.</p>
+<% } %>

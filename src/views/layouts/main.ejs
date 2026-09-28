@@ -84,7 +84,7 @@
         <div class="flash-messages" id="flashMessages">
             <% flash.messages.forEach(msg => { %>
                 <div class="flash-message flash-<%= msg.type %>">
-                    <span class="flash-icon"><%= msg.type === 'success' ? '✓' : '✕' %></span>
+                    <span class="flash-icon"><%- icon(msg.type === 'success' ? 'check' : 'x') %></span>
                     <span class="flash-text"><%= msg.text %></span>
                     <button class="flash-close" onclick="this.parentElement.remove()">×</button>
                 </div>

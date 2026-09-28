@@ -1077,3 +1077,48 @@ footer {
         font-size: 0.75rem;
     }
 }
+
+/* Inline SVG icons (replaces emoji). Size follows the surrounding font size. */
+.icon-svg {
+    width: 1em;
+    height: 1em;
+    flex-shrink: 0;
+    vertical-align: -0.125em;
+}
+
+.icon.liked .icon-svg,
+.like-comment.liked .icon-svg {
+    fill: currentColor;
+    color: var(--blush, #F16D78);
+}
+
+/* Like button (a real button so it works with keyboard and screen readers) */
+button.like-button {
+    background: none;
+    border: 0;
+    padding: 0;
+    margin: 0;
+    font: inherit;
+    color: inherit;
+    cursor: pointer;
+}
+
+button.like-button:disabled {
+    opacity: 0.6;
+    cursor: progress;
+}
+
+button.like-button:focus-visible {
+    outline: 2px solid var(--blush, #F16D78);
+    outline-offset: 4px;
+    border-radius: 6px;
+}
+
+/* Contact form spam trap: invisible to people, visible to simple bots. */
+.hp-field {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+}

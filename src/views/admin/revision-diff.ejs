@@ -1,0 +1,43 @@
+<p class="muted">
+    Comparing the current version of <strong><%= post.title %></strong> to a revision saved
+    <%= new Date(revision.created_at).toLocaleString() %>.
+</p>
+
+<div class="panel">
+    <div class="panel-head"><h2>Changes</h2></div>
+    <% if (diff.fields.length || diff.contentChanged) { %>
+        <div class="table-wrap">
+            <table class="table diff-table">
+                <thead><tr><th>Field</th><th>Current</th><th>In this revision</th></tr></thead>
+                <tbody>
+                    <% diff.fields.forEach((f) => { %>
+                        <tr>
+                            <td><%= f.label %></td>
+                            <td class="diff-before"><%= f.before || '(empty)' %></td>
+                            <td class="diff-after"><%= f.after || '(empty)' %></td>
+                        </tr>
+                    <% }) %>
+                    <% if (diff.contentChanged) { %>
+                        <tr>
+                            <td>Full text content</td>
+                            <td class="diff-before">
+                                <%= diff.blockCounts.before === null ? 'Changed' : diff.blockCounts.before + ' block' + (diff.blockCounts.before === 1 ? '' : 's') %>
+                            </td>
+                            <td class="diff-after">
+                                <%= diff.blockCounts.after === null ? 'Changed' : diff.blockCounts.after + ' block' + (diff.blockCounts.after === 1 ? '' : 's') %>
+                            </td>
+                        </tr>
+                    <% } %>
+                </tbody>
+            </table>
+        </div>
+        <p class="muted diff-note">This lists what would change if you restore this revision - it does not show a word-by-word difference within the full text content, only whether it changed and how many blocks it has.</p>
+    <% } else { %>
+        <p class="empty">This revision is identical to the current version.</p>
+    <% } %>
+</div>
+
+<div class="form-actions">
+    <a class="btn btn-primary" href="<%= adminPath %>/<%= backPrefix %>/<%= post.id %>/edit?restoreRevision=<%= revision.id %>">Restore this revision</a>
+    <a class="btn btn-ghost" href="<%= adminPath %>/<%= backPrefix %>/<%= post.id %>/edit">Back to editor</a>
+</div>

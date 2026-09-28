@@ -8,6 +8,7 @@ const { homeController, blogController, publicationsController, sitemapControlle
 // ============================================================
 router.get('/', homeController.getHome);
 router.get('/about', homeController.getAbout);
+router.get('/teams/:slug', homeController.getTeamPage);
 router.get('/contact', homeController.getContact);
 
 // ============================================================
@@ -20,6 +21,8 @@ router.get('/blog/:slug', blogController.getBlogPost);
 // PUBLICATION ROUTES
 // ============================================================
 router.get('/publications', publicationsController.getPublications);
+router.get('/publications/:slug/cite.bib', publicationsController.getCitationBibTeX);
+router.get('/publications/:slug/cite.ris', publicationsController.getCitationRIS);
 router.get('/publications/:slug', publicationsController.getPublication);
 
 // ============================================================

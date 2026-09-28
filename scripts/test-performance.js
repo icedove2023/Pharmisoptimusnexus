@@ -8,15 +8,15 @@ dotenv.config({ path: path.join(__dirname, '../.env') });
 const BASE_URL = process.env.BASE_URL || 'http://localhost:3000';
 
 async function testPerformance() {
-    console.log('⚡ Testing Performance...');
+    console.log('Testing Performance...');
     console.log('====================================');
     
     // Check if server is running
     try {
         await axios.get(`${BASE_URL}`);
-        console.log('✅ Server is running');
+        console.log('[PASS] Server is running');
     } catch (error) {
-        console.log('❌ Server is not running. Please start with: npm run dev');
+        console.log('[FAIL] Server is not running. Please start with: npm run dev');
         return;
     }
     
@@ -30,7 +30,7 @@ async function testPerformance() {
     const results = [];
     
     for (const endpoint of endpoints) {
-        console.log(`\n📡 Testing ${endpoint.name}...`);
+        console.log(`\nTesting ${endpoint.name}...`);
         const times = [];
         
         // Run 5 times
@@ -42,7 +42,7 @@ async function testPerformance() {
                 times.push(end - start);
                 process.stdout.write('.');
             } catch (error) {
-                console.log(`\n   ❌ Error: ${error.message}`);
+                console.log(`\n   [FAIL] Error: ${error.message}`);
                 times.push(null);
             }
         }
@@ -62,28 +62,28 @@ async function testPerformance() {
                 max: max
             });
             
-            console.log(`   ✅ Avg: ${avg.toFixed(0)}ms, Min: ${min}ms, Max: ${max}ms`);
+            console.log(`   [PASS] Avg: ${avg.toFixed(0)}ms, Min: ${min}ms, Max: ${max}ms`);
         } else {
-            console.log(`   ❌ All requests failed`);
+            console.log(`   [FAIL] All requests failed`);
         }
     }
     
     console.log('\n====================================');
-    console.log('📊 Performance Summary:');
+    console.log('Performance Summary:');
     console.log('');
     console.log('| Endpoint | Avg (ms) | Min (ms) | Max (ms) | Status |');
     console.log('|----------|----------|----------|----------|--------|');
     results.forEach(r => {
-        const status = parseInt(r.avg) < 100 ? '✅ GOOD' : 
-                       parseInt(r.avg) < 300 ? '⚠️ OK' : '❌ SLOW';
+        const status = parseInt(r.avg) < 100 ? '[PASS] GOOD' : 
+                       parseInt(r.avg) < 300 ? '[WARN] OK' : '[FAIL] SLOW';
         console.log(`| ${r.name.padEnd(8)} | ${r.avg.padEnd(8)} | ${String(r.min).padEnd(8)} | ${String(r.max).padEnd(8)} | ${status.padEnd(6)} |`);
     });
     
     const avgAll = results.length > 0 ? results.reduce((a, b) => a + parseInt(b.avg), 0) / results.length : 0;
-    console.log(`\n📊 Overall average: ${avgAll.toFixed(0)}ms`);
-    console.log(avgAll < 200 ? '✅ Performance is good!' : '⚠️ Consider optimizing slow endpoints');
+    console.log(`\nOverall average: ${avgAll.toFixed(0)}ms`);
+    console.log(avgAll < 200 ? '[PASS] Performance is good!' : '[WARN] Consider optimizing slow endpoints');
     
-    console.log('\n✅ Performance test completed!');
+    console.log('\n[PASS] Performance test completed!');
 }
 
 // Run the test

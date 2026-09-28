@@ -1,9 +1,11 @@
 <!-- src/views/pages/publications.ejs -->
-<%- include('../partials/hero-mini', { 
-    title: 'Publications',
-    category: 'Publications',
-    subtitle: 'Browse peer-reviewed research, clinical studies, and review articles from our global network of researchers.'
-}) %>
+<div class="journal-index-hero">
+    <div class="journal-index-hero-inner">
+        <span class="journal-index-eyebrow">Pharmis Optimus Nexus &middot; Journal</span>
+        <h1>Publications</h1>
+        <p>Peer-reviewed research, clinical studies, and review articles from our global network of researchers.</p>
+    </div>
+</div>
 
 <!-- Filters -->
 <div class="filters-bar">
@@ -12,69 +14,56 @@
             <circle cx="11" cy="11" r="8"/>
             <line x1="21" y1="21" x2="16.65" y2="16.65"/>
         </svg>
-        <input type="text" id="pubSearch" placeholder="Search publications..." aria-label="Search publications" />
+        <input type="text" id="pubSearch" placeholder="Search publications..." aria-label="Search publications" value="<%= locals.currentSearch || '' %>" />
     </div>
     <select class="filter-select" id="pubCategoryFilter">
         <option value="">All Categories</option>
-        <option value="Review Articles">Review Articles</option>
-        <option value="AI & Biotechnology">AI & Biotechnology</option>
-        <option value="Research Articles">Research Articles</option>
-        <option value="Others">Others</option>
+        <% (categories || []).forEach((c) => { %>
+            <option value="<%= c.name %>"<%= currentCategory === c.name ? ' selected' : '' %>><%= c.name %> (<%= c.count %>)</option>
+        <% }) %>
     </select>
-    <select class="filter-select" id="pubYearFilter">
-        <option value="">All Years</option>
-        <% for (let year = 2029; year >= 2024; year--) { %>
-            <option value="<%= year %>"><%= year %></option>
-        <% } %>
-    </select>
+    <% if (years && years.length) { %>
+        <select class="filter-select" id="pubYearFilter">
+            <option value="">All Years</option>
+            <% years.forEach((y) => { %>
+                <option value="<%= y %>"<%= locals.currentYear === String(y) ? ' selected' : '' %>><%= y %></option>
+            <% }) %>
+        </select>
+    <% } %>
 </div>
 
-<div class="publications-section">
-    <!-- Publications Grid -->
-    <div class="pubs-grid" id="pubsGrid">
-        <% if (publications && publications.length) { %>
-            <% publications.forEach((pub, index) => { %>
-                <article class="pub-card reveal" role="article">
-                    <div class="pub-card-img">
-                        <div class="pub-card-img-inner" style="background: <%= ['linear-gradient(135deg, #1a2a1a, #2d6a2d)', 'linear-gradient(135deg, #1a1a2a, #2d3a7a)', 'linear-gradient(135deg, #1a1218, #5a2060)', 'linear-gradient(135deg, #1a1a18, #5a5010)'][index % 4] %>"></div>
-                        <div class="pub-card-img-overlay"></div>
-                        <% if (pub.category) { %>
-                            <span class="pub-card-badge"><%= pub.category %></span>
+<div class="journal-index">
+    <% if (publications && publications.length) { %>
+        <ol class="journal-index-list">
+            <% publications.forEach((pub) => { %>
+                <li class="journal-index-entry">
+                    <div class="entry-meta-col">
+                        <span class="entry-type"><%= pub.articleType || pub.category || 'Publication' %></span>
+                        <span class="entry-date"><%- icon('calendar') %> <%= pub.published_date %></span>
+                        <% if (pub.volume) { %>
+                            <span class="entry-volume">Vol. <%= pub.volume %><% if (pub.issue) { %>, Issue <%= pub.issue %><% } %></span>
                         <% } %>
                     </div>
-                    <div class="pub-card-body">
-                        <span class="pub-tag <%= pub.cat || 'tag-pharmacology' %>">
-                            <%= pub.category || 'Publication' %>
-                        </span>
-                        <h3><%= pub.title %></h3>
-                        <div class="pub-meta">
-                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-                                <circle cx="12" cy="7" r="4"/>
-                            </svg>
-                            <%= pub.authors ? pub.authors.join(', ') : 'Unknown Author' %>
-                        </div>
-                        <p class="pub-abstract">
-                            <%= pub.excerpt || 'No abstract available.' %>
+                    <div class="entry-main">
+                        <h2><a href="/publications/<%= pub.slug || pub.id %>"><%= pub.title %></a></h2>
+                        <p class="entry-authors">
+                            <%- icon('users') %>
+                            <%= pub.authorList && pub.authorList.length ? pub.authorList.map(a => a.name).join(', ') : pub.authors.join(', ') %>
                         </p>
-                        <div class="pub-card-footer">
-                            <span class="pub-date">
-                                📅 <%= pub.published_date %>
-                            </span>
-                            <!-- Make sure slug exists -->
-<% if (pub.slug) { %>
-    <a href="/publications/<%= pub.slug %>" class="btn-sm">Read More →</a>
-<% } else { %>
-    <a href="/publications/<%= pub.id %>" class="btn-sm">Read More →</a>
-<% } %>
+                        <p class="entry-abstract"><%= pub.abstract || 'No abstract available.' %></p>
+                        <div class="entry-footer">
+                            <% if (pub.doi) { %>
+                                <span class="entry-doi">DOI: <%= pub.doi %></span>
+                            <% } %>
+                            <a href="/publications/<%= pub.slug || pub.id %>" class="btn-sm">Read article &rarr;</a>
                         </div>
                     </div>
-                </article>
+                </li>
             <% }) %>
-        <% } else { %>
-            <p style="grid-column:1/-1;text-align:center;color:var(--muted);padding:40px;">No publications found.</p>
-        <% } %>
-    </div>
+        </ol>
+    <% } else { %>
+        <p class="journal-index-empty">No publications found.</p>
+    <% } %>
 
     <!-- Pagination -->
     <%- include('../partials/pagination', { 
@@ -82,35 +71,6 @@
         baseUrl: '/publications?'
     }) %>
 </div>
-
-<style>
-    .pub-card-badge {
-        position: absolute;
-        top: 12px;
-        right: 12px;
-        background: rgba(23, 34, 43, 0.85);
-        color: var(--cream);
-        font-size: 0.65rem;
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 0.06em;
-        padding: 4px 12px;
-        border-radius: 99px;
-        backdrop-filter: blur(4px);
-        z-index: 2;
-    }
-    .pub-card .pub-meta {
-        font-size: 0.78rem;
-        color: var(--muted);
-        margin-bottom: 12px;
-        display: flex;
-        align-items: center;
-        gap: 6px;
-    }
-    .pub-card .pub-meta svg {
-        flex-shrink: 0;
-    }
-</style>
 
 <script>
     // Search filter
@@ -143,7 +103,7 @@
         }
         window.location.href = url.toString();
     });
-    
+
     // Year filter
     document.getElementById('pubYearFilter')?.addEventListener('change', function() {
         const year = this.value;

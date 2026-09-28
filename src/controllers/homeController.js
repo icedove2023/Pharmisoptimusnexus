@@ -1,5 +1,6 @@
 // src/controllers/homeController.js
 const { Post, Comment } = require('../models');
+const TeamMember = require('../models/TeamMember');
 const { formatDate, truncate, generateMetaDescription, buildUrl } = require('../utils/helpers');
 const config = require('../config');
 
@@ -27,10 +28,10 @@ exports.getHome = async (req, res) => {
             popularPosts = [];
         }
         
-        // Get stats
-        const allPosts = await Post.findAll({ limit: 1000 });
-        const pubCount = allPosts.posts.filter(p => p.category && ['Review Articles', 'AI & Biotechnology', 'Research Articles', 'Others'].includes(p.category)).length;
-        const blogCount = allPosts.posts.filter(p => p.category && !['Review Articles', 'AI & Biotechnology', 'Research Articles', 'Others'].includes(p.category)).length;
+        // Published counts per kind
+        const counts = await Post.getCounts();
+        const pubCount = counts.publication;
+        const blogCount = counts.blog;
         
         // Format featured post
         let formattedFeatured = null;
@@ -84,13 +85,16 @@ exports.getHome = async (req, res) => {
  */
 exports.getAbout = async (req, res) => {
     try {
+        const teamGroups = await TeamMember.listLeadersGrouped();
         res.render('pages/about', {
             title: 'About Us',
             currentPage: 'about',
+            pageStyles: 'about',
             metaDescription: 'Learn about Pharmis Optimus Nexus – our mission, vision, and team dedicated to advancing pharmaceutical knowledge.',
             canonicalUrl: buildUrl('/about'),
             ogTitle: 'About Pharmis Optimus Nexus',
-            ogDescription: 'Learn about our mission to advance pharmaceutical knowledge and research.'
+            ogDescription: 'Learn about our mission to advance pharmaceutical knowledge and research.',
+            teamGroups
         });
     } catch (error) {
         console.error('Error in getAbout:', error);
@@ -130,6 +134,48 @@ exports.getContact = async (req, res) => {
 };
 
 /**
+ * One team's full membership page (Health and Wellness, Media and
+ * Publications, Community Outreach - not CEC, which only appears on the
+ * About page). Leaders are listed first (see TeamMember.listByGroup).
+ */
+const TEAM_PAGES = {
+    'health-and-wellness': 'Health and Wellness',
+    'media-and-publications': 'Media and Publications',
+    'community-outreach': 'Community Outreach'
+};
+
+exports.getTeamPage = async (req, res) => {
+    const teamName = TEAM_PAGES[req.params.slug];
+    if (!teamName) {
+        return res.status(404).render('pages/error', {
+            title: 'Not found',
+            error: { message: 'That team could not be found.', status: 404 }
+        });
+    }
+
+    try {
+        const members = await TeamMember.listByGroup(teamName);
+        res.render('pages/team', {
+            title: teamName,
+            currentPage: 'about',
+            pageStyles: 'about',
+            metaDescription: `Meet the ${teamName} team at Pharmis Optimus Nexus.`,
+            canonicalUrl: buildUrl(`/teams/${req.params.slug}`),
+            ogTitle: `${teamName} - Pharmis Optimus Nexus`,
+            ogDescription: `Meet the ${teamName} team at Pharmis Optimus Nexus.`,
+            teamName,
+            members
+        });
+    } catch (error) {
+        console.error('Error in getTeamPage:', error);
+        res.status(500).render('pages/error', {
+            title: 'Error',
+            error: { message: 'Failed to load this team', status: 500 }
+        });
+    }
+};
+
+/**
  * Robots.txt
  */
 exports.getRobots = (req, res) => {
@@ -143,62 +189,6 @@ Sitemap: ${baseUrl}/sitemap.xml
 };
 
 /**
- * Sitemap generation
+ * Sitemap generation (single implementation lives in sitemapController)
  */
-exports.getSitemap = async (req, res) => {
-    try {
-        const { posts } = await Post.findAll({ limit: 1000 });
-        const baseUrl = config.baseUrl;
-        const now = new Date().toISOString();
-        
-        let xml = '<?xml version="1.0" encoding="UTF-8"?>\n';
-        xml += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
-        
-        const staticPages = [
-            { url: '/', priority: '1.0', changefreq: 'daily' },
-            { url: '/about', priority: '0.8', changefreq: 'monthly' },
-            { url: '/contact', priority: '0.8', changefreq: 'monthly' },
-            { url: '/blog', priority: '0.9', changefreq: 'daily' },
-            { url: '/publications', priority: '0.9', changefreq: 'daily' }
-        ];
-        
-        staticPages.forEach(page => {
-            xml += `  <url>\n`;
-            xml += `    <loc>${baseUrl}${page.url}</loc>\n`;
-            xml += `    <lastmod>${now}</lastmod>\n`;
-            xml += `    <changefreq>${page.changefreq}</changefreq>\n`;
-            xml += `    <priority>${page.priority}</priority>\n`;
-            xml += `  </url>\n`;
-        });
-        
-        // Blog posts
-        const publicationCategories = ['Review Articles', 'AI & Biotechnology', 'Research Articles', 'Others'];
-        const blogPosts = posts.filter(p => p.category && !publicationCategories.includes(p.category));
-        blogPosts.forEach(post => {
-            xml += `  <url>\n`;
-            xml += `    <loc>${baseUrl}/blog/${post.slug}</loc>\n`;
-            xml += `    <lastmod>${post.updated_at || now}</lastmod>\n`;
-            xml += `    <changefreq>weekly</changefreq>\n`;
-            xml += `    <priority>0.7</priority>\n`;
-            xml += `  </url>\n`;
-        });
-        
-        const pubPosts = posts.filter(p => p.category && publicationCategories.includes(p.category));
-        pubPosts.forEach(post => {
-            xml += `  <url>\n`;
-            xml += `    <loc>${baseUrl}/publications/${post.slug}</loc>\n`;
-            xml += `    <lastmod>${post.updated_at || now}</lastmod>\n`;
-            xml += `    <changefreq>monthly</changefreq>\n`;
-            xml += `    <priority>0.6</priority>\n`;
-            xml += `  </url>\n`;
-        });
-        
-        xml += '</urlset>';
-        
-        res.header('Content-Type', 'application/xml');
-        res.send(xml);
-    } catch (error) {
-        console.error('Error generating sitemap:', error);
-        res.status(500).send('Error generating sitemap');
-    }
-};
+exports.getSitemap = require('./sitemapController').generateSitemap;

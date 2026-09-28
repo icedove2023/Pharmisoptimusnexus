@@ -30,7 +30,7 @@ async function ensureUniqueSlug(baseSlug, excludeId = null) {
             .eq('slug', uniqueSlug);
         
         if (excludeId) {
-            query = query.neq('google_id', excludeId);
+            query = query.neq('id', excludeId);
         }
         
         const { data, error } = await query;

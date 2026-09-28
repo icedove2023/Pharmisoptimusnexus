@@ -21,7 +21,7 @@ const errorHandler = (err, req, res, next) => {
     const message = err.message || 'Internal server error';
     
     // Log error
-    console.error('❌ Error:', err);
+    console.error('Error:', err);
     console.error('   Status:', status);
     console.error('   Message:', message);
     console.error('   Stack:', err.stack);

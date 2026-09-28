@@ -14,7 +14,7 @@
             <span><%= locals.date %></span>
             <% if (locals.readTime) { %>
                 <span class="post-meta-dot"></span>
-                <span>📖 <%= locals.readTime %></span>
+                <span><%- icon('book-open') %> <%= locals.readTime %></span>
             <% } %>
         </div>
     <% } %>

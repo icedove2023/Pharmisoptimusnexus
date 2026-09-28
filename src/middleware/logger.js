@@ -52,7 +52,7 @@ const errorLogger = (err, req, res, next) => {
     const method = req.method;
     const url = req.url;
     
-    console.error('\x1b[31m%s\x1b[0m', `❌ Error: ${err.message}`);
+    console.error('\x1b[31m%s\x1b[0m', `Error: ${err.message}`);
     console.error('\x1b[90m%s\x1b[0m', `   ${new Date().toISOString()} ${ip} ${method} ${url}`);
     console.error('\x1b[90m%s\x1b[0m', `   Stack: ${err.stack}`);
     
@@ -88,7 +88,7 @@ const performanceLogger = (threshold = 1000) => {
                 const method = req.method;
                 const url = req.url;
                 
-                console.warn('\x1b[33m%s\x1b[0m', `⚠️ Slow request: ${duration}ms`);
+                console.warn('\x1b[33m%s\x1b[0m', `Slow request: ${duration}ms`);
                 console.warn('\x1b[90m%s\x1b[0m', `   ${new Date().toISOString()} ${ip} ${method} ${url}`);
             }
         });
@@ -110,7 +110,7 @@ const apiLogger = (req, res, next) => {
     const params = req.params;
     
     // Log request
-    console.log(`\x1b[36m📨 Request:\x1b[0m ${method} ${url}`);
+    console.log(`\x1b[36mRequest:\x1b[0m ${method} ${url}`);
     if (Object.keys(query).length > 0) {
         console.log(`   Query:`, JSON.stringify(query, null, 2));
     }
@@ -128,7 +128,7 @@ const apiLogger = (req, res, next) => {
         const duration = Date.now() - start;
         const status = res.statusCode;
         
-        console.log(`\x1b[32m✅ Response:\x1b[0m ${status} ${duration}ms`);
+        console.log(`\x1b[32mResponse:\x1b[0m ${status} ${duration}ms`);
         console.log(`   Data:`, JSON.stringify(data, null, 2));
         console.log('---');
         
