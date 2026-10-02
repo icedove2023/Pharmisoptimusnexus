@@ -1,0 +1,145 @@
+<% const q = (filters && filters.query) || ''; const type = (filters && filters.type) || 'all'; %>
+
+<div class="panel">
+    <div class="panel-head">
+        <h2>Media library</h2>
+        <div class="toolbar-inline">
+            <label class="field-inline">
+                <span class="sr-only">Search</span>
+                <input type="search" value="<%= q %>" id="mediaSearch" placeholder="Search files" />
+            </label>
+            <label class="field-inline">
+                <span class="sr-only">Filter</span>
+                <select id="mediaTypeFilter">
+                    <option value="all" <%= type === 'all' ? 'selected' : '' %>>All</option>
+                    <option value="image" <%= type === 'image' ? 'selected' : '' %>>Images</option>
+                    <option value="document" <%= type === 'document' ? 'selected' : '' %>>Documents</option>
+                </select>
+            </label>
+        </div>
+    </div>
+
+    <form id="mediaUploadForm" class="media-upload-form">
+        <input id="mediaUploadInput" type="file" accept="image/jpeg,image/png,image/webp,image/gif,application/pdf" />
+        <button type="button" class="btn btn-primary" id="mediaUploadBtn">Upload new file</button>
+    </form>
+
+    <% if (!media || !media.length) { %>
+        <p class="empty">No media yet. Upload a file to get started.</p>
+    <% } else { %>
+        <div class="media-grid">
+            <% media.forEach((item) => { %>
+                <div class="media-card" data-id="<%= item.id %>">
+                    <% if (item.kind === 'image') { %>
+                        <img src="<%= item.public_url %>" alt="<%= item.title || item.original_filename || 'Media preview' %>" loading="lazy" />
+                    <% } else { %>
+                        <div class="media-doc-preview">PDF</div>
+                    <% } %>
+                    <div class="media-meta">
+                        <strong><%= item.original_filename || 'Untitled' %></strong>
+                        <span><%= item.kind %> &middot; <%= item.file_size || '' %></span>
+                        <span><%= item.width && item.height ? item.width + '×' + item.height : '' %></span>
+                    </div>
+                    <div class="media-actions">
+                        <% if (item.kind === 'image') { %>
+                            <button type="button" class="btn btn-ghost btn-small use-media" data-url="<%= item.public_url %>">Use</button>
+                        <% } else { %>
+                            <a class="btn btn-ghost btn-small" href="<%= item.public_url %>" target="_blank" rel="noopener noreferrer">Open</a>
+                        <% } %>
+                        <button type="button" class="btn btn-ghost btn-small delete-media" data-id="<%= item.id %>">Delete</button>
+                    </div>
+                </div>
+            <% }) %>
+        </div>
+    <% } %>
+</div>
+
+<script>
+    window.PON_ADMIN_PATH = <%- JSON.stringify(adminPath) %>;
+    const mediaSearch = document.getElementById('mediaSearch');
+    const mediaTypeFilter = document.getElementById('mediaTypeFilter');
+    const mediaUploadInput = document.getElementById('mediaUploadInput');
+    const mediaUploadBtn = document.getElementById('mediaUploadBtn');
+
+    function buildMediaUrl(type, query) {
+        const params = new URLSearchParams();
+        if (type && type !== 'all') params.set('type', type);
+        if (query) params.set('search', query);
+        const suffix = params.toString();
+        return suffix ? '<%= adminPath %>/media?' + suffix : '<%= adminPath %>/media';
+    }
+
+    if (mediaSearch) {
+        mediaSearch.addEventListener('input', function () {
+            window.location.href = buildMediaUrl(mediaTypeFilter ? mediaTypeFilter.value : 'all', mediaSearch.value.trim());
+        });
+    }
+
+    if (mediaTypeFilter) {
+        mediaTypeFilter.addEventListener('change', function () {
+            window.location.href = buildMediaUrl(mediaTypeFilter.value, mediaSearch ? mediaSearch.value.trim() : '');
+        });
+    }
+
+    if (mediaUploadBtn && mediaUploadInput) {
+        mediaUploadBtn.addEventListener('click', function () {
+            mediaUploadInput.click();
+        });
+        mediaUploadInput.addEventListener('change', function () {
+            const file = mediaUploadInput.files && mediaUploadInput.files[0];
+            if (!file) return;
+            const formData = new FormData();
+            formData.append('file', file);
+            const endpoint = (window.PON_ADMIN_PATH || '/studio') + '/media';
+            fetch(endpoint, {
+                method: 'POST',
+                body: formData,
+                credentials: 'same-origin'
+            }).then(function (response) { return response.json(); }).then(function (result) {
+                if (!result || !result.success) {
+                    window.alert(result && result.error ? result.error : 'Upload failed.');
+                    return;
+                }
+                if (window.opener && !window.opener.closed) {
+                    window.opener.postMessage({ type: 'media-library-select', url: result.url }, window.location.origin || '*');
+                    window.close();
+                } else {
+                    window.location.reload();
+                }
+            }).catch(function () {
+                window.alert('Upload failed.');
+            });
+        });
+    }
+
+    document.querySelectorAll('.use-media').forEach(function (button) {
+        button.addEventListener('click', function () {
+            const url = button.getAttribute('data-url');
+            if (window.opener && !window.opener.closed) {
+                window.opener.postMessage({ type: 'media-library-select', url: url }, window.location.origin || '*');
+                window.close();
+                return;
+            }
+            navigator.clipboard && navigator.clipboard.writeText(url);
+        });
+    });
+
+    document.querySelectorAll('.delete-media').forEach(function (button) {
+        button.addEventListener('click', function () {
+            const id = button.getAttribute('data-id');
+            if (!id || !window.confirm('Remove this media asset?')) return;
+            fetch((window.PON_ADMIN_PATH || '/studio') + '/media/' + id, {
+                method: 'DELETE',
+                credentials: 'same-origin'
+            }).then(function (response) { return response.json(); }).then(function (result) {
+                if (!result || !result.success) {
+                    window.alert((result && result.error) || 'This file could not be deleted.');
+                    return;
+                }
+                window.location.reload();
+            }).catch(function () {
+                window.alert('This file could not be deleted.');
+            });
+        });
+    });
+</script>

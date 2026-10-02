@@ -33,14 +33,32 @@ function documentExtensionFor(mimetype) {
  * that avoids path traversal, collisions and leaking the uploader's local
  * file names.
  */
-function buildStoragePath(mimetype, { kind = 'uploads' } = {}) {
+function buildStoragePath(mimetype, { kind = 'uploads', contentHash } = {}) {
     const ext = extensionFor(mimetype) || documentExtensionFor(mimetype);
     if (!ext) return null;
     const now = new Date();
     const yyyy = now.getUTCFullYear();
     const mm = String(now.getUTCMonth() + 1).padStart(2, '0');
-    const name = crypto.randomBytes(16).toString('hex');
+    const name = String(contentHash || crypto.randomBytes(16).toString('hex')).replace(/[^a-f0-9]/gi, '').slice(0, 32) || crypto.randomBytes(16).toString('hex');
     return `${kind}/${yyyy}/${mm}/${name}.${ext}`;
+}
+
+function isImageMimeType(mimetype) {
+    return typeof mimetype === 'string' && mimetype.toLowerCase().startsWith('image/');
+}
+
+function isDocumentMimeType(mimetype) {
+    return typeof mimetype === 'string' && mimetype.toLowerCase() === 'application/pdf';
+}
+
+function getMimeKind(mimetype) {
+    if (isImageMimeType(mimetype)) return 'image';
+    if (isDocumentMimeType(mimetype)) return 'document';
+    return null;
+}
+
+function hashFileBuffer(buffer) {
+    return crypto.createHash('sha256').update(buffer).digest('hex');
 }
 
 function getSupabaseStorageOrigin(rawUrl) {
@@ -76,6 +94,10 @@ module.exports = {
     extensionFor,
     documentExtensionFor,
     buildStoragePath,
+    isImageMimeType,
+    isDocumentMimeType,
+    getMimeKind,
+    hashFileBuffer,
     getSupabaseStorageOrigin,
     getAllowedImageSources
 };

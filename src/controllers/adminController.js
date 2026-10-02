@@ -3,7 +3,7 @@
 // Access control lives in middleware/adminSession.js and routes/admin.js.
 
 const config = require('../config');
-const { Post, ContactMessage } = require('../models');
+const { Post, ContactMessage, Media } = require('../models');
 const AdminStats = require('../models/AdminStats');
 const { supabaseAdmin, createAuthClient } = require('../config/supabase');
 const { setSessionCookies, clearSessionCookies, ACCESS_COOKIE } = require('../middleware/adminSession');
@@ -729,27 +729,84 @@ exports.postUpdatePublication = async (req, res) => {
 // Media upload (cover images and in-content images)
 // ------------------------------------------------------------
 
+exports.getMediaLibrary = async (req, res) => {
+    const type = ['all', 'image', 'document'].includes(req.query.type) ? req.query.type : 'all';
+    const page = Math.max(parseInt(req.query.page, 10) || 1, 1);
+    const query = String(req.query.search || '').slice(0, 100);
+
+    try {
+        const result = await Media.list({ type, search: query, page, limit: 24 });
+        res.render('admin/media-library', {
+            title: 'Media library',
+            section: 'media',
+            media: result.items,
+            filters: { type, query },
+            total: result.total,
+            page: result.page,
+            hasNext: result.hasNext,
+            hasPrev: result.hasPrev,
+            picker: req.query.picker === '1'
+        });
+    } catch (error) {
+        console.error('Admin media library failed:', error);
+        showError(res, 500, 'The media library could not be loaded. Check that the media table migration has been run.');
+    }
+};
+
+exports.getMediaAsset = async (req, res) => {
+    const { id } = req.params;
+    if (!isUuid(id)) {
+        return showError(res, 404, 'That media item could not be found.');
+    }
+    try {
+        const item = await Media.findById(id);
+        if (!item) return showError(res, 404, 'That media item could not be found.');
+        return res.json({ success: true, media: item });
+    } catch (error) {
+        console.error('Admin media fetch failed:', error);
+        return res.status(500).json({ success: false, error: 'That media item could not be loaded.' });
+    }
+};
+
+exports.deleteMediaAsset = async (req, res) => {
+    const { id } = req.params;
+    if (!isUuid(id)) {
+        return res.status(404).json({ success: false, error: 'That media item could not be found.' });
+    }
+
+    try {
+        const result = await Media.deleteById(id);
+        if (!result.deleted) {
+            if (result.reason === 'in_use') {
+                return res.status(409).json({ success: false, error: 'Cannot delete — this file is still in use.', usage: result.usage });
+            }
+            return res.status(404).json({ success: false, error: 'That media item could not be found.' });
+        }
+        return res.json({ success: true, deleted: true });
+    } catch (error) {
+        console.error('Admin media delete failed:', error);
+        return res.status(500).json({ success: false, error: 'The media item could not be deleted.' });
+    }
+};
+
 exports.postUploadMedia = async (req, res) => {
     if (!req.file) {
         return res.status(400).json({ success: false, error: 'No file was uploaded.' });
     }
 
-    const path = buildStoragePath(req.file.mimetype);
-    if (!path) {
-        return res.status(400).json({ success: false, error: 'Unsupported file type. Use JPEG, PNG, WebP or GIF.' });
-    }
-
     try {
-        const { error } = await supabaseAdmin.storage
-            .from(BUCKET)
-            .upload(path, req.file.buffer, { contentType: req.file.mimetype, upsert: false });
-        if (error) throw error;
+        const media = await Media.createFromUpload({
+            fileBuffer: req.file.buffer,
+            mimeType: req.file.mimetype,
+            originalFilename: req.file.originalname,
+            uploadedBy: req.admin && req.admin.id ? req.admin.id : null
+        });
 
-        const { data } = supabaseAdmin.storage.from(BUCKET).getPublicUrl(path);
-        return res.json({ success: true, url: data.publicUrl });
+        return res.json({ success: true, url: media.public_url, mediaId: media.id, duplicate: Boolean(media.duplicate) });
     } catch (error) {
         console.error('Admin media upload failed:', error);
-        return res.status(500).json({ success: false, error: 'Upload failed. Check that the media storage bucket has been created (migration 006).' });
+        const message = error && error.message ? error.message : 'Upload failed.';
+        return res.status(400).json({ success: false, error: message });
     }
 };
 
@@ -758,22 +815,19 @@ exports.postUploadPdf = async (req, res) => {
         return res.status(400).json({ success: false, error: 'No file was uploaded.' });
     }
 
-    const path = buildStoragePath(req.file.mimetype, { kind: 'documents' });
-    if (!path) {
-        return res.status(400).json({ success: false, error: 'Unsupported file type. Only PDF is accepted.' });
-    }
-
     try {
-        const { error } = await supabaseAdmin.storage
-            .from(BUCKET)
-            .upload(path, req.file.buffer, { contentType: req.file.mimetype, upsert: false });
-        if (error) throw error;
+        const media = await Media.createFromUpload({
+            fileBuffer: req.file.buffer,
+            mimeType: req.file.mimetype,
+            originalFilename: req.file.originalname,
+            uploadedBy: req.admin && req.admin.id ? req.admin.id : null
+        });
 
-        const { data } = supabaseAdmin.storage.from(BUCKET).getPublicUrl(path);
-        return res.json({ success: true, url: data.publicUrl });
+        return res.json({ success: true, url: media.public_url, mediaId: media.id, duplicate: Boolean(media.duplicate) });
     } catch (error) {
         console.error('Admin PDF upload failed:', error);
-        return res.status(500).json({ success: false, error: 'Upload failed. Check that the media storage bucket allows PDFs (migration 007).' });
+        const message = error && error.message ? error.message : 'Upload failed.';
+        return res.status(400).json({ success: false, error: message });
     }
 };
 

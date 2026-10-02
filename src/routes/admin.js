@@ -71,6 +71,9 @@ router.post('/posts/:id/autosave', sameOriginGuard, editors, admin.postAutosave)
 router.post('/posts/:id/autosave/discard', sameOriginGuard, editors, admin.postDiscardAutosave);
 router.get('/posts/:id/revisions/:revId/diff', editors, admin.getRevisionDiff);
 
+router.get('/media', editors, admin.getMediaLibrary);
+router.get('/media/:id', editors, admin.getMediaAsset);
+router.delete('/media/:id', sameOriginGuard, editors, admin.deleteMediaAsset);
 router.post('/media', sameOriginGuard, editors, (req, res, next) => {
     upload.single('file')(req, res, (err) => {
         if (err instanceof multer.MulterError && err.code === 'LIMIT_FILE_SIZE') {

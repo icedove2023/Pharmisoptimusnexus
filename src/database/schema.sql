@@ -30,11 +30,38 @@ CREATE TABLE posts (
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
+CREATE TABLE media (
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    storage_bucket TEXT NOT NULL DEFAULT 'media',
+    storage_path TEXT NOT NULL UNIQUE,
+    public_url TEXT NOT NULL,
+    original_filename TEXT,
+    mime_type TEXT NOT NULL,
+    extension TEXT,
+    size_bytes BIGINT,
+    width INTEGER,
+    height INTEGER,
+    kind TEXT NOT NULL DEFAULT 'image' CHECK (kind IN ('image', 'document')),
+    content_hash TEXT,
+    alt_text TEXT,
+    caption TEXT,
+    title TEXT,
+    uploaded_by UUID REFERENCES auth.users(id) ON DELETE SET NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
 -- Create indexes for better performance
 CREATE INDEX idx_posts_slug ON posts(slug);
 CREATE INDEX idx_posts_category ON posts(category);
 CREATE INDEX idx_posts_published_date ON posts(published_date DESC);
 CREATE INDEX idx_posts_featured ON posts(featured) WHERE featured = true;
+
+CREATE INDEX idx_media_created_at ON media (created_at DESC);
+CREATE INDEX idx_media_kind ON media (kind);
+CREATE INDEX idx_media_mime_type ON media (mime_type);
+CREATE INDEX idx_media_content_hash ON media (content_hash);
+CREATE UNIQUE INDEX idx_media_content_hash_key ON media (content_hash, mime_type);
 
 -- ============================================================
 -- 2. COMMENTS TABLE

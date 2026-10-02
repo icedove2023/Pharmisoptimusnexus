@@ -28,6 +28,7 @@
                 <% if (admin.role === 'admin') { %>
                     <a class="nav-item<%= section === 'messages' ? ' is-active' : '' %>" href="<%= adminPath %>/messages"><%- icon('mail') %> Messages</a>
                     <span class="nav-heading">Site content</span>
+                    <a class="nav-item<%= section === 'media' ? ' is-active' : '' %>" href="<%= adminPath %>/media"><%- icon('image') %> Media library</a>
                     <a class="nav-item<%= section === 'slides' ? ' is-active' : '' %>" href="<%= adminPath %>/slides"><%- icon('image') %> Slideshow</a>
                     <a class="nav-item<%= section === 'team' ? ' is-active' : '' %>" href="<%= adminPath %>/team"><%- icon('users') %> About and team</a>
                 <% } %>

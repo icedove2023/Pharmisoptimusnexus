@@ -33,6 +33,7 @@
         var preview = el('img', { class: 'block-image-preview', style: currentUrl ? '' : 'display:none', src: currentUrl || '' });
         var status = el('span', { class: 'field-status' });
         var input = el('input', { type: 'file', accept: 'image/jpeg,image/png,image/webp,image/gif' });
+        var libraryBtn = el('button', { type: 'button', class: 'btn btn-ghost btn-small', text: 'Choose from library' });
         var startUpload = function (fileOrBlob) {
             status.textContent = 'Uploading...';
             uploadImage(fileOrBlob, function (err, url) {
@@ -43,6 +44,22 @@
                 onUploaded(url);
             });
         };
+        var pickerMessageHandler = function (event) {
+            if (!event || !event.data || event.data.type !== 'media-library-select') return;
+            if (event.data.url) {
+                status.textContent = '';
+                preview.src = event.data.url;
+                preview.style.display = '';
+                onUploaded(event.data.url);
+            }
+        };
+        libraryBtn.addEventListener('click', function () {
+            var adminPath = (window.PON_ADMIN_PATH || '/studio');
+            var popup = window.open(adminPath + '/media?picker=1', 'media-library', 'width=1200,height=780');
+            if (popup) {
+                window.addEventListener('message', pickerMessageHandler, { once: true });
+            }
+        });
         var cropBtn = el('button', { type: 'button', class: 'btn btn-ghost btn-small', text: currentUrl ? 'Edit Crop' : 'Crop Image' });
         cropBtn.disabled = !currentUrl && !window.PON_openCropModal;
         cropBtn.addEventListener('click', function () {
@@ -70,7 +87,7 @@
             else startUpload(file);
             input.value = '';
         });
-        return el('div', { class: 'image-picker' }, [preview, input, cropBtn, status]);
+        return el('div', { class: 'image-picker' }, [preview, input, cropBtn, libraryBtn, status]);
     }
 
     document.addEventListener('DOMContentLoaded', function () {
