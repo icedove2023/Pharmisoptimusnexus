@@ -114,10 +114,10 @@
         var input = el('input', { type: 'file', accept: 'image/jpeg,image/png,image/webp,image/gif' });
         var libraryBtn = el('button', { type: 'button', class: 'btn btn-ghost btn-small', text: 'Choose from library' });
         var startUpload = function (fileOrBlob) {
-            status.textContent = 'Uploading...';
+            status.textContent = 'Crop saved. Uploading...';
             uploadImage(fileOrBlob, function (err, url) {
                 if (err) { status.textContent = err; return; }
-                status.textContent = '';
+                status.textContent = 'Image saved successfully.';
                 preview.src = url;
                 preview.style.display = '';
                 onUploaded(url);

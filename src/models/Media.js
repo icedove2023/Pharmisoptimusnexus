@@ -36,8 +36,78 @@ function humanFileSize(bytes) {
     return `${value.toFixed(value >= 10 || unitIndex === 0 ? 0 : 1)} ${units[unitIndex]}`;
 }
 
+function inferMimeFromFilename(filename = '') {
+    const name = String(filename || '').toLowerCase();
+    if (name.endsWith('.png')) return 'image/png';
+    if (name.endsWith('.jpg') || name.endsWith('.jpeg')) return 'image/jpeg';
+    if (name.endsWith('.webp')) return 'image/webp';
+    if (name.endsWith('.gif')) return 'image/gif';
+    if (name.endsWith('.pdf')) return 'application/pdf';
+    return null;
+}
+
 class Media {
+    static async syncBucketCatalog() {
+        try {
+            const { data: existingRows, error: existingError } = await supabaseAdmin.from('media').select('storage_path');
+            if (existingError) {
+                throw existingError;
+            }
+
+            const existingPaths = new Set((existingRows || []).map((row) => row.storage_path).filter(Boolean));
+            const { data: bucketItems, error: listError } = await supabaseAdmin.storage.from(BUCKET).list('', { limit: 1000, offset: 0, sortBy: { column: 'created_at', order: 'desc' } });
+            if (listError) {
+                throw listError;
+            }
+
+            let imported = 0;
+            for (const item of bucketItems || []) {
+                if (!item || !item.name || item.name.endsWith('/')) continue;
+                const storagePath = item.path || item.name;
+                if (existingPaths.has(storagePath)) continue;
+
+                const mimeType = inferMimeFromFilename(storagePath) || inferMimeFromFilename(item.name);
+                if (!mimeType) continue;
+
+                const kind = getAssetKind(mimeType);
+                const extension = kind === 'image' ? (extensionFor(mimeType) || '') : (documentExtensionFor(mimeType) || '');
+                const { data: publicData } = supabaseAdmin.storage.from(BUCKET).getPublicUrl(storagePath);
+                const publicUrl = publicData && publicData.publicUrl ? publicData.publicUrl : null;
+                if (!publicUrl) continue;
+
+                const { error: insertError } = await supabaseAdmin.from('media').upsert({
+                    storage_bucket: BUCKET,
+                    storage_path: storagePath,
+                    public_url: publicUrl,
+                    original_filename: String(item.name || storagePath).split('/').pop(),
+                    mime_type: mimeType,
+                    extension,
+                    size_bytes: Number(item.metadata && item.metadata.size ? item.metadata.size : item.size || 0),
+                    width: null,
+                    height: null,
+                    kind,
+                    content_hash: null,
+                    alt_text: '',
+                    caption: '',
+                    title: String(item.name || storagePath).split('/').pop(),
+                    uploaded_by: null,
+                    created_at: item.created_at || new Date().toISOString(),
+                    updated_at: item.updated_at || new Date().toISOString()
+                }, { onConflict: 'storage_path' });
+
+                if (!insertError) imported += 1;
+            }
+
+            return imported;
+        } catch (error) {
+            console.warn('Media bucket sync skipped:', error && error.message ? error.message : error);
+            return 0;
+        }
+    }
+
     static async list({ type = 'all', search = '', page = 1, limit = 24, sort = 'created_at', order = 'desc' } = {}) {
+        await Media.syncBucketCatalog();
+
         const pageSize = Math.min(Math.max(parseInt(limit, 10) || 24, 1), 100);
         const pageNumber = Math.max(parseInt(page, 10) || 1, 1);
         const offset = (pageNumber - 1) * pageSize;

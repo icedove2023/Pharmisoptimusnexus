@@ -188,6 +188,13 @@
         };
     }
 
+    function fitScaleToFrame(naturalWidth, naturalHeight, frameWidth, frameHeight) {
+        if (!naturalWidth || !naturalHeight) return 1;
+        var widthScale = frameWidth / naturalWidth;
+        var heightScale = frameHeight / naturalHeight;
+        return Math.max(0.1, Math.min(widthScale, heightScale));
+    }
+
     function getVisibleCropRect(state, naturalWidth, naturalHeight, containerWidth, containerHeight) {
         var left = state.frame.left - state.x;
         var top = state.frame.top - state.y;
@@ -308,6 +315,7 @@
                                 el('button', { type: 'button', class: 'btn btn-ghost btn-small', text: '+' })
                             ]),
                             el('div', { class: 'crop-actions-row' }, [
+                                el('button', { type: 'button', class: 'btn btn-ghost', text: 'Fit to Frame' }),
                                 el('button', { type: 'button', class: 'btn btn-ghost', text: 'Reset Position' }),
                                 el('button', { type: 'button', class: 'btn btn-primary', text: resolvedOptions.confirmText })
                             ])
@@ -325,7 +333,8 @@
             var previewImg = modal.querySelector('.crop-preview-image');
             var zoomInput = modal.querySelector('input[type="range"]');
             var closeBtn = modal.querySelector('.crop-close-btn');
-            var resetBtn = modal.querySelector('.crop-actions-row .btn-ghost');
+            var fitBtn = modal.querySelectorAll('.crop-actions-row .btn-ghost')[0];
+            var resetBtn = modal.querySelectorAll('.crop-actions-row .btn-ghost')[1];
             var applyBtn = modal.querySelector('.crop-actions-row .btn-primary');
             var zoomOutBtn = modal.querySelectorAll('.crop-zoom-row .btn')[0];
             var zoomInBtn = modal.querySelectorAll('.crop-zoom-row .btn')[1];
@@ -363,6 +372,16 @@
                 state.frame = next.frame;
                 state.minScale = next.minScale;
                 state.maxScale = next.maxScale;
+                renderImage();
+            }
+
+            function fitToFrame() {
+                var fitScale = fitScaleToFrame(naturalWidth, naturalHeight, state.frame.width, state.frame.height);
+                state.scale = clampScale(fitScale, 0.1, state.maxScale || 8);
+                state.x = (stageW - (naturalWidth * state.scale)) / 2;
+                state.y = (stageH - (naturalHeight * state.scale)) / 2;
+                state.imageWidth = naturalWidth * state.scale;
+                state.imageHeight = naturalHeight * state.scale;
                 renderImage();
             }
 
@@ -413,6 +432,9 @@
                 }
                 canvas.toBlob(function (blob) {
                     cleanup();
+                    if (window.opener && !window.opener.closed) {
+                        window.opener.postMessage({ type: 'media-library-select', url: null }, '*');
+                    }
                     onDone(blob || source);
                 }, outputFormat, quality);
             }
@@ -434,6 +456,7 @@
             zoomInBtn.addEventListener('click', function () {
                 handleZoom(state.scale * 1.18);
             });
+            fitBtn.addEventListener('click', fitToFrame);
             resetBtn.addEventListener('click', resetState);
             applyBtn.addEventListener('click', onApply);
             closeBtn.addEventListener('click', function () {
