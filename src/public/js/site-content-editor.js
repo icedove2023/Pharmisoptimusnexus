@@ -29,7 +29,7 @@
             .catch(function () { onDone('Upload failed'); });
     }
 
-    function imagePicker(currentUrl, onUploaded) {
+    function imagePicker(currentUrl, onUploaded, profileName, label) {
         var preview = el('img', { class: 'block-image-preview', style: currentUrl ? '' : 'display:none', src: currentUrl || '' });
         var status = el('span', { class: 'field-status' });
         var input = el('input', { type: 'file', accept: 'image/jpeg,image/png,image/webp,image/gif' });
@@ -43,27 +43,47 @@
                 onUploaded(url);
             });
         };
+        var cropBtn = el('button', { type: 'button', class: 'btn btn-ghost btn-small', text: currentUrl ? 'Edit Crop' : 'Crop Image' });
+        cropBtn.disabled = !currentUrl && !window.PON_openCropModal;
+        cropBtn.addEventListener('click', function () {
+            if (currentUrl && window.PON_openCropModalFromUrl) {
+                status.textContent = 'Loading crop editor...';
+                window.PON_openCropModalFromUrl(currentUrl, function (result) {
+                    status.textContent = '';
+                    if (!result) return;
+                    if (result instanceof Blob) {
+                        startUpload(result);
+                    } else if (typeof result === 'string' && result !== currentUrl) {
+                        onUploaded(result);
+                        preview.src = result;
+                        preview.style.display = '';
+                    }
+                }, { profile: profileName || 'hero', label: label || 'Adjust Image' });
+                return;
+            }
+            input.click();
+        });
         input.addEventListener('change', function () {
             var file = input.files && input.files[0];
             if (!file) return;
-            if (window.PON_openCropModal) window.PON_openCropModal(file, startUpload);
+            if (window.PON_openCropModal) window.PON_openCropModal(file, startUpload, { profile: profileName || 'hero', label: label || 'Adjust Image' });
             else startUpload(file);
             input.value = '';
         });
-        return el('div', { class: 'image-picker' }, [preview, input, status]);
+        return el('div', { class: 'image-picker' }, [preview, input, cropBtn, status]);
     }
 
     document.addEventListener('DOMContentLoaded', function () {
         var slideField = document.getElementById('slideImageField');
         if (slideField) {
             var slideUrlInput = document.getElementById('slideImageUrl');
-            slideField.appendChild(imagePicker(slideUrlInput.value, function (url) { slideUrlInput.value = url; }));
+            slideField.appendChild(imagePicker(slideUrlInput.value, function (url) { slideUrlInput.value = url; }, 'hero', 'Adjust Slide Image'));
         }
 
         var memberField = document.getElementById('memberPhotoField');
         if (memberField) {
             var memberUrlInput = document.getElementById('memberPhotoUrl');
-            memberField.appendChild(imagePicker(memberUrlInput.value, function (url) { memberUrlInput.value = url; }));
+            memberField.appendChild(imagePicker(memberUrlInput.value, function (url) { memberUrlInput.value = url; }, 'team', 'Adjust Team Photo'));
         }
 
         document.querySelectorAll('form[data-confirm]').forEach(function (form) {

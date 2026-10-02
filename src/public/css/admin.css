@@ -230,78 +230,137 @@ input[type="email"], input[type="password"], input[type="search"], input[type="t
 /* ---- Image crop modal ---- */
 .crop-overlay {
     position: fixed; inset: 0; z-index: 1000;
-    background: rgba(15, 12, 9, 0.72);
+    background: rgba(15, 12, 9, 0.78);
     display: flex; align-items: center; justify-content: center;
     padding: 20px;
+    overflow: auto;
 }
 
 .crop-modal {
     background: var(--a-card);
-    border-radius: 14px;
-    padding: 20px;
-    max-width: calc(100% - 40px);
+    border: 1px solid var(--a-border);
+    border-radius: 16px;
+    padding: 18px;
+    width: min(1100px, calc(100vw - 24px));
+    max-height: calc(100vh - 28px);
+    overflow: auto;
     display: flex; flex-direction: column; gap: 14px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.32);
 }
 
-.crop-modal h3 { margin: 0; }
+.crop-header {
+    display: flex; align-items: flex-start; justify-content: space-between; gap: 12px;
+}
 
-.crop-frame {
+.crop-header-copy {
+    display: flex; flex-direction: column; gap: 4px;
+}
+
+.crop-header h3 { margin: 0; font-size: 1.4rem; }
+.crop-header p { margin: 0; color: var(--a-muted); font-size: 0.9rem; }
+
+.crop-panel {
+    display: grid; grid-template-columns: minmax(0, 1.7fr) minmax(260px, 380px);
+    gap: 18px;
+}
+
+.crop-stage {
     position: relative;
     overflow: hidden;
-    background: #111;
-    max-width: 100%;
+    border-radius: 12px;
+    border: 1px solid var(--a-border);
+    background: #0d1015;
     touch-action: none;
+    user-select: none;
+    width: 100%;
+    max-width: 100%;
+    margin: 0 auto;
 }
 
-.crop-source {
-    position: absolute; top: 0; left: 0;
-    width: 100%; height: 100%;
-    object-fit: contain;
+.crop-image {
+    position: absolute;
+    display: block;
+    object-fit: cover;
     pointer-events: none;
     user-select: none;
+    transform: translate3d(0,0,0);
+    will-change: transform, left, top;
 }
 
-.crop-box {
+.crop-guide {
     position: absolute;
-    border: 2px solid #fff;
-    box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.5);
-    cursor: move;
-    touch-action: none;
+    border: 2px solid rgba(255, 255, 255, 0.96);
+    box-shadow: 0 0 0 9999px rgba(12, 16, 20, 0.56);
+    border-radius: 8px;
+    pointer-events: none;
 }
 
-.crop-box:focus-visible {
-    outline: 3px solid var(--a-blush);
-    outline-offset: 2px;
+.crop-side {
+    display: flex; flex-direction: column; gap: 16px;
 }
 
-.crop-handle {
-    position: absolute;
-    right: -6px; bottom: -6px;
-    width: 14px; height: 14px;
-    background: #fff;
-    border-radius: 50%;
-    cursor: nwse-resize;
+.crop-preview {
+    background: #0b0d12;
+    border: 1px solid var(--a-border);
+    border-radius: 12px;
+    padding: 12px;
 }
 
-.crop-handle:focus-visible {
-    outline: 3px solid var(--a-blush);
-    outline-offset: 3px;
-}
-
-.crop-keyboard-hint {
-    font-size: 12px;
+.crop-preview-label {
+    font-size: 0.8rem;
     color: var(--a-muted);
-    margin: 0;
+    margin-bottom: 8px;
+    text-transform: uppercase; letter-spacing: 0.08em;
 }
 
-.crop-ratios { display: flex; gap: 6px; }
-.crop-ratios button.is-active { background: var(--a-crimson); color: #fff; border-color: var(--a-crimson); }
+.crop-preview-image {
+    display: block; width: 100%; aspect-ratio: 16 / 9; border-radius: 9px; background: #111;
+    object-fit: cover;
+}
 
-.crop-actions { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
-.crop-actions-buttons { display: flex; gap: 8px; }
+.crop-controls {
+    display: flex; flex-direction: column; gap: 12px;
+    padding: 12px;
+    background: rgba(255,255,255,0.02);
+    border: 1px solid var(--a-border);
+    border-radius: 12px;
+}
 
-@media (max-width: 640px) {
-    .crop-modal { width: 100%; }
+.crop-profile-note {
+    margin: 0; color: var(--a-muted); font-size: 0.82rem; line-height: 1.5;
+}
+
+.crop-zoom-row {
+    display: grid; grid-template-columns: 42px 1fr 42px; gap: 10px; align-items: center;
+}
+
+.crop-zoom-row input[type="range"] {
+    width: 100%; accent-color: var(--a-crimson);
+}
+
+.crop-actions-row {
+    display: flex; gap: 8px; justify-content: flex-end; flex-wrap: wrap;
+}
+
+.crop-close-btn { min-width: 72px; }
+
+@media (max-width: 820px) {
+    .crop-panel {
+        grid-template-columns: 1fr;
+    }
+    .crop-modal {
+        padding: 14px;
+        width: min(100%, calc(100vw - 12px));
+    }
+    .crop-header {
+        align-items: center;
+    }
+    .crop-actions-row {
+        justify-content: stretch;
+    }
+    .crop-actions-row .btn {
+        flex: 1 1 160px;
+    }
 }
 
 /* ---- Autosave / revisions ---- */

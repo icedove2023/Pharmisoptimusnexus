@@ -108,7 +108,7 @@
             .catch(function () { onDone('Upload failed'); });
     }
 
-    function imagePicker(currentUrl, onUploaded) {
+    function imagePicker(currentUrl, onUploaded, profileName, label) {
         var preview = el('img', { class: 'block-image-preview', style: currentUrl ? '' : 'display:none', src: currentUrl || '' });
         var status = el('span', { class: 'field-status' });
         var input = el('input', { type: 'file', accept: 'image/jpeg,image/png,image/webp,image/gif' });
@@ -122,17 +122,36 @@
                 onUploaded(url);
             });
         };
+        var cropBtn = el('button', { type: 'button', class: 'btn btn-ghost btn-small', text: currentUrl ? 'Edit Crop' : 'Crop Image' });
+        cropBtn.addEventListener('click', function () {
+            if (currentUrl && root.PON_openCropModalFromUrl) {
+                status.textContent = 'Loading crop editor...';
+                root.PON_openCropModalFromUrl(currentUrl, function (result) {
+                    status.textContent = '';
+                    if (!result) return;
+                    if (result instanceof Blob) {
+                        startUpload(result);
+                    } else if (typeof result === 'string' && result !== currentUrl) {
+                        preview.src = result;
+                        preview.style.display = '';
+                        onUploaded(result);
+                    }
+                }, { profile: profileName || 'article', label: label || 'Adjust Image' });
+                return;
+            }
+            input.click();
+        });
         input.addEventListener('change', function () {
             var file = input.files && input.files[0];
             if (!file) return;
             if (root.PON_openCropModal) {
-                root.PON_openCropModal(file, startUpload);
+                root.PON_openCropModal(file, startUpload, { profile: profileName || 'article', label: label || 'Adjust Image' });
             } else {
                 startUpload(file);
             }
             input.value = '';
         });
-        var wrap = el('div', { class: 'image-picker' }, [preview, input, status]);
+        var wrap = el('div', { class: 'image-picker' }, [preview, input, cropBtn, status]);
         return wrap;
     }
 
@@ -232,7 +251,7 @@
                 var imgCaption = textInput(data.caption, 'Caption (optional)');
                 var imgSize = selectInput([{ value: 'inline', label: 'Inline' }, { value: 'wide', label: 'Wide' }, { value: 'full', label: 'Full width' }], data.size || 'wide');
                 var imgAlign = selectInput([{ value: 'left', label: 'Left' }, { value: 'center', label: 'Center' }, { value: 'right', label: 'Right' }], data.align || 'center');
-                var picker = imagePicker(imgSrc, function (url) { imgSrc = url; });
+                var picker = imagePicker(imgSrc, function (url) { imgSrc = url; }, 'article', 'Adjust Article Image');
                 body.appendChild(field('Image', picker));
                 body.appendChild(field('Alt text', imgAlt));
                 body.appendChild(field('Caption', imgCaption));
@@ -251,7 +270,7 @@
                         altIn.addEventListener('input', function () { img.alt = altIn.value; });
                         var capIn = textInput(img.caption, 'Caption');
                         capIn.addEventListener('input', function () { img.caption = capIn.value; });
-                        var picker2 = imagePicker(img.src, function (url) { img.src = url; });
+                        var picker2 = imagePicker(img.src, function (url) { img.src = url; }, 'gallery', 'Adjust Gallery Image');
                         var removeBtn = el('button', { type: 'button', class: 'btn btn-ghost btn-small', text: 'Remove' });
                         removeBtn.addEventListener('click', function () { items.splice(idx, 1); renderItems(); });
                         list.appendChild(el('div', { class: 'gallery-item' }, [picker2, altIn, capIn, removeBtn]));
@@ -387,7 +406,7 @@
         var coverField = document.getElementById('coverField');
         if (coverField) {
             var coverUrlInput = document.getElementById('image_url');
-            var coverPicker = imagePicker(coverUrlInput.value, function (url) { coverUrlInput.value = url; });
+            var coverPicker = imagePicker(coverUrlInput.value, function (url) { coverUrlInput.value = url; }, 'postCover', 'Adjust Post Cover');
             coverField.appendChild(coverPicker);
         }
 
