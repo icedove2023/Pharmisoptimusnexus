@@ -32,6 +32,17 @@
     overflow: hidden;
 }
 
+.featured-image,
+.featured-img-inner,
+.blog-card-cover,
+.related-post-image img,
+.related-card-img img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
 .featured-img-inner {
     position: absolute;
     inset: 0;

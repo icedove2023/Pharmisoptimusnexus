@@ -6,6 +6,7 @@
 const crypto = require('crypto');
 
 const BUCKET = 'media';
+const DEFAULT_IMAGE_SOURCES = ["'self'", 'data:', 'https://images.unsplash.com'];
 const MIME_TO_EXT = {
     'image/jpeg': 'jpg',
     'image/png': 'png',
@@ -42,13 +43,39 @@ function buildStoragePath(mimetype, { kind = 'uploads' } = {}) {
     return `${kind}/${yyyy}/${mm}/${name}.${ext}`;
 }
 
+function getSupabaseStorageOrigin(rawUrl) {
+    if (typeof rawUrl !== 'string') return null;
+    const value = rawUrl.trim();
+    if (!value) return null;
+
+    try {
+        const parsed = new URL(value);
+        return parsed.origin && /^https?:$/.test(parsed.protocol) ? parsed.origin : null;
+    } catch (error) {
+        console.warn('Ignoring invalid SUPABASE_URL for CSP image sources:', error.message);
+        return null;
+    }
+}
+
+function getAllowedImageSources(rawSupabaseUrl) {
+    const sources = [...DEFAULT_IMAGE_SOURCES];
+    const supabaseOrigin = getSupabaseStorageOrigin(rawSupabaseUrl);
+    if (supabaseOrigin && !sources.includes(supabaseOrigin)) {
+        sources.push(supabaseOrigin);
+    }
+    return sources;
+}
+
 module.exports = {
     BUCKET,
+    DEFAULT_IMAGE_SOURCES,
     MIME_TO_EXT,
     DOCUMENT_MIME_TO_EXT,
     MAX_FILE_BYTES,
     MAX_DOCUMENT_BYTES,
     extensionFor,
     documentExtensionFor,
-    buildStoragePath
+    buildStoragePath,
+    getSupabaseStorageOrigin,
+    getAllowedImageSources
 };

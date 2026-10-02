@@ -18,7 +18,8 @@
 <% } else { %>
     <a href="/blog/<%= post.id %>" class="btn-sm">Read More</a>
 <% } %>
-                        <div class="related-post-image" style="background-image: url('<%= post.image_url || '/images/placeholder.jpg' %>')">
+                        <div class="related-post-image">
+                            <img src="<%= post.image_url || '/images/placeholder.jpg' %>" alt="<%= post.title %>" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='/images/placeholder.jpg';" />
                             <% if (post.category) { %>
                                 <span class="related-post-category"><%= post.category %></span>
                             <% } %>

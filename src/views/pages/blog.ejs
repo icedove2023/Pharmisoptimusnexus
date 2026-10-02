@@ -31,21 +31,25 @@
         <% if (featured) { %>
             <div id="featuredPost" class="featured-post reveal">
                 <div class="featured-img">
-                    <div class="featured-img-inner" style="background: linear-gradient(135deg, var(--dark) 0%, var(--crimson) 100%);">
-                        <svg width="360" height="320" viewBox="0 0 360 320" xmlns="http://www.w3.org/2000/svg" opacity="0.5">
-                            <defs>
-                                <radialGradient id="fg1" cx="50%" cy="50%" r="60%">
-                                    <stop offset="0%" stop-color="#F16D78" stop-opacity="0.6"/>
-                                    <stop offset="100%" stop-color="#17222B" stop-opacity="0"/>
-                                </radialGradient>
-                            </defs>
-                            <rect width="360" height="320" fill="#17222B"/>
-                            <rect width="360" height="320" fill="url(#fg1)"/>
-                            <circle cx="180" cy="160" r="80" stroke="#EFD9C7" stroke-width="1" fill="none" opacity="0.3"/>
-                            <circle cx="180" cy="160" r="40" stroke="#F16D78" stroke-width="1.5" fill="none" opacity="0.5"/>
-                            <circle cx="180" cy="160" r="12" fill="#F16D78" opacity="0.8"/>
-                        </svg>
-                    </div>
+                    <% if (featured.image_url) { %>
+                        <img class="featured-image" src="<%= featured.image_url %>" alt="<%= featured.title %>" loading="eager" decoding="async" onerror="this.onerror=null;this.src='/images/placeholder.jpg';" />
+                    <% } else { %>
+                        <div class="featured-img-inner" style="background: linear-gradient(135deg, var(--dark) 0%, var(--crimson) 100%);">
+                            <svg width="360" height="320" viewBox="0 0 360 320" xmlns="http://www.w3.org/2000/svg" opacity="0.5">
+                                <defs>
+                                    <radialGradient id="fg1" cx="50%" cy="50%" r="60%">
+                                        <stop offset="0%" stop-color="#F16D78" stop-opacity="0.6"/>
+                                        <stop offset="100%" stop-color="#17222B" stop-opacity="0"/>
+                                    </radialGradient>
+                                </defs>
+                                <rect width="360" height="320" fill="#17222B"/>
+                                <rect width="360" height="320" fill="url(#fg1)"/>
+                                <circle cx="180" cy="160" r="80" stroke="#EFD9C7" stroke-width="1" fill="none" opacity="0.3"/>
+                                <circle cx="180" cy="160" r="40" stroke="#F16D78" stroke-width="1.5" fill="none" opacity="0.5"/>
+                                <circle cx="180" cy="160" r="12" fill="#F16D78" opacity="0.8"/>
+                            </svg>
+                        </div>
+                    <% } %>
                     <div class="featured-badge">Featured</div>
                 </div>
                 <div class="featured-body">
@@ -69,7 +73,11 @@
                 <% posts.forEach((post, index) => { %>
                     <article class="blog-card reveal" role="article">
                         <div class="blog-card-img">
-                            <div class="blog-card-img-inner" style="background: <%= ['linear-gradient(135deg, #1a2a3a, #2a4a6a)', 'linear-gradient(135deg, #1a1a2a, #3a2060)', 'linear-gradient(135deg, #2a1a18, #6a3020)', 'linear-gradient(135deg, #1a2218, #204a20)'][index % 4] %>"></div>
+                            <% if (post.image_url) { %>
+                                <img class="blog-card-cover" src="<%= post.image_url %>" alt="<%= post.title %>" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='/images/placeholder.jpg';" />
+                            <% } else { %>
+                                <div class="blog-card-img-inner" style="background: <%= ['linear-gradient(135deg, #1a2a3a, #2a4a6a)', 'linear-gradient(135deg, #1a1a2a, #3a2060)', 'linear-gradient(135deg, #2a1a18, #6a3020)', 'linear-gradient(135deg, #1a2218, #204a20)'][index % 4] %>"></div>
+                            <% } %>
                         </div>
                         <div class="blog-card-body">
                             <div class="blog-card-cat"><%= post.category || '' %></div>

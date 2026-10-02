@@ -8,9 +8,11 @@ const path = require('path');
 const ejs = require('ejs');
 const config = require('./src/config');
 const { icon } = require('./src/utils/icons');
+const { getAllowedImageSources } = require('./src/utils/media');
 const { visitor } = require('./src/middleware/visitor');
 
 const app = express();
+const allowedImageSources = getAllowedImageSources(process.env.SUPABASE_URL);
 
 // Behind Vercel's proxy: use the real client IP for rate limiting and secure cookies.
 app.set('trust proxy', 1);
@@ -34,7 +36,7 @@ app.use(helmet({
             scriptSrc: ["'self'", "'unsafe-inline'", "https://unpkg.com", "https://cdnjs.cloudflare.com"],
             styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
             fontSrc: ["'self'", "https://fonts.gstatic.com"],
-            imgSrc: ["'self'", "data:", "https://images.unsplash.com"],
+            imgSrc: allowedImageSources,
             connectSrc: ["'self'"],
             frameSrc: ["'none'"],
             objectSrc: ["'none'"],

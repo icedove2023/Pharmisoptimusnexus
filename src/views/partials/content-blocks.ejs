@@ -40,7 +40,9 @@
         <div class="image-wrapper image-<%= section.size || 'wide' %> image-align-<%= section.align || 'center' %>">
             <img src="<%= section.src || '/images/placeholder.jpg' %>"
                  alt="<%= section.alt || section.caption || 'Image' %>"
-                 loading="lazy" />
+                 loading="lazy"
+                 decoding="async"
+                 onerror="this.onerror=null;this.src='/images/placeholder.jpg';" />
             <% if (section.caption) { %>
                 <div class="image-caption"><%= section.caption %></div>
             <% } %>
@@ -49,7 +51,7 @@
         <div class="gallery-grid">
             <% section.images.forEach(img => { %>
                 <figure class="gallery-item">
-                    <img src="<%= img.src %>" alt="<%= img.alt || img.caption || 'Image' %>" loading="lazy" />
+                    <img src="<%= img.src %>" alt="<%= img.alt || img.caption || 'Image' %>" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='/images/placeholder.jpg';" />
                     <% if (img.caption) { %>
                         <figcaption><%= img.caption %></figcaption>
                     <% } %>

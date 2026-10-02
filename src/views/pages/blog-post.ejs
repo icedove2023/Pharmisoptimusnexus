@@ -89,7 +89,9 @@
                 <div class="related-grid">
                     <% relatedPosts.slice(0, 3).forEach(related => { %>
                         <a href="/blog/<%= related.slug %>" class="related-card">
-                            <div class="related-card-img" style="background-image: url('<%= related.image_url || '/images/placeholder.jpg' %>')"></div>
+                            <div class="related-card-img">
+                                <img src="<%= related.image_url || '/images/placeholder.jpg' %>" alt="<%= related.title %>" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='/images/placeholder.jpg';" />
+                            </div>
                             <h4><%= related.title %></h4>
                             <span class="related-date"><%= related.published_date %></span>
                         </a>

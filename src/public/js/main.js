@@ -235,7 +235,8 @@ document.addEventListener('DOMContentLoaded', function() {
             renderSlides();
             restartAutoplay();
         })
-        .catch(() => {
+        .catch((error) => {
+            console.error('Hero slides failed to load, using fallback images:', error && error.message ? error.message : error);
             renderSlides();
             restartAutoplay();
         });

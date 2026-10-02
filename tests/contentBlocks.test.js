@@ -2,6 +2,7 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const { normalizeContent, BLOCK_TYPES } = require('../src/utils/contentBlocks');
+const { getAllowedImageSources, getSupabaseStorageOrigin } = require('../src/utils/media');
 
 test('empty or missing input produces an empty section list', () => {
     assert.deepEqual(normalizeContent(undefined).content, { sections: [] });
@@ -173,4 +174,22 @@ test('a block cannot smuggle extra unexpected fields through', () => {
         sections: [{ type: 'paragraph', html: 'hi', __proto__: { polluted: true }, extra: 'nope' }]
     });
     assert.deepEqual(Object.keys(result.content.sections[0]).sort(), ['html', 'type']);
+});
+
+test('Supabase media URLs are allowed in the CSP image source list and invalid env values are ignored', () => {
+    assert.deepEqual(getAllowedImageSources('https://project-ref.supabase.co'), [
+        "'self'",
+        'data:',
+        'https://images.unsplash.com',
+        'https://project-ref.supabase.co'
+    ]);
+
+    assert.deepEqual(getAllowedImageSources('not a url'), [
+        "'self'",
+        'data:',
+        'https://images.unsplash.com'
+    ]);
+
+    assert.equal(getSupabaseStorageOrigin('https://project-ref.supabase.co'), 'https://project-ref.supabase.co');
+    assert.equal(getSupabaseStorageOrigin('not a url'), null);
 });
